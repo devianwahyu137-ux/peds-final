@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --t1-size: 1.125rem; /* 18px */
+  --t2-size: 0.75rem;  /* 12px */
+  --t3-size: 0.6875rem; /* 11px */
+  
+  --b-panel-color: #171717;  /* desaturated neutral-900 border */
+  --b-inner-color: #262626;  /* desaturated neutral-800 border */
+  --b-accent-color: #10ffaa; /* neon emerald accent border */
+  --b-ledger-color: #ff3c3c;  /* caution/danger ledger line border */
+}
+
+html, body, #root {
+  background-color: #050505 !important;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: monospace;
+}
+
+/* 3-Tier Typography System */
+.t1 {
+  font-size: var(--t1-size);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+}
+
+.t2 {
+  font-size: var(--t2-size);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #737373;
+}
+
+.t3 {
+  font-size: var(--t3-size);
+  font-weight: 400;
+  line-height: 1.6;
+  color: #a3a3a3;
+}
+
+/* Desaturated background stroke border tokens */
+.b-panel {
+  border: 1px solid var(--b-panel-color);
+}
+
+.b-inner {
+  border: 1px solid var(--b-inner-color);
+}
+
+.b-accent {
+  border: 1px solid var(--b-accent-color);
+}
+
+.b-ledger {
+  border-left: 2px solid var(--b-ledger-color);
+}
+
+/* Hardware-accelerated ticker keyframes */
+@keyframes ticker-slide {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-ticker-ha {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: ticker-slide 30s linear infinite;
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
+}
