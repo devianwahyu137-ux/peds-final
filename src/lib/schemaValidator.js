@@ -143,3 +143,21 @@ export function isLivePayload(payload) {
   const ageMs = Date.now() - (payload.t ?? 0);
   return ageMs < 30 * 60 * 1000;
 }
+
+/**
+ * getPayloadStatus
+ * Returns a single status string for any payload shape.
+ * Replaces multi-branch if/else logic in the store.
+ *
+ * @param {object|null} payload
+ * @returns {"ok"|"stale"|"fallback"|"idle"}
+ */
+export function getPayloadStatus(payload) {
+  if (!payload) return "idle";
+  if (isLivePayload(payload)) return "ok";
+  if (payload.src === "stale_cache") return "stale";
+  if (payload.src === "static_fallback") return "fallback";
+  // Payload exists but doesn't match any known live/stale/fallback pattern
+  if (payload.ok === true) return "ok";
+  return "fallback";
+}
