@@ -78,6 +78,7 @@ export const useAlphaShieldStore = create((set, get) => ({
   // Live stream metadata
   liveData: {},
   endpointStatus: {},
+  releaseWindow: { interval: 3600000, windowId: null, isHot: false },
 
   // Recalculated analytics
   targetAnalytics: calculateStoreMPT(
@@ -172,11 +173,23 @@ export const useAlphaShieldStore = create((set, get) => ({
   },
 
   setLiveMetric: (key, result) => {
+    const current = get().liveData[key];
+    // Primitive equality guard: if value and structure are identical, bypass set()
+    if (current !== undefined && current !== null) {
+      // For object payloads with v and t properties
+      if (typeof current === "object" && typeof result === "object") {
+        if (current.v === result?.v && current.t === result?.t) return;
+      }
+      // For primitive payloads (numbers, strings)
+      if (typeof current !== "object" && current === result) return;
+    }
     const updatedLive = { ...get().liveData, [key]: result };
     set({ liveData: updatedLive });
   },
 
   setEndpointStatus: (key, status) => {
+    // String equality guard: skip if status is unchanged
+    if (get().endpointStatus[key] === status) return;
     const updatedStatus = { ...get().endpointStatus, [key]: status };
     set({ endpointStatus: updatedStatus });
   },
@@ -185,6 +198,17 @@ export const useAlphaShieldStore = create((set, get) => ({
     const updatedActual = { ...get().actualWeights, [asset]: parseFloat(pct) || 0 };
     set({ actualWeights: updatedActual });
     get().recalculate();
+  },
+
+  setReleaseWindow: (windowData) => {
+    const current = get().releaseWindow;
+    // Full equality guard: skip if all properties are identical
+    if (
+      current.interval === windowData.interval &&
+      current.windowId === windowData.windowId &&
+      current.isHot === windowData.isHot
+    ) return;
+    set({ releaseWindow: windowData });
   },
 
   // Central recalculation trigger

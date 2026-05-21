@@ -1,10 +1,25 @@
-import { useEffect } from "react";
+/**
+ * AlphaShield Live Market Data Hook
+ * 
+ * Re-engineered with:
+ * - Recursive setTimeout lifecycle (no setInterval)
+ * - useLayoutEffect mutable pointer for stable fetch reference
+ * - Page Visibility API synchronization
+ * - Dynamic polling intervals from releaseWindows
+ * - AbortController integration for clean unmount cancellation
+ * 
+ * @module useLiveMarketData
+ */
+
+import { useEffect, useLayoutEffect, useRef, useCallback } from "react";
 import { useDataStore } from "../stores/alphaShieldStore";
-import { fetchWithFallback } from "../lib/apiFetcher";
+import { fetchSequentialWithAbort } from "../lib/apiFetcher";
 import { buildLiveEngineParams } from "../lib/macroMappings";
 import { runMPTEngine } from "../lib/mptEngine";
+import { getCurrentPollingInterval } from "../lib/releaseWindows";
 
-// Transformers for data normalization
+// ─── Transformers for data normalization ───────────────────────────────────────
+
 const fredTransformer = (data) => {
   if (data?.observations?.length) {
     const val = parseFloat(data.observations[data.observations.length - 1].value);
@@ -37,73 +52,134 @@ const cpiTransformer = (data) => {
   throw new Error("CPI Inflation invalid data");
 };
 
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const TRANSFORMERS = {
+  fred: fredTransformer,
+  avExchangeRate: avExchangeRateTransformer,
+  avQuote: avQuoteTransformer,
+  biRate: biRateTransformer,
+  cpi: cpiTransformer
+};
+
+// ─── Hook ──────────────────────────────────────────────────────────────────────
 
 export function useLiveMarketData() {
   const store = useDataStore();
   const { liveData, scenarioId, targetWeights, actualWeights, setLiveMetric, setEndpointStatus, macroInputs } = store;
 
-  useEffect(() => {
-    const fetchAndStore = async (key, url, transformer, ttlMs) => {
+  // ── Mutable refs for stable lifecycle management ──
+  const timeoutRef = useRef(null);
+  const abortRef = useRef(null);
+  const isMountedRef = useRef(true);
+
+  /**
+   * useLayoutEffect mutable pointer — tracks the newest data execution frame
+   * without re-triggering effect dependencies.
+   */
+  const fetchFnRef = useRef(null);
+
+  useLayoutEffect(() => {
+    fetchFnRef.current = async (signal) => {
+      await fetchSequentialWithAbort(signal, setLiveMetric, setEndpointStatus, TRANSFORMERS);
+    };
+  });
+
+  /**
+   * Core recursive self-scheduling controller.
+   * Replaces all setInterval loops with dynamic setTimeout chains.
+   */
+  const scheduleNextCycle = useCallback(() => {
+    if (!isMountedRef.current) return;
+
+    // Abort any in-flight requests from previous cycle
+    if (abortRef.current) {
+      abortRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    // Execute the current fetch frame
+    const runCycle = async () => {
+      if (!isMountedRef.current || controller.signal.aborted) return;
+
       try {
-        setEndpointStatus(key, "fetching");
-        const res = await fetchWithFallback(key, url, transformer, ttlMs);
-        setLiveMetric(key, res.data);
-        setEndpointStatus(key, res.status);
-      } catch (e) {
-        console.error(`Failed fetching ${key}:`, e);
-        setEndpointStatus(key, "failed");
+        await fetchFnRef.current?.(controller.signal);
+      } catch {
+        // Swallow — individual fetch errors are handled inside fetchSequentialWithAbort
+      }
+
+      // Schedule next cycle with dynamic interval from release windows
+      if (isMountedRef.current && !controller.signal.aborted) {
+        const { interval } = getCurrentPollingInterval();
+        timeoutRef.current = setTimeout(scheduleNextCycle, interval);
       }
     };
 
-    // FRED fetcher (gs10, dxy, fedFunds) - 15 mins
-    const runFredFetch = () => {
-      fetchAndStore("gs10", "https://api.stlouisfed.org/fred/series/observations?series_id=GS10&api_key=demo&file_type=json", fredTransformer, 900000);
-      fetchAndStore("dxy", "https://api.stlouisfed.org/fred/series/observations?series_id=DTWEXBGS&api_key=demo&file_type=json", fredTransformer, 900000);
-      fetchAndStore("fedFunds", "https://api.stlouisfed.org/fred/series/observations?series_id=FEDFUNDS&api_key=demo&file_type=json", fredTransformer, 900000);
-    };
+    runCycle();
+  }, []);
 
-    // Alpha Vantage sequential fetcher (usdIdr, xauUsd, ihsg) - 10 mins with 12s delay
-    const runAvFetch = async () => {
-      await fetchAndStore("usdIdr", "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=IDR&apikey=demo", avExchangeRateTransformer, 600000);
-      await delay(12000);
-      await fetchAndStore("xauUsd", "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=XAU&to_currency=USD&apikey=demo", avExchangeRateTransformer, 600000);
-      await delay(12000);
-      await fetchAndStore("ihsg", "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=^JKSE&apikey=demo", avQuoteTransformer, 600000);
-    };
+  /**
+   * Primary lifecycle effect — initializes the recursive polling controller.
+   * Runs once on mount, cleans up on unmount.
+   */
+  useEffect(() => {
+    isMountedRef.current = true;
 
-    // Domestic fetcher (biRate, cpi) - 1 hour
-    const runDomesticFetch = () => {
-      fetchAndStore("biRate", "https://laquzixkcxeswmlhsnxp.supabase.co/functions/v1/bi-rate-proxy", biRateTransformer, 3600000);
-      fetchAndStore("cpi", "https://laquzixkcxeswmlhsnxp.supabase.co/functions/v1/cpi-inflation-proxy", cpiTransformer, 3600000);
-    };
-
-    // Fallbacks for missing assets to trigger their default parameters
-    const runOthers = () => {
-      fetchAndStore("sbnYield10Y", "", null, 3600000);
-      fetchAndStore("inflasiTrend", "", null, 3600000);
-      fetchAndStore("emasTrend", "", null, 3600000);
-    };
-
-    // Initial load execution
-    runFredFetch();
-    runAvFetch();
-    runDomesticFetch();
-    runOthers();
-
-    // Setup background intervals
-    const fredInterval = setInterval(runFredFetch, 900000);
-    const avInterval = setInterval(runAvFetch, 600000);
-    const domesticInterval = setInterval(runDomesticFetch, 3600000);
+    // Kick off the initial fetch cycle
+    scheduleNextCycle();
 
     return () => {
-      clearInterval(fredInterval);
-      clearInterval(avInterval);
-      clearInterval(domesticInterval);
-    };
-  }, [setLiveMetric, setEndpointStatus]);
+      isMountedRef.current = false;
 
-  // Automated listener loop to update central store analytics state when liveData streams arrive
+      // Clear scheduled timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
+      // Abort any in-flight requests
+      if (abortRef.current) {
+        abortRef.current.abort();
+        abortRef.current = null;
+      }
+    };
+  }, [scheduleNextCycle]);
+
+  /**
+   * Page Visibility API synchronization.
+   * Dedicated useEffect container:
+   * - document.hidden === true  → clearTimeout to freeze background polling
+   * - Tab focus returns         → immediately invoke fetch loop and re-register timeout
+   */
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Freeze background polling activity
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
+        // Abort any in-flight network requests
+        if (abortRef.current) {
+          abortRef.current.abort();
+          abortRef.current = null;
+        }
+      } else {
+        // Tab is active again — immediately invoke fetch and re-register cycle
+        if (isMountedRef.current) {
+          scheduleNextCycle();
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [scheduleNextCycle]);
+
+  // ── Automated MPT analytics recalculation when liveData streams arrive ──────
   useEffect(() => {
     if (!liveData.dxy || !liveData.biRate) return;
 
@@ -115,7 +191,7 @@ export function useLiveMarketData() {
       usdIdr: liveData.usdIdr ? (liveData.usdIdr / 1000) : (macroInputs.usdIdr || 0),
       sbn10y: (liveData.sbnYield10Y || macroInputs.sbn10y || 0) / 100,
       dxy: liveData.dxy || macroInputs.dxy || 0,
-      
+
       // Inject DXY live multipliers
       dxyEquityAdj: liveParams.dxyEquityAdj,
       dxyBondsAdj: liveParams.dxyBondsAdj,
