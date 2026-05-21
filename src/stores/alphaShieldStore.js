@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { runMPTEngine } from "../lib/mptEngine";
+import { isLivePayload } from "../lib/schemaValidator";
 
 // Static Scenario Baseline Config
 export const SCENARIOS = {
@@ -78,6 +79,7 @@ export const useAlphaShieldStore = create((set, get) => ({
   // Live stream metadata
   liveData: {},
   endpointStatus: {},
+  lastSyncAt: 0,
   releaseWindow: { interval: 3600000, windowId: null, isHot: false },
 
   // Recalculated analytics
@@ -183,8 +185,24 @@ export const useAlphaShieldStore = create((set, get) => ({
       // For primitive payloads (numbers, strings)
       if (typeof current !== "object" && current === result) return;
     }
-    const updatedLive = { ...get().liveData, [key]: result };
-    set({ liveData: updatedLive });
+
+    // Build atomic update — data + status in one set() call
+    const updates = {
+      liveData: { ...get().liveData, [key]: result },
+      lastSyncAt: Date.now(),
+    };
+
+    // ── BUG FIX: Update endpoint status ATOMICALLY with data update ──
+    // This ensures status badge is always consistent with the data present
+    if (result && typeof result === "object" && isLivePayload(result)) {
+      updates.endpointStatus = { ...get().endpointStatus, [key]: "ok" };
+    } else if (result && typeof result === "object" && result.src === "stale_cache") {
+      updates.endpointStatus = { ...get().endpointStatus, [key]: "stale" };
+    } else if (result && typeof result === "object" && result.src === "static_fallback") {
+      updates.endpointStatus = { ...get().endpointStatus, [key]: "fallback" };
+    }
+
+    set(updates);
   },
 
   setEndpointStatus: (key, status) => {

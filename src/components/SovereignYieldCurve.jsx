@@ -29,6 +29,15 @@ const cI = {
   "2-3": "Harga emas dalam denominasi Rupiah (XAU/IDR) berkorelasi sangat kuat dan positif dengan pergerakan kurs USD/IDR, berfungsi sebagai lindung nilai devaluasi mata uang."
 };
 
+/**
+ * Accent color map per scenario for glowing nodes.
+ */
+const ACCENT_MAP = {
+  EQUILIBRIUM: "#10ffaa",
+  TIGHTENING: "#ffcc00",
+  CURRENCY_STRESS: "#ff3c3c",
+};
+
 const buildSmoothPath = (points) => {
   if (points.length === 0) return "";
   let path = `M ${points[0].x} ${points[0].y}`;
@@ -53,8 +62,12 @@ const getCellColor = (val) => {
 };
 
 const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
-  const { scenarioId, macroInputs } = useDataStore();
+  const { scenarioId, crisisMode, macroInputs } = useDataStore();
   const [selectedCell, setSelectedCell] = useState(null);
+  const [hoveredTenor, setHoveredTenor] = useState(null);
+
+  const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : scenarioId;
+  const accentColor = ACCENT_MAP[effectiveScenario] || ACCENT_MAP.EQUILIBRIUM;
 
   const sbn10y = macroInputs.sbn10y; // in percent format
   const sbnBase = sbnMap[scenarioId] || sbnMap.EQUILIBRIUM;
@@ -78,10 +91,18 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
 
   const spread = sbn10y - 4.45;
 
+  // Build spread data for tooltip
+  const spreadData = tenures.map((tenor, i) => ({
+    tenor,
+    sbn: sbnYields[i].toFixed(2),
+    ust: ustYields[i].toFixed(2),
+    spread: Math.round((sbnYields[i] - ustYields[i]) * 100), // in bps
+  }));
+
   return (
     <div className="space-y-6">
       {/* Dynamic SBN vs UST Plot */}
-      <div className="border border-neutral-900 bg-neutral-950/60 rounded-xl p-5 space-y-4">
+      <div className="glass-card rounded-xl p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-bold text-white font-mono">[🌎] SOVEREIGN_YIELD_CURVE_DETECTOR</h3>
@@ -92,7 +113,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
           </div>
         </div>
 
-        <div className="border border-neutral-900 rounded-lg bg-black/40 p-4 overflow-x-auto">
+        <div className="border border-neutral-800/50 rounded-lg bg-black/40 p-4 overflow-x-auto">
           <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 240 }}>
             {/* Grid Lines */}
             {[mn, mn + (mx - mn) * 0.25, mn + (mx - mn) * 0.5, mn + (mx - mn) * 0.75, mx].map((v, i) => (
@@ -109,33 +130,126 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
 
             {/* Bezier Curves */}
             <path d={ustBezier} fill="none" stroke="#6b7280" strokeWidth="1.5" strokeDasharray="5 3" />
-            <path d={sbnBezier} fill="none" stroke="#10ffaa" strokeWidth="2.5" className="drop-shadow-[0_0_8px_rgba(16,255,170,0.4)]" />
+            <path d={sbnBezier} fill="none" stroke={accentColor} strokeWidth="2.5" style={{ filter: `drop-shadow(0 0 8px ${accentColor}66)` }} />
 
-            {/* Nodes */}
-            {sbnPoints.map((pt, i) => (
-              <g key={`s-${i}`}>
-                <circle cx={pt.x} cy={pt.y} r="4" fill="#10ffaa" stroke="#000" strokeWidth="1.5" />
-                <text x={pt.x} y={pt.y - 8} textAnchor="middle" fontSize="8" fill="#fff" fontFamily="monospace">{sbnYields[i].toFixed(2)}%</text>
-              </g>
-            ))}
+            {/* ── SBN Glowing Nodes ── */}
+            {sbnPoints.map((pt, i) => {
+              const tenor = tenures[i];
+              const isHovered = hoveredTenor === tenor;
+
+              return (
+                <g
+                  key={`sbn-${i}`}
+                  className="cursor-pointer"
+                  onMouseEnter={() => setHoveredTenor(tenor)}
+                  onMouseLeave={() => setHoveredTenor(null)}
+                >
+                  {/* Layer 1: outer glow ring — hover only */}
+                  <circle
+                    cx={pt.x} cy={pt.y} r={10}
+                    fill="none"
+                    stroke={accentColor}
+                    strokeWidth={1}
+                    strokeOpacity={isHovered ? 0.3 : 0}
+                    style={{ transition: "stroke-opacity 200ms ease" }}
+                  />
+
+                  {/* Layer 2: middle pulse ring — animated ping */}
+                  <circle
+                    cx={pt.x} cy={pt.y} r={6}
+                    fill={accentColor}
+                    fillOpacity={0.15}
+                    className={isHovered ? "animate-node-ping" : ""}
+                  />
+
+                  {/* Layer 3: core dot */}
+                  <circle
+                    cx={pt.x} cy={pt.y} r={4}
+                    fill="#000"
+                    stroke={accentColor}
+                    strokeWidth={1.5}
+                    style={{ filter: `drop-shadow(0 0 4px ${accentColor})` }}
+                  />
+
+                  {/* Yield label */}
+                  <text
+                    x={pt.x} y={pt.y - 12}
+                    textAnchor="middle" fontSize="8" fill="#fff" fontFamily="monospace"
+                    style={{ pointerEvents: "none" }}
+                  >
+                    {sbnYields[i].toFixed(2)}%
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* UST Nodes (simple) */}
             {ustPoints.map((pt, i) => (
               <g key={`u-${i}`}>
                 <circle cx={pt.x} cy={pt.y} r="3" fill="#6b7280" stroke="#000" strokeWidth="1" />
                 <text x={pt.x} y={pt.y + 12} textAnchor="middle" fontSize="8" fill="#6b7280" fontFamily="monospace">{ustYields[i].toFixed(2)}%</text>
               </g>
             ))}
+
+            {/* ── Floating Spread Tooltip ── */}
+            {hoveredTenor && (() => {
+              const idx = tenures.indexOf(hoveredTenor);
+              const node = sbnPoints[idx];
+              const sd = spreadData[idx];
+              if (!node || !sd) return null;
+
+              return (
+                <foreignObject
+                  x={node.x - 64}
+                  y={node.y - 88}
+                  width={128}
+                  height={80}
+                  style={{ overflow: "visible", pointerEvents: "none" }}
+                >
+                  <div
+                    className="tooltip-animated"
+                    style={{
+                      background: "rgba(0,0,0,0.92)",
+                      border: "1px solid rgba(255,255,255,0.10)",
+                      borderRadius: "10px",
+                      padding: "10px 12px",
+                      fontFamily: "monospace",
+                    }}
+                  >
+                    <div style={{ fontSize: "9px", color: "#525252", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                      {hoveredTenor} TENOR
+                    </div>
+                    <div style={{ fontSize: "13px", fontWeight: "900", color: accentColor, marginTop: "2px" }}>
+                      SBN {sd.sbn}%
+                    </div>
+                    <div style={{ fontSize: "10px", color: "#3b82f6", marginTop: "1px" }}>
+                      UST {sd.ust}%
+                    </div>
+                    <div style={{
+                      marginTop: "6px",
+                      paddingTop: "6px",
+                      borderTop: "1px solid rgba(255,255,255,0.06)",
+                      fontSize: "10px",
+                      color: sd.spread > 200 ? accentColor : "#f59e0b",
+                    }}>
+                      SPREAD +{sd.spread}bps
+                    </div>
+                  </div>
+                </foreignObject>
+              );
+            })()}
           </svg>
         </div>
 
         <div className="flex items-center gap-6 text-[10px] font-mono text-neutral-500">
-          <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 rounded bg-[#10ffaa]" /> SBN Indonesia</span>
+          <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 rounded" style={{ backgroundColor: accentColor }} /> SBN Indonesia</span>
           <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 bg-neutral-500" /> US Treasury</span>
           <span className="ml-auto text-neutral-700">ACTIVE: {scenarioId.toUpperCase()}</span>
         </div>
       </div>
 
       {/* 4x4 Correlation Matrix */}
-      <div className="border border-neutral-900 bg-neutral-950/60 rounded-xl p-5 space-y-4">
+      <div className="glass-card rounded-xl p-5 space-y-4">
         <div>
           <h3 className="text-sm font-bold text-white font-mono">[📊] MACRO_CORRELATION_MATRIX</h3>
           <p className="text-[10px] text-neutral-500 mt-1 uppercase tracking-wider">Click cell for qualitative macro risk definition analysis</p>

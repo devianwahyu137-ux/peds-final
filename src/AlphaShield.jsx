@@ -6,7 +6,8 @@ import SectorRotationCards from "./components/SectorRotationCards";
 import DriftMonitor from "./components/DriftMonitor";
 import RebalancingCalculator from "./components/RebalancingCalculator";
 import { useLiveMarketData } from "./hooks/useLiveMarketData";
-import MarketNewsFeed from "./components/MarketNewsFeed";
+import MacroIndicatorCards from "./components/MacroIndicatorCards";
+import MacroNewsCards from "./components/MacroNewsCards";
 
 // Accent style configurations
 const ACCENT = {
@@ -115,21 +116,12 @@ function ScenarioButton({ scenario, isActive, onClick }) {
   );
 }
 
-function MetricCard({ label, value, sublabel, accentColor, icon }) {
-  const acc = ACCENT[accentColor];
-  return (
-    <div className={`rounded-xl border ${acc.border} p-3.5 bg-gradient-to-br ${acc.gradFrom} ${acc.gradTo} relative overflow-hidden`}>
-      <div className="text-lg mb-1">{icon}</div>
-      <div className="text-[10px] font-mono tracking-widest text-neutral-500 uppercase mb-1.5">{label}</div>
-      <div className={`text-xl font-bold font-mono tabular-nums ${acc.textBright}`} style={{ textShadow: `0 0 12px ${acc.glowStrong}` }}>
-        <AnimatedNumber value={value} />
-      </div>
-      <div className="text-[10px] text-neutral-600 mt-1 font-mono">{sublabel}</div>
-    </div>
-  );
-}
-
-function DonutChart({ accentColor, hovered, setHovered, animPct }) {
+/**
+ * DonutChart with center overlay showing Sharpe + Beta from store analytics.
+ * On segment hover: shows asset name + percentage instead.
+ * SVG segments use svg-segment CSS class for proper transform-box.
+ */
+function DonutChart({ accentColor, hovered, setHovered, animPct, analytics }) {
   const size = 260;
   const cx = size / 2; const cy = size / 2;
   const R = 96; const r = 62;
@@ -162,13 +154,27 @@ function DonutChart({ accentColor, hovered, setHovered, animPct }) {
 
   const acc = ACCENT[accentColor];
 
+  // Analytics values from store — NEVER hardcoded
+  const sharpe = analytics?.sharpeRatio ?? 0;
+  const beta = analytics?.portfolioBeta ?? 0;
+
   return (
     <div className="relative flex flex-col items-center justify-center font-mono shrink-0">
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
         <circle cx={cx} cy={cy} r={(R + r) / 2} fill="none" stroke="#ffffff08" strokeWidth={R - r} />
         {arcs.map(({ key, cfg, path, isHov, pct, lx, ly }) =>
           path ? (
-            <g key={key} style={{ transform: isHov ? "scale(1.04)" : "scale(1)", transformOrigin: `${cx}px ${cy}px`, transition: "transform 0.2s ease" }} onMouseEnter={() => setHovered(key)} onMouseLeave={() => setHovered(null)}>
+            <g
+              key={key}
+              className="svg-segment"
+              style={{
+                transform: isHov ? "scale(1.05)" : "scale(1)",
+                transformOrigin: `${cx}px ${cy}px`,
+                filter: isHov ? `brightness(1.15) drop-shadow(0 0 8px ${cfg.color})` : "none",
+              }}
+              onMouseEnter={() => setHovered(key)}
+              onMouseLeave={() => setHovered(null)}
+            >
               <path d={path} fill={cfg.color} fillOpacity={isHov ? "1" : "0.8"} stroke="#000" strokeWidth="2" />
               {pct >= 10 && (
                 <text x={lx} y={ly + 3} textAnchor="middle" fontSize="10" fontWeight="700" fill="#fff" style={{ pointerEvents: "none" }}>{Math.round(pct)}%</text>
@@ -177,15 +183,20 @@ function DonutChart({ accentColor, hovered, setHovered, animPct }) {
           ) : null
         )}
         <circle cx={cx} cy={cy} r={r - 4} fill="#050505" stroke={acc.neon} strokeWidth="1" strokeOpacity="0.3" />
+
+        {/* ── Center Overlay: Sharpe + Beta from store / Asset detail on hover ── */}
         {hovered ? (
           <>
-            <text x={cx} y={cy - 12} textAnchor="middle" fontSize="9" fill="#888" letterSpacing="1">{ASSET_CONFIG[hovered].label}</text>
-            <text x={cx} y={cy + 8} textAnchor="middle" fontSize="20" fontWeight="9xl" fill={ASSET_CONFIG[hovered].color}>{Math.round(animPct[hovered])}%</text>
+            <text x={cx} y={cy - 12} textAnchor="middle" fontSize="9" fill="#888" letterSpacing="1" style={{ transition: "opacity 150ms ease" }}>{ASSET_CONFIG[hovered].label}</text>
+            <text x={cx} y={cy + 8} textAnchor="middle" fontSize="20" fontWeight="900" fill={ASSET_CONFIG[hovered].color} style={{ transition: "opacity 150ms ease" }}>{Math.round(animPct[hovered])}%</text>
           </>
         ) : (
           <>
-            <text x={cx} y={cy - 10} textAnchor="middle" fontSize="9" fill="#555" letterSpacing="2">PORTFOLIO</text>
-            <text x={cx} y={cy + 6} textAnchor="middle" fontSize="11" fontWeight="700" fill={acc.neon}>MPT MATRIX</text>
+            <text x={cx} y={cy - 18} textAnchor="middle" fontSize="9" fill="#555" letterSpacing="2">SHARPE RATIO</text>
+            <text x={cx} y={cy - 2} textAnchor="middle" fontSize="18" fontWeight="900" fill={acc.neon}>{sharpe.toFixed(2)}</text>
+            <line x1={cx - 20} y1={cy + 6} x2={cx + 20} y2={cy + 6} stroke="#333" strokeWidth="0.5" />
+            <text x={cx} y={cy + 18} textAnchor="middle" fontSize="9" fill="#555" letterSpacing="2">PORTFOLIO β</text>
+            <text x={cx} y={cy + 32} textAnchor="middle" fontSize="14" fontWeight="900" fill={acc.neon}>{beta.toFixed(2)}</text>
           </>
         )}
       </svg>
@@ -303,7 +314,7 @@ export default function AlphaShield() {
                 
                 {/* Left Side: Scenario and Macro Indicators */}
                 <div className="xl:col-span-5 space-y-4">
-                  <div className="border border-neutral-900 bg-neutral-950/40 rounded-xl p-4">
+                  <div className="glass-card rounded-xl p-4">
                     <div className="text-[9px] text-neutral-500 uppercase tracking-widest mb-3">Scenario Core Engine</div>
                     <div className="space-y-2">
                       {Object.values(SCENARIOS).map((sc) => (
@@ -317,17 +328,8 @@ export default function AlphaShield() {
                     </div>
                   </div>
 
-                  <div className="border border-neutral-900 bg-neutral-950/40 rounded-xl p-4 grid grid-cols-2 gap-2">
-                    <MetricCard label="BI Rate" value={macroInputs.biRate.toFixed(2) + "%"} sublabel="Policy Target" accentColor={currentAccent} icon="🏦" />
-                    <MetricCard label="Inflation" value={macroInputs.inflation.toFixed(2) + "%"} sublabel="CPI YoY" accentColor={currentAccent} icon="📊" />
-                    <MetricCard label="USD/IDR" value={macroInputs.usdIdr.toFixed(3)} sublabel="Spot fx" accentColor={currentAccent} icon="💱" />
-                    <MetricCard label="SBN 10Y" value={macroInputs.sbn10y.toFixed(2) + "%"} sublabel="Gov Bond Yield" accentColor={currentAccent} icon="🏛️" />
-                    <MetricCard label="DXY Index" value={macroInputs.dxy.toFixed(2)} sublabel="US Dollar Power" accentColor={currentAccent} icon="🌐" />
-                    <div className="border border-neutral-900 bg-black/40 rounded-xl p-3 flex flex-col justify-center items-center text-center">
-                      <span className="text-[8px] text-neutral-600 uppercase">Risk Level</span>
-                      <span className="text-[10px] font-bold mt-1 uppercase" style={{ color: acc.neon }}>{currentTheme}</span>
-                    </div>
-                  </div>
+                  {/* ── GLASSMORPHIC MACRO INDICATOR CARDS ── */}
+                  <MacroIndicatorCards />
 
                   <div className="border border-red-950 bg-red-950/5 rounded-xl p-4 space-y-2">
                     <div className="text-[9px] text-red-500 uppercase tracking-widest font-bold">Black Swan Stress Testing Array</div>
@@ -340,7 +342,7 @@ export default function AlphaShield() {
 
                 {/* Right Side: Donut Chart, Asset Weights list, and MPT Analytics */}
                 <div className="xl:col-span-7 space-y-4">
-                  <div className="border border-neutral-900 bg-neutral-950/40 rounded-xl p-5 overflow-visible">
+                  <div className="glass-card rounded-xl p-5 overflow-visible">
                     <div className="text-[9px] text-neutral-500 uppercase tracking-widest mb-4">Asset Allocation Matrix</div>
                     <div className="flex flex-col md:flex-row items-center gap-8">
                       <DonutChart
@@ -348,6 +350,7 @@ export default function AlphaShield() {
                         hovered={hoveredAsset}
                         setHovered={setHoveredAsset}
                         animPct={animPct}
+                        analytics={targetAnalytics}
                       />
                       <div className="flex-1 w-full space-y-3.5">
                         <AllocationRow assetKey="stocks" pct={Math.round(targetWeights.stocks)} />
@@ -358,7 +361,7 @@ export default function AlphaShield() {
                     </div>
                   </div>
 
-                  <div className="border border-neutral-900 bg-neutral-950/40 rounded-xl p-4">
+                  <div className="glass-card rounded-xl p-4">
                     <div className="text-[9px] text-neutral-500 uppercase tracking-widest mb-3">Calculated MPT Analytics Engine</div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                       <div className="border border-neutral-900 p-2.5 rounded bg-black/20 font-mono">
@@ -380,7 +383,7 @@ export default function AlphaShield() {
                     </div>
                   </div>
 
-                  <div className="border border-neutral-900 bg-neutral-950/40 rounded-xl p-4 font-mono text-[11px] space-y-2">
+                  <div className="glass-card rounded-xl p-4 font-mono text-[11px] space-y-2">
                     <div className="text-[9px] text-neutral-500 uppercase tracking-widest mb-1">Technical Execution Ledger</div>
                     {baseScenario.ledger.map((ledgerLine, ledgerIndex) => (
                       <div key={ledgerIndex} className="border-l-2 border-neutral-800 pl-3 text-neutral-400">{ledgerLine}</div>
@@ -391,11 +394,11 @@ export default function AlphaShield() {
             </div>
           )}
 
-          {/* TAB 2: MACRO CURVES & CORRELATION */}
+          {/* TAB 2: MACRO CURVES & CORRELATION + NEWS */}
           {activeTab === "macro" && (
             <>
               <SovereignYieldCurve />
-              <MarketNewsFeed />
+              <MacroNewsCards />
             </>
           )}
 

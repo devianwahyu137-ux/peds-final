@@ -80,3 +80,90 @@ html, body, #root {
   will-change: transform;
   transform: translateZ(0); /* Force GPU acceleration */
 }
+
+/* ── ALPHASHIELD GLOBAL ADDITIONS v3.0 ── */
+
+/* Glassmorphism base */
+.glass-card {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(10, 10, 10, 0.60);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* SVG segment transform fix */
+.svg-segment {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 200ms ease, filter 200ms ease;
+  cursor: pointer;
+}
+
+.svg-segment:hover {
+  transform: scale(1.06);
+}
+
+/* Glow text animation — for recently updated numbers */
+@keyframes glow-pulse {
+  0%   { text-shadow: 0 0 4px currentColor; }
+  50%  { text-shadow: 0 0 16px currentColor, 0 0 32px currentColor; }
+  100% { text-shadow: 0 0 4px currentColor; }
+}
+
+.value-updated {
+  animation: glow-pulse 600ms ease-out;
+}
+
+/* Sentiment bar fill animation */
+@keyframes bar-expand {
+  from { width: 0%; }
+  to   { width: var(--target-width); }
+}
+
+.sentiment-bar-fill {
+  animation: bar-expand 700ms ease-out forwards;
+  box-shadow: 0 0 6px var(--bar-glow-color);
+}
+
+/* Tooltip fade-in */
+@keyframes tooltip-appear {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0px); }
+}
+
+.tooltip-animated {
+  animation: tooltip-appear 150ms ease-out forwards;
+}
+
+/* Smooth scenario transition — for glow color changes */
+.scenario-transition {
+  transition: box-shadow 800ms ease, border-color 800ms ease, background-color 600ms ease;
+}
+
+/* Fade-in generic */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 300ms ease-out;
+}
+
+/* Node pulse ping */
+@keyframes node-ping {
+  0%   { opacity: 0.6; transform: scale(1); }
+  75%  { opacity: 0; transform: scale(2); }
+  100% { opacity: 0; transform: scale(2.5); }
+}
+
+.animate-node-ping {
+  animation: node-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Scrollbar custom */
+::-webkit-scrollbar       { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #262626; border-radius: 2px; }

@@ -8,6 +8,7 @@
  */
 
 import { safeCacheRead, safeCacheWrite } from "./cache.js";
+import { validateAndNormalize } from "./schemaValidator.js";
 
 export const STATIC_FALLBACK = {
   gs10: 4.40,
@@ -91,7 +92,18 @@ export async function fetchWithFallback(cacheKey, url, transformer, ttlMs = 6000
   try {
     const response = await fetchWithTimeout(targetUrl, {}, 8000, externalSignal);
     const rawData = await response.json();
-    const transformed = transformer ? transformer(rawData) : rawData;
+
+    // Use custom transformer first, fall back to universal schema validator
+    let transformed;
+    if (transformer) {
+      transformed = transformer(rawData);
+    } else {
+      const validated = validateAndNormalize(rawData, "edge", cacheKey);
+      if (validated === null) {
+        throw new Error("SCHEMA_VALIDATION_FAILED");
+      }
+      transformed = validated;
+    }
 
     // Save to cache (non-blocking)
     safeCacheWrite(cacheKey, transformed, ttlMs);
