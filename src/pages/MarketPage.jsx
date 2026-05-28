@@ -1,6 +1,7 @@
 import { useDataStore, SCENARIOS } from "../stores/alphaShieldStore";
 import MacroIndicatorCards from "../components/MacroIndicatorCards";
 import { ACCENT, ScenarioButton } from "../components/SharedComponents";
+import { DataHealthPanel } from "../components/DataHealthPanel";
 
 /**
  * MarketPage — "KONDISI PASAR" tab.
@@ -19,6 +20,8 @@ export default function MarketPage() {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto page-enter">
+      {/* Data Health Panel — per-endpoint status */}
+      <DataHealthPanel />
       {/* Header */}
       <div className="border-b border-neutral-900 pb-4">
         <h1 className="text-lg font-black font-mono uppercase tracking-tight">

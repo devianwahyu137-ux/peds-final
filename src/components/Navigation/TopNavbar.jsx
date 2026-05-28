@@ -2,6 +2,8 @@ import { memo } from "react";
 import { useNavigationStore } from "../../stores/navigationStore";
 import { useDataStore } from "../../stores/alphaShieldStore";
 
+import { NavHealthIndicator } from "../NavHealthIndicator";
+
 const NAV_ITEMS = [
   {
     id: "home",
@@ -78,9 +80,12 @@ export const TopNavbar = memo(function TopNavbar() {
             STATUS PORTOFOLIO: {theme.label}
           </span>
         </div>
-        <span className="text-[9px] font-mono text-neutral-600 hidden sm:inline">
-          AlphaShield PEDS Core System v3.1
-        </span>
+        <div className="flex items-center gap-3">
+          <NavHealthIndicator />
+          <span className="text-[9px] font-mono text-neutral-700 hidden lg:block">
+            AlphaShield PEDS Core System v3.4
+          </span>
+        </div>
       </div>
 
       {/* Tab Navigation */}

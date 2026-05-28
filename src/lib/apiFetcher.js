@@ -9,6 +9,9 @@
 
 import { safeCacheRead, safeCacheWrite } from "./cache.js";
 import { validateAndNormalize } from "./schemaValidator.js";
+import { appendDataPoint }  from "../lib/historicalAccumulator.js";
+import { computeDelta }     from "../lib/deltaCalculator.js";
+import { scheduleRetry, cancelRetry } from "../lib/autoRetryEngine.js";
 
 export const STATIC_FALLBACK = {
   gs10: 4.40,
@@ -163,8 +166,71 @@ export async function fetchSequentialWithAbort(signal, setLiveMetric, setEndpoin
       setEndpointStatus(key, "fetching");
       const res = await fetchWithFallback(key, url, transformer, ttlMs, null, signal);
       if (signal.aborted) return;
-      setLiveMetric(key, res.data);
-      setEndpointStatus(key, res.status);
+      
+      const value = res.data;
+      const status = res.status;
+      const timestamp = Date.now();
+
+      // Wire delta computation
+      if (value != null && isFinite(value)) {
+        const deltaInfo = computeDelta(key, value, timestamp);
+        // Construct payload since res.data is just a number
+        const payload = {
+          v: value,
+          t: timestamp,
+          ok: status === "ok",
+          src: status === "ok" ? "api" : (status === "stale" ? "stale_cache" : "static_fallback"),
+          d: deltaInfo.delta,
+          _dir: deltaInfo.direction
+        };
+        setLiveMetric(key, payload);
+
+        // Accumulate to IndexedDB history (fire and forget)
+        appendDataPoint(key, value, timestamp).catch(() => {});
+
+        // Cancel any pending retry for this key since fetch succeeded
+        if (status === "ok") {
+          cancelRetry(key);
+        }
+      } else {
+        setLiveMetric(key, value);
+      }
+      
+      setEndpointStatus(key, status);
+
+      // Schedule auto-retry for failed endpoints
+      if (status === "fallback" || status === "stale" || status === "aborted") {
+        const endpointType =
+          key.startsWith('gs10') || key.startsWith('dxy') || key.startsWith('fed')
+            ? 'fred'
+            : key.startsWith('bi_') || key.startsWith('sbn')
+              ? 'edge'
+              : 'av';
+
+        scheduleRetry(
+          key,
+          endpointType,
+          () => fetchWithFallback(key, url, transformer, ttlMs, null), // Use generic fallback fetch for retry
+          (k, successResult) => {
+            const val = successResult.data;
+            const ts = Date.now();
+            if (val != null && isFinite(val)) {
+                const retryDelta = computeDelta(k, val, ts);
+                const retryPayload = {
+                  v: val, t: ts, ok: true, src: "api_retry",
+                  d: retryDelta.delta, _dir: retryDelta.direction
+                };
+                setLiveMetric(k, retryPayload);
+                appendDataPoint(k, val, ts).catch(() => {});
+                cancelRetry(k);
+            }
+            setEndpointStatus(k, 'ok');
+          },
+          (k) => {
+            console.warn(`[AutoRetry] All retries exhausted for ${k}`);
+          }
+        );
+      }
     } catch (e) {
       if (signal.aborted) return;
       console.error(`Failed fetching ${key}:`, e);

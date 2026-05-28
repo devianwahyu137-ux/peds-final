@@ -1,6 +1,4 @@
-import { create } from "zustand";
-
-export const useNavigationStore = create((set) => ({
-  activeTab: "home",
-  setTab: (tab) => set({ activeTab: tab }),
-}));
+// src/stores/navigationStore.js
+// MIGRATION SHIM — forwards to unified rootStore
+export { useNavigationStore } from './rootStore.js';
+export * from './selectors.js';

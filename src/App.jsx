@@ -3,6 +3,10 @@ import { TickerBar } from "./components/Navigation/TickerBar";
 import { TopNavbar } from "./components/Navigation/TopNavbar";
 import { useNavigationStore } from "./stores/navigationStore";
 import { useLiveMarketData } from "./hooks/useLiveMarketData";
+import { ScenarioBriefingOverlay } from "./components/ScenarioBriefingOverlay";
+import { useScenarioPulse } from "./hooks/useScenarioPulse";
+import { usePortfolioPersistence } from "./hooks/usePortfolioPersistence";
+import { SessionResumeBanner } from "./components/SessionResumeBanner";
 
 // Lazy load all pages for performance
 const HomePage      = lazy(() => import("./pages/HomePage"));
@@ -35,6 +39,19 @@ export default function App() {
   // Activate live data polling — once at root
   useLiveMarketData();
 
+  // Scenario Pulse Engine — overlay + transition state
+  const { showOverlay, isTransitioning, dismissOverlay, scenarioId } =
+    useScenarioPulse();
+
+  // IndexedDB Persistence — auto-save + session resume
+  const {
+    savedSession,
+    showBanner,
+    resumeSession,
+    dismissBanner,
+    clearSession,
+  } = usePortfolioPersistence();
+
   const ActivePage = PAGE_MAP[activeTab] || HomePage;
 
   return (
@@ -55,9 +72,26 @@ export default function App() {
         <footer className="border-t border-neutral-900 mt-12 py-6 text-center text-[9px] text-neutral-600 tracking-widest uppercase space-y-1 font-mono">
           <div>EDUCATIONAL SIMULATION MODEL ONLY | NOT INVESTMENT ADVICE.</div>
           <div>COMPLIANT WITH OJK SIMULATION FRAMEWORK STANDARDS.</div>
-          <div className="text-neutral-800 mt-2">PEDS ALPHASHIELD ENGINE v3.1 | ALL DATA IS HYPOTHETICAL FOR SIMULATION DEMONSTRATION PURPOSES.</div>
+          <div className="text-neutral-800 mt-2">PEDS ALPHASHIELD ENGINE v3.3 | ALL DATA IS HYPOTHETICAL FOR SIMULATION DEMONSTRATION PURPOSES.</div>
         </footer>
       </main>
+
+      {/* Scenario Pulse — briefing overlay on scenario change */}
+      <ScenarioBriefingOverlay
+        scenarioId={scenarioId}
+        isVisible={showOverlay}
+        onDismiss={dismissOverlay}
+      />
+
+      {/* Session Resume Banner — appears if saved portfolio state exists */}
+      {showBanner && savedSession && (
+        <SessionResumeBanner
+          savedSession={savedSession}
+          onResume={resumeSession}
+          onDismiss={dismissBanner}
+          onClear={clearSession}
+        />
+      )}
     </div>
   );
 }

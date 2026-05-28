@@ -1,9 +1,10 @@
 import SovereignYieldCurve from "../components/SovereignYieldCurve";
 import MacroNewsCards from "../components/MacroNewsCards";
+import { MonteCarloPanel } from "../components/EfficientFrontier/MonteCarloPanel";
 
 /**
  * AnalysisPage — "ANALISIS" tab.
- * Combines yield curve, correlation matrix, and news feed.
+ * Combines yield curve, correlation matrix, news feed, and Monte Carlo simulation.
  * Content preserved — only wrapper added.
  */
 export default function AnalysisPage() {
@@ -21,6 +22,9 @@ export default function AnalysisPage() {
 
       <SovereignYieldCurve />
       <MacroNewsCards />
+
+      {/* Monte Carlo Simulation Engine */}
+      <MonteCarloPanel />
     </div>
   );
 }

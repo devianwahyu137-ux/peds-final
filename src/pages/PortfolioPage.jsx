@@ -11,6 +11,7 @@ import {
   getMddInterpretation,
   getVolInterpretation,
 } from "../components/SharedComponents";
+import { PortfolioStoryPanel } from "../components/PortfolioStoryPanel";
 
 /**
  * PortfolioPage — "PORTOFOLIOMU" tab.
@@ -140,6 +141,9 @@ export default function PortfolioPage() {
               Skenario: {scenarioId}
             </span>
           </div>
+
+          {/* Portfolio Story — narrative panel */}
+          <PortfolioStoryPanel />
         </div>
       </div>
     </div>

@@ -17,6 +17,7 @@ import { fetchSequentialWithAbort } from "../lib/apiFetcher";
 import { buildLiveEngineParams } from "../lib/macroMappings";
 import { runMPTEngine } from "../lib/mptEngine";
 import { getCurrentPollingInterval } from "../lib/releaseWindows";
+import { useSupabaseRealtimeData } from "./useSupabaseRealtimeData";
 
 // ─── Transformers for data normalization ───────────────────────────────────────
 
@@ -63,6 +64,11 @@ const TRANSFORMERS = {
 // ─── Hook ──────────────────────────────────────────────────────────────────────
 
 export function useLiveMarketData() {
+  // PRIMARY: Supabase Realtime (WebSocket push)
+  // This resolves the FALLBACK badge issue permanently
+  useSupabaseRealtimeData();
+
+  // SECONDARY: Direct API polling (backup if Supabase unavailable)
   const store = useDataStore();
   const { liveData, scenarioId, targetWeights, actualWeights, setLiveMetric, setEndpointStatus, macroInputs } = store;
 

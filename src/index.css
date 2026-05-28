@@ -199,3 +199,32 @@ html, body, #root {
 .animate-ping {
   animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
+
+/* ── Scenario Pulse Animations v3.2 ── */
+@keyframes overlay-appear {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes card-rise {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+@keyframes scenario-pulse-glow {
+  0%   { opacity: 0.4; }
+  50%  { opacity: 1;   }
+  100% { opacity: 0.4; }
+}
+
+/* Counter animation for numbers */
+@keyframes num-flicker {
+  0%   { opacity: 0.3; }
+  30%  { opacity: 1;   }
+  60%  { opacity: 0.6; }
+  100% { opacity: 1;   }
+}
+
+.num-updating {
+  animation: num-flicker 600ms ease-out forwards;
+}

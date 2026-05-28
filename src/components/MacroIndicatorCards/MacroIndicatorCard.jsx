@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import MicroSparkline from "./MicroSparkline";
 import MacroTooltip from "./MacroTooltip";
+import { useDataStore } from "../../stores/alphaShieldStore";
 
 /**
  * Glow color map per scenario — smooth transitions via inline style.
@@ -94,7 +95,6 @@ function formatTimeAgo(timestamp) {
  *   unit: string,
  *   icon: string,
  *   value: number|string,
- *   delta: number,
  *   timestamp: number,
  *   status: string,
  *   scenarioId: string,
@@ -108,7 +108,6 @@ export default function MacroIndicatorCard({
   unit,
   icon,
   value,
-  delta = 0,
   timestamp,
   status,
   scenarioId,
@@ -156,9 +155,10 @@ export default function MacroIndicatorCard({
     failed: "#ef4444",
   }[status] || "#525252";
 
-  // Delta badge
-  const deltaStr = delta > 0 ? `+${delta.toFixed(2)}%` : delta < 0 ? `${delta.toFixed(2)}%` : "0.00%";
-  const deltaColor = delta > 0 ? "text-emerald-400" : delta < 0 ? "text-red-400" : "text-neutral-500";
+  // NEW — reads from dedicated deltaMap slice
+  const deltaInfo = useDataStore((s) => s.deltaMap[id]);
+  const delta     = deltaInfo?.delta     ?? 0;
+  const direction = deltaInfo?.direction ?? 'flat';
 
   return (
     <div
@@ -230,10 +230,27 @@ export default function MacroIndicatorCard({
 
         {/* Footer: Delta Badge + Last Updated */}
         <div className="flex items-center justify-between">
-          <span className={`text-[10px] font-mono font-bold ${deltaColor}`}>
-            {deltaStr}
-          </span>
-          <span className="text-[9px] font-mono text-neutral-600">
+          <div className="flex items-center gap-1.5 mt-2">
+            <span
+              className="text-[9px] font-mono font-bold tabular-nums"
+              style={{
+                color: direction === 'up'   ? '#10b981'
+                     : direction === 'down' ? '#ef4444'
+                     : '#525252',
+              }}
+            >
+              {direction === 'up'   ? '▲' : direction === 'down' ? '▼' : '—'}
+              {' '}
+              {delta !== 0
+                ? `${delta > 0 ? '+' : ''}${delta.toFixed(2)}%`
+                : 'tidak berubah'
+              }
+            </span>
+            <span className="text-[8px] font-mono text-neutral-700">
+              vs periode lalu
+            </span>
+          </div>
+          <span className="text-[9px] font-mono text-neutral-600 mt-2">
             {formatTimeAgo(timestamp)}
           </span>
         </div>
