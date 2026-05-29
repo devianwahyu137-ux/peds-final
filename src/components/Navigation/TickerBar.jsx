@@ -9,7 +9,7 @@ export const TickerBar = memo(function TickerBar() {
   const macroInputs = useRootStore((s) => s.macroInputs);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 w-full overflow-hidden bg-neutral-950/90 border-b border-neutral-900 py-2 flex items-center">
+    <div className="shrink-0 z-50 w-full overflow-hidden bg-neutral-950/90 border-b border-neutral-900 py-2 flex items-center">
       <div className="animate-ticker-ha flex gap-8 text-[9px] uppercase tracking-widest text-neutral-500 font-mono">
         <span>BBCA IDR 10.150 (+0.45%)</span>
         <span>BMRI IDR 6.850 (-0.20%)</span>

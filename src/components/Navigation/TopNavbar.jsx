@@ -53,7 +53,7 @@ export const TopNavbar = memo(function TopNavbar() {
 
   return (
     <nav
-      className="fixed top-8 left-0 right-0 z-40 border-b border-neutral-800/60"
+      className="shrink-0 w-full z-40 border-b border-neutral-800/60"
       style={{ background: "rgba(0,0,0,0.95)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}
     >
       {/* Risk Status Bar */}

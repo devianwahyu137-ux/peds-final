@@ -60,8 +60,8 @@ export function MonteCarloPanel() {
   };
 
   const handleRunSimulation = () => {
-    if (!targetAnalytics) {
-      setError('Analytics belum tersedia. Tunggu sebentar.');
+    if (!targetAnalytics || !targetAnalytics.expectedReturns || (!targetAnalytics.portfolioStdDev && !targetAnalytics.portfolioVolatility)) {
+      setError('Analytics belum tersedia (data tidak lengkap). Tunggu sebentar.');
       return;
     }
 
@@ -103,8 +103,9 @@ export function MonteCarloPanel() {
       workerRef.current = null;
     };
 
-    worker.onerror = () => {
-      setError('Terjadi kesalahan tidak terduga pada Web Worker.');
+    worker.onerror = (e) => {
+      console.error('[Web Worker Error]:', e.message || 'Unknown worker initialization error');
+      setError('Gagal memuat Worker Simulasi di production. Pastikan path import.meta.url benar.');
       setIsCalculating(false);
       worker.terminate();
       workerRef.current = null;

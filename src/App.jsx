@@ -116,25 +116,23 @@ export default function App() {
   const CurrentPage = PAGE_MAP[activeTab] ?? <HomePage />;
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+    <div className="h-screen w-screen flex flex-col bg-black text-white overflow-hidden">
 
       {/* Fixed ticker bar — z-50 */}
-      <div className="print:hidden">
+      <div className="print:hidden shrink-0">
         <TickerBar />
       </div>
 
       {/* Fixed top navbar — z-40, below ticker */}
-      <div className="print:hidden">
+      <div className="print:hidden shrink-0">
         <TopNavbar />
       </div>
 
-      {/* Main content area
-          Offset: ticker (32px) + navbar (72px) = 104px minimum
-          Extra padding for safety on different screen sizes */}
       <main
-        className="pt-[120px] px-4 md:px-6 lg:px-8
-                   pb-16 max-w-[1600px] mx-auto
-                   overflow-visible print:pt-0 print:px-0 print:pb-0 print:w-full print:block"
+        className="flex-1 overflow-y-auto overflow-x-hidden
+                   pt-4 px-4 md:px-6 lg:px-8
+                   pb-16 w-full max-w-[1600px] mx-auto
+                   print:overflow-visible print:pt-0 print:px-0 print:pb-0 print:w-full print:block"
       >
         <PageErrorBoundary key={activeTab}>
           <Suspense fallback={<PageSkeleton />}>
