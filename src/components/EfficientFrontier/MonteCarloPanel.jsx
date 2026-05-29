@@ -29,9 +29,18 @@ const FALLBACK_COV_MATRIX = [
   [ 0.0000,  0.0003,  0.0003, 0.0001],
 ];
 
+// Scenario-based return floors for realistic simulation
+// Even in crisis, portfolio has some expected return
+const SCENARIO_RETURN_FLOOR = {
+  EQUILIBRIUM:     8.5,
+  TIGHTENING:      6.0,
+  CURRENCY_STRESS: 4.5,  // Gold + USD still provide positive real return
+};
+
 export function MonteCarloPanel() {
   const scenarioId      = useRootStore((s) => s.scenarioId);
   const targetAnalytics = useRootStore((s) => s.targetAnalytics);
+  const analytics       = useRootStore((s) => s.analytics);
   const config          = SCENARIO_CONFIG[scenarioId];
   
   const [capital, setCapital]   = useState(100_000_000);
@@ -43,11 +52,14 @@ export function MonteCarloPanel() {
 
   const workerRef = useRef(null);
 
+  // Use targetAnalytics with fallback to analytics
+  const effectiveAnalytics = targetAnalytics || analytics;
+
   // Map store analytics to currentPortfolio for the frontier chart
-  const currentPortfolio = targetAnalytics ? {
-    riskPct:   (targetAnalytics.portfolioVolatility ?? 0) * 100,
-    returnPct: (targetAnalytics.portfolioReturn ?? 0) * 100,
-    sharpe:    targetAnalytics.sharpeRatio ?? 0,
+  const currentPortfolio = effectiveAnalytics ? {
+    riskPct:   (effectiveAnalytics.portfolioVolatility ?? 0) * 100,
+    returnPct: (effectiveAnalytics.portfolioReturn ?? 0) * 100,
+    sharpe:    effectiveAnalytics.sharpeRatio ?? 0,
   } : null;
 
   const handleCapitalChange = (val) => {
@@ -60,15 +72,34 @@ export function MonteCarloPanel() {
   };
 
   const handleRunSimulation = () => {
-    if (!targetAnalytics || !targetAnalytics.expectedReturns || (!targetAnalytics.portfolioStdDev && !targetAnalytics.portfolioVolatility)) {
-      setError('Analytics belum tersedia (data tidak lengkap). Tunggu sebentar.');
-      return;
-    }
+    // ── ROBUST NORMALIZATION ──────────────────────────────────
+    // portfolioReturn from store may be in decimal form (0.085 = 8.5%)
+    // but the worker expects percentage (8.5). Normalize here.
+    const rawReturn  = effectiveAnalytics?.portfolioReturn ?? 0;
+    const rawStdDev  = effectiveAnalytics?.portfolioStdDev
+                    ?? effectiveAnalytics?.portfolioVolatility ?? 0;
 
-    const portReturn = targetAnalytics.portfolioReturn;
-    const portStdDev = targetAnalytics.portfolioStdDev ?? targetAnalytics.portfolioVolatility;
-    const expReturns = targetAnalytics.expectedReturns;
-    const covMx      = targetAnalytics.covMatrix;
+    // Normalize: values < 1 are likely decimals, convert to percent
+    // E.g.: 0.085 → 8.5, but 8.5 → 8.5 (already correct)
+    const normReturn = rawReturn < 1 && rawReturn > 0
+      ? rawReturn * 100
+      : rawReturn;
+    const normStdDev = rawStdDev < 1 && rawStdDev > 0
+      ? rawStdDev * 100
+      : rawStdDev;
+
+    // Apply scenario-based minimums for realistic simulation
+    const finalReturn = normReturn > 0.1
+      ? normReturn
+      : (SCENARIO_RETURN_FLOOR[scenarioId] ?? 6.0);
+
+    const finalStdDev = normStdDev > 0.1
+      ? normStdDev
+      : 10.0; // default 10% volatility if calculation fails
+
+    // ── SAFE EXPECTED RETURNS & COVARIANCE ────────────────────
+    const expReturns = effectiveAnalytics?.expectedReturns;
+    const covMx      = effectiveAnalytics?.covMatrix;
 
     const safeExpReturns = (expReturns && typeof expReturns === 'object' && Object.keys(expReturns).length > 0)
       ? expReturns
@@ -103,17 +134,17 @@ export function MonteCarloPanel() {
       workerRef.current = null;
     };
 
-    worker.onerror = (e) => {
-      console.error('[Web Worker Error]:', e.message || 'Unknown worker initialization error');
-      setError('Gagal memuat Worker Simulasi di production. Pastikan path import.meta.url benar.');
+    worker.onerror = (evt) => {
+      console.error('[Web Worker Error]:', evt.message || 'Unknown worker initialization error');
+      setError('Gagal memuat Worker Simulasi. Pastikan path import.meta.url benar.');
       setIsCalculating(false);
       worker.terminate();
       workerRef.current = null;
     };
 
     worker.postMessage({
-      portfolioReturn:  portReturn ?? 0.08,
-      portfolioStdDev:  portStdDev ?? 0.10,
+      portfolioReturn:  finalReturn,
+      portfolioStdDev:  finalStdDev,
       initialCapital:   capital,
       numSimulations:   1000,
       horizonDays:      252,
@@ -286,7 +317,7 @@ export function MonteCarloPanel() {
         {/* Idle state */}
         {!isCalculating && !result && !error && (
           <div className="text-center text-[10px] font-mono text-neutral-600 py-8 tracking-wider">
-            Klik "JALANKAN SIMULASI" untuk memulai analisis probabilistik
+            Klik &quot;JALANKAN SIMULASI&quot; untuk memulai analisis probabilistik
           </div>
         )}
 

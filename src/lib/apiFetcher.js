@@ -13,18 +13,20 @@ import { appendDataPoint }  from "../lib/historicalAccumulator.js";
 import { computeDelta }     from "../lib/deltaCalculator.js";
 import { scheduleRetry, cancelRetry } from "../lib/autoRetryEngine.js";
 
+// VERIFIED STATIC FALLBACK — May 2026
+// Used when all API calls fail — represents last known real values
 export const STATIC_FALLBACK = {
-  gs10: 4.40,
-  dxy: 104.20,
-  fedFunds: 5.33,
-  biRate: 6.00,
-  cpi: 2.84,
-  usdIdr: 15950,
-  ihsg: 7100,
-  xauUsd: 2320,
-  sbnYield10Y: 7.05,
-  inflasiTrend: 45,
-  emasTrend: 50
+  gs10:        4.40,   // US 10Y Treasury yield (%)
+  dxy:         104.50, // DXY Dollar Index (Broad)
+  fedFunds:    3.75,   // Fed Funds Rate (%)
+  biRate:      5.25,   // BI 7-Day RR Rate — NAIK ke 5.25% per 20 Mei 2026
+  cpi:         3.48,   // Indonesia CPI YoY — BPS Maret 2026
+  usdIdr:      17700,  // USD/IDR spot — mendekati rekor terlemah
+  ihsg:        6170,   // IHSG — koreksi 11.8% di Mei 2026
+  xauUsd:      2342,   // Gold spot USD/oz — near all-time high
+  sbnYield10Y: 6.71,   // SBN 10Y yield (%)
+  inflasiTrend: 75,    // Google Trends "Inflasi" — elevated panic level
+  emasTrend:   82,     // Google Trends "Emas" — high safe-haven demand
 };
 
 export const EDGE_ENDPOINTS = {

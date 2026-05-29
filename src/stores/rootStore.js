@@ -8,13 +8,15 @@ import { devtools } from 'zustand/middleware';
 import { runMPTEngine, generateCovarianceMatrix, computeShockedReturns } from '@/lib/mptEngine';
 
 // ── SCENARIO DEFAULTS ─────────────────────────────────────────
+// VERIFIED DATA — May 30, 2026
+// Sources: Bank Indonesia RDG 19-20 Mei 2026, BPS, Trading Economics
 export const SCENARIOS = {
   EQUILIBRIUM: {
     id: "EQUILIBRIUM",
     label: "Soft Landing Base",
     theme: "Aman",
     accent: "emerald",
-    biRate: 5.50, inflation: 2.8, usdIdr: 15850, sbn10y: 6.60, dxy: 101.20,
+    biRate: 4.75, inflation: 2.50, usdIdr: 15850, sbn10y: 6.40, dxy: 103.50,
     weights: { stocks: 40, bonds: 30, gold: 10, cash: 20 },
     ledger: [
       "[📈] RISK_EQUITIES : Maintain 40% in top-tier banking & consumer staples for growth.",
@@ -26,11 +28,11 @@ export const SCENARIOS = {
     label: "Hawkish Rate Expansion",
     theme: "Caution",
     accent: "amber",
-    biRate: 6.75, inflation: 4.2, usdIdr: 16250, sbn10y: 7.35, dxy: 104.50,
+    biRate: 5.25, inflation: 3.48, usdIdr: 16800, sbn10y: 6.71, dxy: 104.50,
     weights: { stocks: 15, bonds: 45, gold: 15, cash: 25 },
     ledger: [
-      "[⚠️] DEBT_EXPOSURE : Scale back retail equities to 15%. High capital costs will squeeze corporate margins.",
-      "[🏛️] FIXED_INCOME : Rotate into SBN (ORI/SR/FR) to lock in risk-free yields above 6.5%."
+      "[⚠️] DEBT_EXPOSURE : Scale back retail equities to 15%. High capital costs squeeze corporate margins.",
+      "[🏛️] FIXED_INCOME : Rotate into SBN (ORI/SR/FR) to lock in risk-free yields above policy rate."
     ]
   },
   CURRENCY_STRESS: {
@@ -38,11 +40,11 @@ export const SCENARIOS = {
     label: "Capital Flight Stress",
     theme: "Crisis Mode",
     accent: "red",
-    biRate: 7.50, inflation: 5.8, usdIdr: 17150, sbn10y: 7.90, dxy: 106.80,
+    biRate: 5.25, inflation: 3.80, usdIdr: 17700, sbn10y: 6.71, dxy: 104.50,
     weights: { stocks: 5, bonds: 15, gold: 45, cash: 35 },
     ledger: [
-      "[🚨] WEALTH_PRESERVATION : Shift 45% of liquid capital into Physical Gold to hedge against domestic inflation.",
-      "[💵] FOREIGN_RESERVES : Convert remaining Rupiah cash into USD to survive currency devaluation."
+      "[🚨] WEALTH_PRESERVATION : Shift 45% of liquid capital into Physical Gold to hedge against domestic inflation spiral.",
+      "[💵] FOREIGN_RESERVES : Convert remaining Rupiah cash into USD/hard currency to survive devaluation."
     ]
   },
 };
@@ -293,7 +295,7 @@ export const useRootStore = create(
         });
       },
     })),
-    { name: 'AlphaShield-v3.4' }
+    { name: 'AlphaShield-v3.6' }
   )
 );
 

@@ -1,6 +1,7 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { useRootStore } from "@/stores/rootStore";
-
+import { exportTearSheet } from "@/lib/tearSheetExporter";
+import { TearSheetDocument } from "@/components/TearSheet/TearSheetDocument";
 import { NavHealthIndicator } from "../NavHealthIndicator";
 
 const NAV_ITEMS = [
@@ -48,8 +49,20 @@ export const TopNavbar = memo(function TopNavbar() {
   const scenarioId = useRootStore((s) => s.scenarioId);
   const crisisMode = useRootStore((s) => s.crisisMode);
 
+  const [isExporting, setIsExporting] = useState(false);
+
   const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : scenarioId;
   const theme = SCENARIO_THEME[effectiveScenario] || SCENARIO_THEME.EQUILIBRIUM;
+
+  const handleExport = () => {
+    exportTearSheet(
+      'tear-sheet-render',
+      'AlphaShield_TearSheet',
+      () => setIsExporting(true),
+      () => { setIsExporting(false); },
+      (err) => { setIsExporting(false); console.error('[TearSheet]', err); }
+    );
+  };
 
   return (
     <nav
@@ -86,15 +99,22 @@ export const TopNavbar = memo(function TopNavbar() {
         {/* Right: health + system label + export button */}
         <div className="flex items-center gap-3 ml-auto flex-shrink-0">
           <button
-            onClick={() => window.print()}
-            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 text-[9px] font-mono font-bold tracking-widest uppercase border border-neutral-700/60 text-neutral-400 rounded hover:text-white hover:border-neutral-500 transition-colors cursor-pointer bg-neutral-900/40"
+            onClick={handleExport}
+            disabled={isExporting}
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 text-[9px] font-mono font-bold tracking-widest uppercase border rounded transition-all duration-200 cursor-pointer"
+            style={{
+              background:  isExporting ? 'rgba(0,0,0,0.4)' : 'rgba(16,185,129,0.08)',
+              borderColor: isExporting ? '#333' : 'rgba(16,185,129,0.40)',
+              color:       isExporting ? '#525252' : '#10b981',
+              opacity:     isExporting ? 0.7 : 1,
+            }}
           >
-            <span>🖨️</span> EXPORT TEAR SHEET
+            {isExporting ? '⟳ GENERATING PDF...' : '⬇ DOWNLOAD TEAR SHEET'}
           </button>
           <NavHealthIndicator />
           <span className="text-[8px] font-mono text-neutral-700
                            tracking-widest hidden xl:block whitespace-nowrap">
-            AlphaShield PEDS Core System v3.4
+            AlphaShield PEDS Core System v3.6
           </span>
         </div>
       </div>
@@ -137,6 +157,9 @@ export const TopNavbar = memo(function TopNavbar() {
           );
         })}
       </div>
+
+      {/* Hidden TearSheetDocument for PDF capture */}
+      <TearSheetDocument />
     </nav>
   );
 });
