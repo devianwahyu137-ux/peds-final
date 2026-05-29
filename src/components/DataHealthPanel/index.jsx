@@ -71,17 +71,12 @@ function formatAge(ms) {
   return `${Math.floor(ms / 3600000)}j lalu`;
 }
 
-function formatTTL(ms) {
-  if (ms <= 0) return 'kedaluwarsa';
-  if (ms < 60000) return `${Math.floor(ms / 1000)}d`;
-  return `${Math.floor(ms / 60000)}m`;
-}
 
 export function DataHealthPanel() {
   const endpointStatus = useRootStore((s) => s.endpointStatus);
   const liveData       = useRootStore((s) => s.liveData);
   const lastSyncAt     = useRootStore((s) => s.lastSyncAt);
-  const [now, setNow]  = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
 
   // Tick every 10 seconds to update TTL displays
   useEffect(() => {

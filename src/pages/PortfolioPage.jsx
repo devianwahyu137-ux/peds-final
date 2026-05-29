@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 import {
   ACCENT,
-  ASSET_CONFIG,
   AllocationRow,
   DonutChart,
   MetricWithContext,
@@ -40,7 +39,7 @@ export default function PortfolioPage() {
   }, [targetWeights]);
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto page-enter mt-2">
+    <div className="space-y-6 w-full page-enter mt-2">
       {/* Header */}
       <div className="border-b border-neutral-900 pb-4">
         <h1 className="text-lg font-black font-mono uppercase tracking-tight">

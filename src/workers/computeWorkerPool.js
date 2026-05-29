@@ -83,7 +83,7 @@ class ComputeWorkerPool {
   // Terminate all workers — call on app unmount
   terminate() {
     Object.values(this.workers).forEach(w => {
-      try { w.terminate(); } catch {}
+      try { w.terminate(); } catch { /* ignore */ }
     });
     this.workers       = {};
     this.pendingJobs.clear();

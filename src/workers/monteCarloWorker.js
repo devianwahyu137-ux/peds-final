@@ -1,23 +1,14 @@
-// src/workers/monteCarloWorker.js
-// UPGRADED: streaming progress + cancellation awareness
-// Imports monteCarloEngine directly (ESM worker)
-
 import { runMonteCarloSimulation } from '../lib/monteCarloEngine.js';
 
-self.addEventListener('message', async (event) => {
-  const { jobId, payload } = event.data;
-
-  if (!jobId || !payload) return;
+self.onmessage = (event) => {
+  const payload = event.data;
+  if (!payload) return;
 
   try {
-    self.postMessage({ jobId, type: 'PROGRESS', progress: 5 });
-
-    // Run simulation — this is CPU-intensive
+    // Process the heavy iterative Geometric Brownian Motion (GBM) loop
     const result = runMonteCarloSimulation(payload);
 
-    self.postMessage({ jobId, type: 'PROGRESS', progress: 80 });
-
-    // Serialize Float32Arrays for structured clone
+    // Serialize Float32Arrays for structured clone compatibility
     const serialized = {
       ...result,
       bands: Object.fromEntries(
@@ -26,10 +17,9 @@ self.addEventListener('message', async (event) => {
       finalValues: Array.from(result.finalValues),
     };
 
-    self.postMessage({ jobId, type: 'PROGRESS', progress: 100 });
-    self.postMessage({ jobId, type: 'COMPLETE', result: serialized });
-
+    // postMessage the final results (median, P95, P5, loss prob, and chart data points)
+    self.postMessage({ type: 'SUCCESS', result: serialized });
   } catch (err) {
-    self.postMessage({ jobId, type: 'ERROR', error: err.message });
+    self.postMessage({ type: 'ERROR', error: err.message });
   }
-});
+};

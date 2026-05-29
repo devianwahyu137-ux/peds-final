@@ -119,18 +119,22 @@ export default function App() {
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
 
       {/* Fixed ticker bar — z-50 */}
-      <TickerBar />
+      <div className="print:hidden">
+        <TickerBar />
+      </div>
 
       {/* Fixed top navbar — z-40, below ticker */}
-      <TopNavbar />
+      <div className="print:hidden">
+        <TopNavbar />
+      </div>
 
       {/* Main content area
           Offset: ticker (32px) + navbar (72px) = 104px minimum
           Extra padding for safety on different screen sizes */}
       <main
         className="pt-[120px] px-4 md:px-6 lg:px-8
-                   pb-16 max-w-[1400px] mx-auto
-                   overflow-visible"
+                   pb-16 max-w-[1600px] mx-auto
+                   overflow-visible print:pt-0 print:px-0 print:pb-0 print:w-full print:block"
       >
         <PageErrorBoundary key={activeTab}>
           <Suspense fallback={<PageSkeleton />}>

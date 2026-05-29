@@ -5,7 +5,7 @@
 import { create } from 'zustand';
 import { immer  } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
-import { runMPTEngine } from '@/lib/mptEngine';
+import { runMPTEngine, generateCovarianceMatrix, computeShockedReturns } from '@/lib/mptEngine';
 
 // ── SCENARIO DEFAULTS ─────────────────────────────────────────
 export const SCENARIOS = {
@@ -106,6 +106,9 @@ function toDecimalWeights(w) {
 // ── SAFE MPT COMPUTE ──────────────────────────────────────────
 // Wraps runMPTEngine with error boundary — never throws to UI
 // runMPTEngine signature: (weights, scenarioId, macroInputs)
+// CRITICAL: Must also produce expectedReturns + covMatrix for Monte Carlo
+
+
 function safeRunMPT(scenarioId, macroInputs, weights) {
   try {
     if (!macroInputs || !weights || !scenarioId) return NULL_ANALYTICS;
@@ -113,6 +116,13 @@ function safeRunMPT(scenarioId, macroInputs, weights) {
     const decMacro   = toDecimalMacro(macroInputs);
     const result = runMPTEngine(decWeights, scenarioId, decMacro);
     if (!result) return NULL_ANALYTICS;
+
+    // Generate expectedReturns + covMatrix for Monte Carlo engine
+    const shockedReturns = result.shockedReturns ?? computeShockedReturns(scenarioId, decMacro);
+    const covObj = generateCovarianceMatrix();
+    const assets = ['stocks', 'bonds', 'gold', 'cash'];
+    const covMatrix = assets.map(a1 => assets.map(a2 => covObj[a1]?.[a2] ?? 0));
+
     // Merge in legacy aliases so both old and new UI patterns work
     return {
       ...result,
@@ -120,7 +130,8 @@ function safeRunMPT(scenarioId, macroInputs, weights) {
       beta:                 result.portfolioBeta ?? 0,
       portfolioStdDev:      result.portfolioVolatility ?? 0,
       estimatedMaxDrawdown: result.maxDrawdown ?? 0,
-      expectedReturns:      result.shockedReturns ?? {},
+      expectedReturns:      shockedReturns,
+      covMatrix:            covMatrix,
     };
   } catch (err) {
     console.error('[AlphaShield] MPT compute error:', err.message);
@@ -142,6 +153,7 @@ export const useRootStore = create(
       scenarioId:    'EQUILIBRIUM',
       macroInputs:   INITIAL_MACRO,
       weights:       INITIAL_WEIGHTS,
+      actualWeights: null,
 
       // ── ANALYTICS STATE ────────────────────────────────────
       analytics:     INITIAL_ANALYTICS,
@@ -179,6 +191,15 @@ export const useRootStore = create(
         const { scenarioId, macroInputs, weights } = get();
         const newAnalytics = safeRunMPT(scenarioId, macroInputs, weights);
         set((state) => { state.analytics = newAnalytics; });
+      },
+
+      setActualWeight: (asset, pct) => {
+        set((state) => {
+          if (!state.actualWeights) {
+            state.actualWeights = { ...state.weights };
+          }
+          state.actualWeights[asset] = parseFloat(pct) || 0;
+        });
       },
 
       setWeight: (asset, pct) => {

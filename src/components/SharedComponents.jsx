@@ -164,8 +164,8 @@ export function DonutChart({ accentColor, hovered, setHovered, animPct, analytic
   const beta = analytics?.portfolioBeta ?? 0;
 
   return (
-    <div className="relative flex flex-col items-center justify-center font-mono shrink-0">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
+    <div className="relative flex flex-col items-center justify-center font-mono w-full max-w-[260px] mx-auto">
+      <svg viewBox={`0 0 ${size} ${size}`} className="w-full h-auto overflow-visible">
         <circle cx={cx} cy={cy} r={(R + r) / 2} fill="none" stroke="#ffffff08" strokeWidth={R - r} />
         {arcs.map(({ key, cfg, path, isHov, pct, lx, ly }) =>
           path ? (

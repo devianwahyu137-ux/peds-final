@@ -69,9 +69,8 @@ export function useLiveMarketData() {
   useSupabaseRealtimeData();
 
   // SECONDARY: Direct API polling (backup if Supabase unavailable)
-  const { liveData, setLiveMetric, setEndpointStatus } = useRootStore();
-  const { scenarioId, weights, actualWeights, macroInputs, targetWeights: oldTargetWeights } = useRootStore();
-  const targetWeights = oldTargetWeights || weights || {};
+  const setLiveMetric     = useRootStore((s) => s.setLiveMetric);
+  const setEndpointStatus = useRootStore((s) => s.setEndpointStatus);
 
   // ── Mutable refs for stable lifecycle management ──
   const timeoutRef = useRef(null);
@@ -94,10 +93,9 @@ export function useLiveMarketData() {
    * Core recursive self-scheduling controller.
    * Replaces all setInterval loops with dynamic setTimeout chains.
    */
-  const scheduleNextCycle = useCallback(() => {
+  const scheduleNextCycleCb = useCallback(function scheduleNextCycle() {
     if (!isMountedRef.current) return;
 
-    // Abort any in-flight requests from previous cycle
     if (abortRef.current) {
       abortRef.current.abort();
     }
@@ -105,20 +103,18 @@ export function useLiveMarketData() {
     const controller = new AbortController();
     abortRef.current = controller;
 
-    // Execute the current fetch frame
     const runCycle = async () => {
       if (!isMountedRef.current || controller.signal.aborted) return;
 
       try {
         await fetchFnRef.current?.(controller.signal);
       } catch {
-        // Swallow — individual fetch errors are handled inside fetchSequentialWithAbort
+        // Swallow
       }
 
-      // Schedule next cycle with dynamic interval from release windows
       if (isMountedRef.current && !controller.signal.aborted) {
         const { interval } = getCurrentPollingInterval();
-        timeoutRef.current = setTimeout(scheduleNextCycle, interval);
+        timeoutRef.current = setTimeout(() => scheduleNextCycle(), interval);
       }
     };
 
@@ -133,7 +129,7 @@ export function useLiveMarketData() {
     isMountedRef.current = true;
 
     // Kick off the initial fetch cycle
-    scheduleNextCycle();
+    scheduleNextCycleCb();
 
     return () => {
       isMountedRef.current = false;
@@ -150,7 +146,7 @@ export function useLiveMarketData() {
         abortRef.current = null;
       }
     };
-  }, [scheduleNextCycle]);
+  }, [scheduleNextCycleCb]);
 
   /**
    * Page Visibility API synchronization.
@@ -174,7 +170,7 @@ export function useLiveMarketData() {
       } else {
         // Tab is active again — immediately invoke fetch and re-register cycle
         if (isMountedRef.current) {
-          scheduleNextCycle();
+          scheduleNextCycleCb();
         }
       }
     };
@@ -184,54 +180,63 @@ export function useLiveMarketData() {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [scheduleNextCycle]);
+  }, [scheduleNextCycleCb]);
 
   // ── Automated MPT analytics recalculation when liveData streams arrive ──────
+  const liveData     = useRootStore((s) => s.liveData);
+  const scenarioId   = useRootStore((s) => s.scenarioId);
+  const macroInputs  = useRootStore((s) => s.macroInputs);
+  const weights      = useRootStore((s) => s.weights);
+
   useEffect(() => {
-    if (!liveData.dxy || !liveData.biRate) return;
+    if (!liveData.dxy && !liveData.biRate && !liveData.bi_macro) return;
 
-    const liveParams = buildLiveEngineParams(liveData);
+    try {
+      const liveParams = buildLiveEngineParams(liveData);
 
-    const decMacro = {
-      biRate: (liveData.biRate || macroInputs.biRate || 0) / 100,
-      inflation: (liveData.cpi || liveData.inflation || macroInputs.inflation || 0) / 100,
-      usdIdr: liveData.usdIdr ? (liveData.usdIdr / 1000) : (macroInputs.usdIdr || 0),
-      sbn10y: (liveData.sbnYield10Y || macroInputs.sbn10y || 0) / 100,
-      dxy: liveData.dxy || macroInputs.dxy || 0,
+      const biRateVal = liveData?.bi_macro?.biRate ?? liveData?.biRate?.v ?? macroInputs.biRate ?? 0;
+      const cpiVal = liveData?.bi_macro?.cpi ?? liveData?.cpi?.v ?? macroInputs.inflation ?? 0;
+      const usdIdrVal = liveData?.usdIdr?.v ?? (typeof liveData?.usdIdr === 'number' ? liveData.usdIdr : null) ?? macroInputs.usdIdr ?? 0;
+      const sbn10yVal = liveData?.sbn_yields?.y10 ?? macroInputs.sbn10y ?? 0;
+      const dxyVal = liveData?.dxy?.v ?? (typeof liveData?.dxy === 'number' ? liveData.dxy : null) ?? macroInputs.dxy ?? 0;
 
-      // Inject DXY live multipliers
-      dxyEquityAdj: liveParams.dxyEquityAdj,
-      dxyBondsAdj: liveParams.dxyBondsAdj,
-      dxyGoldAdj: liveParams.dxyGoldAdj,
-      dxyCashAdj: liveParams.dxyCashAdj,
-    };
+      const decMacro = {
+        biRate: biRateVal / 100,
+        inflation: cpiVal / 100,
+        usdIdr: usdIdrVal > 1000 ? usdIdrVal / 1000 : usdIdrVal,
+        sbn10y: sbn10yVal / 100,
+        dxy: dxyVal,
+        dxyEquityAdj: liveParams.dxyEquityAdj,
+        dxyBondsAdj: liveParams.dxyBondsAdj,
+        dxyGoldAdj: liveParams.dxyGoldAdj,
+        dxyCashAdj: liveParams.dxyCashAdj,
+      };
 
-    const decWeightsTarget = {
-      stocks: (targetWeights.stocks || 0) / 100,
-      bonds: (targetWeights.bonds || 0) / 100,
-      gold: (targetWeights.gold || 0) / 100,
-      cash: (targetWeights.cash || 0) / 100
-    };
+      const decWeights = {
+        stocks: (weights?.stocks || 0) / 100,
+        bonds: (weights?.bonds || 0) / 100,
+        gold: (weights?.gold || 0) / 100,
+        cash: (weights?.cash || 0) / 100
+      };
 
-    const decWeightsActual = {
-      stocks: (actualWeights.stocks || 0) / 100,
-      bonds: (actualWeights.bonds || 0) / 100,
-      gold: (actualWeights.gold || 0) / 100,
-      cash: (actualWeights.cash || 0) / 100
-    };
+      const analytics = runMPTEngine(decWeights, scenarioId, decMacro);
 
-    const targetAnalytics = runMPTEngine(decWeightsTarget, scenarioId, decMacro);
-    const actualAnalytics = runMPTEngine(decWeightsActual, scenarioId, decMacro);
-
-    useAlphaShieldStore.setState({
-      targetAnalytics,
-      actualAnalytics,
-      analytics: {
-        target: targetAnalytics,
-        actual: actualAnalytics
+      if (analytics) {
+        useRootStore.setState({
+          analytics: {
+            ...analytics,
+            sharpe: analytics.sharpeRatio ?? 0,
+            beta: analytics.portfolioBeta ?? 0,
+            portfolioStdDev: analytics.portfolioVolatility ?? 0,
+            estimatedMaxDrawdown: analytics.maxDrawdown ?? 0,
+            expectedReturns: analytics.shockedReturns ?? {},
+          }
+        });
       }
-    });
-  }, [liveData, scenarioId, targetWeights, actualWeights, macroInputs]);
+    } catch (err) {
+      console.error('[AlphaShield] Live MPT recalc error:', err.message);
+    }
+  }, [liveData, scenarioId, weights, macroInputs]);
 
   return { liveData };
 }

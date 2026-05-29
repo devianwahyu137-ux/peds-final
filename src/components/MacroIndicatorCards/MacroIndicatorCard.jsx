@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import MicroSparkline from "./MicroSparkline";
 import MacroTooltip from "./MacroTooltip";
 import { useRootStore } from "@/stores/rootStore";
@@ -28,8 +28,8 @@ function useCountUp(targetValue, duration = 800) {
   useEffect(() => {
     if (prevRef.current === targetValue) return;
 
-    const startVal = parseFloat(String(prevRef.current).replace(/[^0-9.\-]/g, ""));
-    const endVal = parseFloat(String(targetValue).replace(/[^0-9.\-]/g, ""));
+    const startVal = parseFloat(String(prevRef.current).replace(/[^0-9.-]/g, ""));
+    const endVal = parseFloat(String(targetValue).replace(/[^0-9.-]/g, ""));
 
     if (isNaN(startVal) || isNaN(endVal)) {
       setDisplay(targetValue);
@@ -41,7 +41,7 @@ function useCountUp(targetValue, duration = 800) {
     const strTarget = String(targetValue);
     const decimals = (strTarget.split(".")[1] || "").replace(/[^0-9]/g, "").length;
     // Extract suffix (%, pts, IDR, etc.)
-    const suffix = strTarget.replace(/[0-9.,\-\s]/g, "").trim();
+    const suffix = strTarget.replace(/[0-9.,-\s]/g, "").trim();
 
     const startTime = performance.now();
 

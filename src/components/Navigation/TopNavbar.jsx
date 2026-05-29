@@ -1,6 +1,5 @@
 import { memo } from "react";
 import { useRootStore } from "@/stores/rootStore";
-import { SCENARIOS } from "@/stores/rootStore";
 
 import { NavHealthIndicator } from "../NavHealthIndicator";
 
@@ -84,8 +83,14 @@ export const TopNavbar = memo(function TopNavbar() {
           </span>
         </div>
 
-        {/* Right: health + system label */}
+        {/* Right: health + system label + export button */}
         <div className="flex items-center gap-3 ml-auto flex-shrink-0">
+          <button
+            onClick={() => window.print()}
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 text-[9px] font-mono font-bold tracking-widest uppercase border border-neutral-700/60 text-neutral-400 rounded hover:text-white hover:border-neutral-500 transition-colors cursor-pointer bg-neutral-900/40"
+          >
+            <span>🖨️</span> EXPORT TEAR SHEET
+          </button>
           <NavHealthIndicator />
           <span className="text-[8px] font-mono text-neutral-700
                            tracking-widest hidden xl:block whitespace-nowrap">

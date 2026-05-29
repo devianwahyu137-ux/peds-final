@@ -10,7 +10,7 @@ import RebalancingCalculator from "../components/RebalancingCalculator";
  */
 export default function StrategyPage() {
   return (
-    <div className="space-y-6 max-w-6xl mx-auto page-enter">
+    <div className="space-y-6 w-full page-enter">
       {/* Header */}
       <div className="border-b border-neutral-900 pb-4">
         <h1 className="text-lg font-black font-mono uppercase tracking-tight">

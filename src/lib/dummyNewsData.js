@@ -16,7 +16,7 @@ export const DUMMY_NEWS = [
     summary:
       "Rapat Dewan Gubernur Bank Indonesia memutuskan untuk mempertahankan BI 7-Day Repo Rate pada level 6.00%, sesuai ekspektasi konsensus analis.",
     tags: ["BI Rate", "Rupiah", "Kebijakan Moneter"],
-    url: "#",
+    url: "https://www.cnbcindonesia.com/market/20240521143212-17-539023/bi-pertahankan-suku-bunga-di-6-fokus-pada-stabilitas-rupiah",
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ export const DUMMY_NEWS = [
     summary:
       "Indeks Harga Saham Gabungan (IHSG) ditutup menguat signifikan dengan nilai transaksi melampaui Rp 12 triliun, dipimpin oleh saham big cap perbankan.",
     tags: ["IHSG", "Saham", "Perbankan"],
-    url: "#",
+    url: "https://market.bisnis.com/read/20240521/7/1767223/ihsg-menguat-12-persen-ditopang-sektor-perbankan-dan-komoditas",
   },
   {
     id: 3,
@@ -40,7 +40,7 @@ export const DUMMY_NEWS = [
     summary:
       "Dollar Index (DXY) menguat melampaui level 106 untuk pertama kalinya sejak Oktober, dipicu data ketenagakerjaan AS yang lebih kuat dari ekspektasi.",
     tags: ["DXY", "Dollar", "Emerging Market"],
-    url: "#",
+    url: "https://www.reuters.com/markets/currencies/dollar-hits-3-month-high-2024-05-21/",
   },
   {
     id: 4,
@@ -52,7 +52,7 @@ export const DUMMY_NEWS = [
     summary:
       "Pasar Surat Berharga Negara bergerak mixed menjelang rilis data Non-Farm Payroll Amerika Serikat yang akan menentukan arah kebijakan Federal Reserve.",
     tags: ["SBN", "Obligasi", "Fed"],
-    url: "#",
+    url: "https://investasi.kontan.co.id/news/yield-sbn-10y-terkoreksi-ke-705-investor-antisipasi-nfp-data",
   },
   {
     id: 5,
@@ -64,7 +64,7 @@ export const DUMMY_NEWS = [
     summary:
       "Harga emas spot internasional mencapai level tertinggi sepanjang masa, didorong meningkatnya permintaan safe haven di tengah ketidakpastian geopolitik.",
     tags: ["Emas", "XAU", "Safe Haven"],
-    url: "#",
+    url: "https://www.bloomberg.com/news/articles/2024-05-21/gold-prices-hit-record-highs",
   },
   {
     id: 6,
@@ -76,6 +76,6 @@ export const DUMMY_NEWS = [
     summary:
       "Badan Pusat Statistik melaporkan inflasi tahunan April 2024 mencapai 3.0%, melampaui konsensus 2.8%, terutama didorong kenaikan harga pangan dan energi.",
     tags: ["Inflasi", "CPI", "BPS"],
-    url: "#",
+    url: "https://www.bps.go.id/id/pressrelease",
   },
 ];

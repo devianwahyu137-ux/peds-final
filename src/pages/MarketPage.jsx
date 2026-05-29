@@ -2,11 +2,12 @@ import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 import MacroIndicatorCards from "../components/MacroIndicatorCards";
 import { ACCENT, ScenarioButton } from "../components/SharedComponents";
 import { DataHealthPanel } from "../components/DataHealthPanel";
+import { MacroInterpretationPanel } from "../components/MacroInterpretationPanel";
+import { MacroReleaseCalendar } from "../components/MacroReleaseCalendar";
 
 /**
  * MarketPage — "KONDISI PASAR" tab.
- * Content preserved from original Macro Intelligence section.
- * Adds scenario selector + MacroIndicatorCards.
+ * Scenario selector + MacroIndicatorCards + Interpretation + Calendar.
  */
 export default function MarketPage() {
   const scenarioId = useRootStore((s) => s.scenarioId);
@@ -19,16 +20,17 @@ export default function MarketPage() {
   const acc = ACCENT[currentAccent];
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto page-enter">
+    <div className="space-y-6 w-full page-enter">
       {/* Data Health Panel — per-endpoint status */}
       <DataHealthPanel />
+
       {/* Header */}
       <div className="border-b border-neutral-900 pb-4">
         <h1 className="text-lg font-black font-mono uppercase tracking-tight">
           Kondisi Pasar <span style={{ color: acc.neon }}>// Makroekonomi</span>
         </h1>
         <p className="text-[10px] font-mono text-neutral-500 mt-1 uppercase tracking-wider">
-          Indikator Ekonomi Indonesia & Global — Simulasi Data Live
+          Indikator Ekonomi Indonesia &amp; Global — Simulasi Data Live
         </p>
       </div>
 
@@ -86,6 +88,12 @@ export default function MarketPage() {
           <MacroIndicatorCards />
         </div>
       </div>
+
+      {/* Macro Interpretation Panel — below indicators */}
+      <MacroInterpretationPanel />
+
+      {/* Release Calendar */}
+      <MacroReleaseCalendar />
     </div>
   );
 }

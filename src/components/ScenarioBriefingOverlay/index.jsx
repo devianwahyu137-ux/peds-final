@@ -2,7 +2,7 @@
 // Full-screen overlay that appears for 3.5s on scenario change
 // Auto-dismisses, also has manual close button
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
 
 const OVERLAY_DURATION = 3500; // ms
@@ -13,7 +13,6 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
 
   useEffect(() => {
     if (!isVisible) {
-      setProgress(0);
       return;
     }
 

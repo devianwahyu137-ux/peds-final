@@ -18,9 +18,9 @@ const ASSET_COLORS = {
 };
 
 const RebalancingCalculator = React.memo(function RebalancingCalculator() {
-  const { weights, actualWeights, targetWeights, setEquityWeight } = useRootStore();
-  const currentTargetWeights = targetWeights || weights || {};
-  const currentActualWeights = actualWeights || currentTargetWeights;
+  const { weights, actualWeights, targetWeights, setActualWeight } = useRootStore();
+  const currentTargetWeights = useMemo(() => targetWeights || weights || {}, [targetWeights, weights]);
+  const currentActualWeights = useMemo(() => actualWeights || currentTargetWeights, [actualWeights, currentTargetWeights]);
   
   const [capitalRaw, setCapitalRaw] = useState("100000000");
 
@@ -61,6 +61,18 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
     return rebalanceData.reduce((sum, r) => sum + r.fee, 0);
   }, [rebalanceData]);
 
+  const activeOrders = useMemo(() => {
+    return rebalanceData.filter(r => r.action !== "HOLD");
+  }, [rebalanceData]);
+
+  const handleCopyOrders = () => {
+    if (activeOrders.length === 0) return;
+    const text = activeOrders.map(r => 
+      `${r.action} ${ASSET_LABELS[r.asset]}: ${formatIDR(Math.abs(r.deltaIDR))}`
+    ).join('\n');
+    navigator.clipboard.writeText(text);
+  };
+
   const formatIDR = (n) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -98,7 +110,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
             min="0"
             max="100"
             value={Math.round(currentActualWeights.stocks || 0)}
-            onChange={(e) => setEquityWeight(parseFloat(e.target.value) || 0)}
+            onChange={(e) => setActualWeight("stocks", parseFloat(e.target.value) || 0)}
             className="w-full h-1.5 bg-neutral-900 rounded-lg appearance-none cursor-pointer accent-emerald-400"
           />
         </div>
@@ -161,6 +173,49 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
           <span className="font-bold text-emerald-400">NET CAPITAL PLAN MATCHED</span>
         </div>
       </div>
+
+      {/* ── TRADE ORDER BLOTTER ── */}
+      <div className="border-t border-neutral-900/60 pt-4">
+        <div className="flex justify-between items-center mb-3">
+          <h3 className="text-xs font-bold text-neutral-400 tracking-wider">[&gt;] EXECUTION TICKET</h3>
+          {activeOrders.length > 0 && (
+            <button
+              onClick={handleCopyOrders}
+              className="text-[9px] px-2.5 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-400 border border-neutral-800 rounded transition-colors"
+            >
+              [ COPY ORDERS ]
+            </button>
+          )}
+        </div>
+        
+        {activeOrders.length === 0 ? (
+          <div className="text-[10px] text-neutral-600 bg-black/40 border border-neutral-900/50 rounded-lg p-4 text-center">
+            Portofolio seimbang. Tidak ada aksi rebalancing yang diperlukan.
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {activeOrders.map((order) => {
+              const isBuy = order.action === "BUY";
+              return (
+                <div key={order.asset} className="flex justify-between items-center bg-black/40 border border-neutral-900/50 rounded-lg p-3">
+                  <div className="flex items-center gap-3">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                      isBuy ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"
+                    }`}>
+                      {order.action}
+                    </span>
+                    <span className="text-xs text-neutral-300 font-bold">{ASSET_LABELS[order.asset]}</span>
+                  </div>
+                  <span className={`text-xs font-bold tabular-nums ${isBuy ? "text-emerald-400" : "text-red-400"}`}>
+                    {formatIDR(Math.abs(order.deltaIDR))}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
     </div>
   );
 });

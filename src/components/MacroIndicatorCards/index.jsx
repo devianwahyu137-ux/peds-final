@@ -1,4 +1,3 @@
-import React from "react";
 import { useRootStore } from "@/stores/rootStore";
 import { SPARKLINE_PRESETS } from "../../lib/historicalPresets";
 import MacroIndicatorCard from "./MacroIndicatorCard";

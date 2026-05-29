@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { fetchWithFallback } from "../../lib/apiFetcher";
 import { NEWS_ENDPOINT, TRANSFORMERS } from "../../lib/dataSources";
 import { DUMMY_NEWS } from "../../lib/dummyNewsData";
@@ -48,10 +48,15 @@ export default function MacroNewsCards() {
 
   useEffect(() => {
     let active = true;
+    let isFirstLoad = true;
+    let intervalId;
 
     async function loadNews() {
       try {
-        setStatus("loading");
+        if (isFirstLoad) {
+          setStatus("loading");
+          isFirstLoad = false;
+        }
         const res = await fetchWithFallback(
           "marketNews",
           NEWS_ENDPOINT,
@@ -66,20 +71,30 @@ export default function MacroNewsCards() {
           setNews(transformAvNews(res.data));
           setStatus(res.status);
         } else {
-          // Use dummy data as fallback
-          setNews(DUMMY_NEWS);
+          // Gracefully rotate mock data on fetch failure
+          setNews([...DUMMY_NEWS].sort(() => Math.random() - 0.5));
           setStatus("simulation");
         }
       } catch {
         if (active) {
-          setNews(DUMMY_NEWS);
+          // Gracefully rotate mock data on error
+          setNews([...DUMMY_NEWS].sort(() => Math.random() - 0.5));
           setStatus("simulation");
         }
       }
     }
 
     loadNews();
-    return () => { active = false; };
+    
+    // Polling mechanism every 60 seconds
+    intervalId = setInterval(() => {
+      loadNews();
+    }, 60000);
+
+    return () => { 
+      active = false;
+      clearInterval(intervalId);
+    };
   }, []);
 
   return (

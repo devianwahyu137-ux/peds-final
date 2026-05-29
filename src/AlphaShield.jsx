@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 import MasterDetailLayout from "./components/MasterDetailLayout";
 import SovereignYieldCurve from "./components/SovereignYieldCurve";
@@ -38,40 +38,6 @@ const ASSET_CONFIG = {
   cash: { label: "LIQUIDITY", sublabel: "Cash / USD", icon: "💵", color: "#34d399", colorDim: "rgba(52,211,153,0.15)" }
 };
 
-function AnimatedNumber({ value, suffix = "", prefix = "" }) {
-  const [display, setDisplay] = useState(value);
-  const prev = useRef(value);
-
-  useEffect(() => {
-    if (prev.current === value) return;
-    const start = Date.now();
-    const duration = 600;
-    const startVal = parseFloat(String(prev.current).replace(/[^0-9.]/g, ""));
-    const endVal = parseFloat(String(value).replace(/[^0-9.]/g, ""));
-    if (isNaN(startVal) || isNaN(endVal)) {
-      setDisplay(value);
-      prev.current = value;
-      return;
-    }
-
-    const raf = () => {
-      const elapsed = Date.now() - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      const current = startVal + (endVal - startVal) * ease;
-      const decimals = (String(value).split(".")[1] || "").length;
-      setDisplay(current.toFixed(decimals));
-      if (progress < 1) requestAnimationFrame(raf);
-      else {
-        setDisplay(value);
-        prev.current = value;
-      }
-    };
-    requestAnimationFrame(raf);
-  }, [value]);
-
-  return <span>{prefix}{display}{suffix}</span>;
-}
 
 function AllocationRow({ assetKey, pct }) {
   const cfg = ASSET_CONFIG[assetKey];
@@ -233,7 +199,7 @@ export default function AlphaShield() {
 
   const baseScenario = SCENARIOS[scenarioId] || SCENARIOS.EQUILIBRIUM;
   const currentAccent = crisisMode ? "red" : baseScenario.accent;
-  const currentTheme = crisisMode ? "Crisis Mode" : baseScenario.theme;
+  
   const acc = ACCENT[currentAccent];
 
   // Donut chart animations

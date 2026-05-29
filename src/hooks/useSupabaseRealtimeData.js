@@ -20,7 +20,6 @@ function transformSupabaseRow(row) {
 
 export function useSupabaseRealtimeData() {
   const setLiveMetric     = useRootStore((s) => s.setLiveMetric);
-  const setEndpointStatus = useRootStore((s) => s.setEndpointStatus);
   const channelRef        = useRef(null);
   const isMountedRef      = useRef(true);
 
@@ -133,5 +132,5 @@ export function useSupabaseRealtimeData() {
         supabase.removeChannel(channelRef.current);
       }
     };
-  }, []);
+  }, [hydrateFromSupabase, subscribeToRealtime]);
 }

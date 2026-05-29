@@ -8,7 +8,6 @@ import {
   persistSessionState,
   loadSessionState,
   clearSessionState,
-  hasSavedSession,
 } from '../lib/persistenceEngine';
 
 const AUTO_SAVE_INTERVAL = 30_000; // Save every 30 seconds

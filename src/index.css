@@ -228,3 +228,19 @@ html, body, #root {
 .num-updating {
   animation: num-flicker 600ms ease-out forwards;
 }
+
+/* ── TEAR SHEET / PRINT CONFIGURATION ── */
+@media print {
+  html, body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: #050505 !important; /* Force true black on PDF */
+    color: #ffffff !important;
+  }
+
+  /* Force background colors and borders to render on PDF */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

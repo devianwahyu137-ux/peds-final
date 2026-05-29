@@ -3,7 +3,7 @@
 // Stores: scenarioId, custom weights, calculator inputs, last sync
 // Non-blocking: all operations are async, never block UI
 
-import { get, set, del, keys } from 'idb-keyval';
+import { get, set, del } from 'idb-keyval';
 
 const DB_PREFIX    = 'alphashield_v33_';
 const SCHEMA_VER   = '3.3.0';

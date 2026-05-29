@@ -45,7 +45,7 @@ export async function appendDataPoint(key, value, timestamp = Date.now()) {
     const trimmed = filtered.slice(-MAX_HISTORY_POINTS);
     await set(storeKey, trimmed);
   } catch {
-    // Silent fail — IndexedDB unavailable (private mode, quota)
+    // ignore
   }
 }
 
@@ -106,5 +106,7 @@ export async function clearAllHistory() {
     await Promise.all(
       METRIC_KEYS.map(k => del(ACCUMULATOR_PREFIX + k))
     );
-  } catch {}
+  } catch {
+    // ignore
+  }
 }

@@ -1,4 +1,3 @@
-import React from "react";
 
 /**
  * MicroSparkline — Pure SVG sparkline component

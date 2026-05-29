@@ -22,7 +22,7 @@ export function NavHealthIndicator() {
   );
 
   const syncAgo = lastSyncAt
-    ? Math.floor((Date.now() - lastSyncAt) / 1000)
+    ? Math.floor((new Date().getTime() - lastSyncAt) / 1000)
     : null;
 
   const syncLabel = syncAgo === null

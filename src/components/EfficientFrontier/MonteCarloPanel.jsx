@@ -1,11 +1,9 @@
 // src/components/EfficientFrontier/MonteCarloPanel.jsx
-// Container panel integrating simulation hook + frontier chart + summary stats
+// Container panel integrating simulation worker + frontier chart + summary stats
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRootStore } from "@/stores/rootStore";
-import { useMonteCarloSimulation } from '../../hooks/useMonteCarloSimulation';
 import { EfficientFrontierChart } from './EfficientFrontierChart';
-import { SimulationProgressBar } from './SimulationProgressBar.jsx';
 import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
 
 const CAPITAL_PRESETS = [
@@ -22,18 +20,30 @@ function formatIDR(n) {
   }).format(n);
 }
 
+// Fallback matrices if store is still syncing
+const FALLBACK_EXPECTED_RETURNS = { stocks: 0.12, bonds: 0.065, gold: 0.08, cash: 0.045 };
+const FALLBACK_COV_MATRIX = [
+  [ 0.0324, -0.0162, -0.0135, 0.0000],
+  [-0.0162,  0.0036,  0.0090, 0.0003],
+  [-0.0135,  0.0090,  0.0225, 0.0003],
+  [ 0.0000,  0.0003,  0.0003, 0.0001],
+];
+
 export function MonteCarloPanel() {
   const scenarioId      = useRootStore((s) => s.scenarioId);
   const targetAnalytics = useRootStore((s) => s.targetAnalytics);
   const config          = SCENARIO_CONFIG[scenarioId];
+  
   const [capital, setCapital]   = useState(100_000_000);
   const [inputVal, setInputVal] = useState('100000000');
 
-  const { result, status, progress, error, runSimulation, setCapital: setHookCapital } =
-    useMonteCarloSimulation(capital);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+
+  const workerRef = useRef(null);
 
   // Map store analytics to currentPortfolio for the frontier chart
-  // Store values are decimals — convert to percentages for display
   const currentPortfolio = targetAnalytics ? {
     riskPct:   (targetAnalytics.portfolioVolatility ?? 0) * 100,
     returnPct: (targetAnalytics.portfolioReturn ?? 0) * 100,
@@ -48,6 +58,77 @@ export function MonteCarloPanel() {
       setCapital(num);
     }
   };
+
+  const handleRunSimulation = () => {
+    if (!targetAnalytics) {
+      setError('Analytics belum tersedia. Tunggu sebentar.');
+      return;
+    }
+
+    const portReturn = targetAnalytics.portfolioReturn;
+    const portStdDev = targetAnalytics.portfolioStdDev ?? targetAnalytics.portfolioVolatility;
+    const expReturns = targetAnalytics.expectedReturns;
+    const covMx      = targetAnalytics.covMatrix;
+
+    const safeExpReturns = (expReturns && typeof expReturns === 'object' && Object.keys(expReturns).length > 0)
+      ? expReturns
+      : FALLBACK_EXPECTED_RETURNS;
+
+    const safeCovMatrix = (Array.isArray(covMx) && covMx.length === 4)
+      ? covMx
+      : FALLBACK_COV_MATRIX;
+
+    setIsCalculating(true);
+    setError(null);
+    setResult(null);
+
+    // Terminate existing worker if user clicks again while running
+    if (workerRef.current) {
+      workerRef.current.terminate();
+    }
+
+    // Instantiate Web Worker directly
+    const worker = new Worker(new URL('../../workers/monteCarloWorker.js', import.meta.url), { type: 'module' });
+    workerRef.current = worker;
+
+    worker.onmessage = (e) => {
+      const { type, result: wResult, error: wError } = e.data;
+      if (type === 'SUCCESS') {
+        setResult(wResult);
+      } else if (type === 'ERROR') {
+        setError(wError);
+      }
+      setIsCalculating(false);
+      worker.terminate();
+      workerRef.current = null;
+    };
+
+    worker.onerror = () => {
+      setError('Terjadi kesalahan tidak terduga pada Web Worker.');
+      setIsCalculating(false);
+      worker.terminate();
+      workerRef.current = null;
+    };
+
+    worker.postMessage({
+      portfolioReturn:  portReturn ?? 0.08,
+      portfolioStdDev:  portStdDev ?? 0.10,
+      initialCapital:   capital,
+      numSimulations:   1000,
+      horizonDays:      252,
+      expectedReturns:  safeExpReturns,
+      covMatrix:        safeCovMatrix,
+    });
+  };
+
+  // Cleanup worker on unmount
+  useEffect(() => {
+    return () => {
+      if (workerRef.current) {
+        workerRef.current.terminate();
+      }
+    };
+  }, []);
 
   return (
     <div className="glass-card rounded-xl overflow-hidden">
@@ -66,23 +147,23 @@ export function MonteCarloPanel() {
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
-          {status === 'running' && (
-            <span className="text-[9px] font-mono text-amber-400 animate-pulse">
-              SIMULASI BERJALAN...
+          {isCalculating && (
+            <span className="text-[9px] font-mono text-emerald-400 animate-pulse tracking-widest border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 rounded">
+              ENGINE RUNNING: CALCULATING PROBABILITIES...
             </span>
           )}
           <button
-            onClick={() => { setHookCapital(capital); runSimulation(capital); }}
-            disabled={status === 'running'}
+            onClick={handleRunSimulation}
+            disabled={isCalculating}
             className="text-[9px] font-mono px-3 py-1.5 rounded-lg border transition-all duration-150 cursor-pointer"
             style={{
-              background:  status === 'running' ? 'rgba(0,0,0,0.4)' : (config?.colorDim ?? 'rgba(16,185,129,0.12)'),
-              borderColor: status === 'running' ? '#333' : (config?.colorBorder ?? 'rgba(16,185,129,0.30)'),
-              color:       status === 'running' ? '#404040' : (config?.color ?? '#10b981'),
-              opacity:     status === 'running' ? 0.5 : 1,
+              background:  isCalculating ? 'rgba(0,0,0,0.4)' : (config?.colorDim ?? 'rgba(16,185,129,0.12)'),
+              borderColor: isCalculating ? '#333' : (config?.colorBorder ?? 'rgba(16,185,129,0.30)'),
+              color:       isCalculating ? '#404040' : (config?.color ?? '#10b981'),
+              opacity:     isCalculating ? 0.5 : 1,
             }}
           >
-            {status === 'running' ? '⟳ MEMPROSES...' : '▶ JALANKAN SIMULASI'}
+            {isCalculating ? '⟳ MEMPROSES...' : '▶ JALANKAN SIMULASI'}
           </button>
         </div>
       </div>
@@ -103,7 +184,8 @@ export function MonteCarloPanel() {
                 type="text"
                 value={parseInt(inputVal || '0').toLocaleString('id-ID')}
                 onChange={(e) => handleCapitalChange(e.target.value)}
-                className="bg-black border border-neutral-800/70 rounded-lg pl-8 pr-3 py-2 text-white font-mono text-xs tabular-nums focus:outline-none w-40"
+                disabled={isCalculating}
+                className="bg-black border border-neutral-800/70 rounded-lg pl-8 pr-3 py-2 text-white font-mono text-xs tabular-nums focus:outline-none w-40 disabled:opacity-50"
                 style={{ borderColor: (config?.colorBorder ?? 'rgba(16,185,129,0.30)') + '80' }}
               />
             </div>
@@ -112,7 +194,8 @@ export function MonteCarloPanel() {
                 <button
                   key={p.label}
                   onClick={() => { setCapital(p.value); setInputVal(String(p.value)); }}
-                  className="text-[8px] font-mono px-2 py-1 rounded-md border transition-colors duration-100 cursor-pointer"
+                  disabled={isCalculating}
+                  className="text-[8px] font-mono px-2 py-1 rounded-md border transition-colors duration-100 cursor-pointer disabled:opacity-50"
                   style={{
                     background:  capital === p.value ? (config?.colorDim ?? 'rgba(16,185,129,0.12)') : 'rgba(0,0,0,0.4)',
                     borderColor: capital === p.value ? (config?.color ?? '#10b981') : '#333',
@@ -125,8 +208,6 @@ export function MonteCarloPanel() {
             </div>
           </div>
         </div>
-
-        <SimulationProgressBar progress={progress} status={status} />
 
         {/* Simulation summary stats */}
         {result?.summary && (
@@ -195,14 +276,14 @@ export function MonteCarloPanel() {
         </div>
 
         {/* Error state */}
-        {status === 'error' && (
+        {error && (
           <div className="text-[10px] font-mono text-red-400 p-3 rounded-lg border border-red-900/40 bg-red-950/10">
             Error simulasi: {error}. Coba jalankan ulang.
           </div>
         )}
 
         {/* Idle state */}
-        {status === 'idle' && !result && (
+        {!isCalculating && !result && !error && (
           <div className="text-center text-[10px] font-mono text-neutral-600 py-8 tracking-wider">
             Klik "JALANKAN SIMULASI" untuk memulai analisis probabilistik
           </div>
