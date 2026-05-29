@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDataStore, SCENARIOS } from "../stores/alphaShieldStore";
+import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 import {
   ACCENT,
   ASSET_CONFIG,
@@ -19,10 +19,10 @@ import { PortfolioStoryPanel } from "../components/PortfolioStoryPanel";
  * Adds MetricWithContext for human-readable interpretations.
  */
 export default function PortfolioPage() {
-  const scenarioId      = useDataStore((s) => s.scenarioId);
-  const crisisMode      = useDataStore((s) => s.crisisMode);
-  const targetWeights   = useDataStore((s) => s.targetWeights);
-  const targetAnalytics = useDataStore((s) => s.targetAnalytics);
+  const scenarioId      = useRootStore((s) => s.scenarioId);
+  const crisisMode      = useRootStore((s) => s.crisisMode);
+  const targetWeights   = useRootStore((s) => s.targetWeights || s.weights || {});
+  const targetAnalytics = useRootStore((s) => s.targetAnalytics || s.analytics || {});
 
   const baseScenario = SCENARIOS[scenarioId] || SCENARIOS.EQUILIBRIUM;
   const currentAccent = crisisMode ? "red" : baseScenario.accent;
@@ -40,7 +40,7 @@ export default function PortfolioPage() {
   }, [targetWeights]);
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto page-enter">
+    <div className="space-y-6 max-w-6xl mx-auto page-enter mt-2">
       {/* Header */}
       <div className="border-b border-neutral-900 pb-4">
         <h1 className="text-lg font-black font-mono uppercase tracking-tight">
@@ -67,10 +67,10 @@ export default function PortfolioPage() {
                 analytics={targetAnalytics}
               />
               <div className="flex-1 w-full space-y-3.5">
-                <AllocationRow assetKey="stocks" pct={Math.round(targetWeights.stocks)} />
-                <AllocationRow assetKey="bonds" pct={Math.round(targetWeights.bonds)} />
-                <AllocationRow assetKey="gold" pct={Math.round(targetWeights.gold)} />
-                <AllocationRow assetKey="cash" pct={Math.round(targetWeights.cash)} />
+                <AllocationRow assetKey="stocks" pct={Math.round(targetWeights?.stocks ?? 0)} />
+                <AllocationRow assetKey="bonds" pct={Math.round(targetWeights?.bonds ?? 0)} />
+                <AllocationRow assetKey="gold" pct={Math.round(targetWeights?.gold ?? 0)} />
+                <AllocationRow assetKey="cash" pct={Math.round(targetWeights?.cash ?? 0)} />
               </div>
             </div>
           </div>
@@ -97,30 +97,30 @@ export default function PortfolioPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <MetricWithContext
                 label="Sharpe Ratio"
-                value={targetAnalytics.sharpeRatio.toFixed(2)}
+                value={(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0).toFixed(2)}
                 unit=" σ"
-                interpretation={getSharpeInterpretation(targetAnalytics.sharpeRatio)}
+                interpretation={getSharpeInterpretation(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0)}
                 color={acc.neon}
               />
               <MetricWithContext
                 label="Portfolio Beta"
-                value={targetAnalytics.portfolioBeta.toFixed(2)}
+                value={(targetAnalytics?.portfolioBeta ?? targetAnalytics?.beta ?? 0).toFixed(2)}
                 unit=" β"
-                interpretation={getBetaInterpretation(targetAnalytics.portfolioBeta)}
+                interpretation={getBetaInterpretation(targetAnalytics?.portfolioBeta ?? targetAnalytics?.beta ?? 0)}
                 color="#a78bfa"
               />
               <MetricWithContext
                 label="Max Drawdown"
-                value={(targetAnalytics.maxDrawdown * 100).toFixed(1)}
+                value={((targetAnalytics?.maxDrawdown ?? targetAnalytics?.estimatedMaxDrawdown ?? 0) * 100).toFixed(1)}
                 unit="%"
-                interpretation={getMddInterpretation(targetAnalytics.maxDrawdown)}
+                interpretation={getMddInterpretation(targetAnalytics?.maxDrawdown ?? targetAnalytics?.estimatedMaxDrawdown ?? 0)}
                 color="#ef4444"
               />
               <MetricWithContext
                 label="Volatilitas"
-                value={(targetAnalytics.portfolioVolatility * 100).toFixed(1)}
+                value={((targetAnalytics?.portfolioVolatility ?? targetAnalytics?.portfolioStdDev ?? 0) * 100).toFixed(1)}
                 unit="%"
-                interpretation={getVolInterpretation(targetAnalytics.portfolioVolatility)}
+                interpretation={getVolInterpretation(targetAnalytics?.portfolioVolatility ?? targetAnalytics?.portfolioStdDev ?? 0)}
                 color="#a3a3a3"
               />
             </div>

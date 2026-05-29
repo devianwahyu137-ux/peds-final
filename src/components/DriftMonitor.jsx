@@ -1,5 +1,5 @@
 import React from "react";
-import { useDataStore } from "../stores/alphaShieldStore";
+import { useRootStore } from "@/stores/rootStore";
 
 const ASSET_CONFIG = {
   stocks: { label: "Equities (IDX)", icon: "📈", color: "#3b82f6" },
@@ -9,7 +9,9 @@ const ASSET_CONFIG = {
 };
 
 const DriftMonitor = React.memo(function DriftMonitor() {
-  const { targetWeights, actualWeights } = useDataStore();
+  const { targetWeights, weights, actualWeights } = useRootStore();
+  const currentTargetWeights = targetWeights || weights || {};
+  const currentActualWeights = actualWeights || currentTargetWeights; // Fallback if actualWeights is undefined
   const assets = ["stocks", "bonds", "gold", "cash"];
 
   return (
@@ -21,8 +23,8 @@ const DriftMonitor = React.memo(function DriftMonitor() {
 
       <div className="space-y-4">
         {assets.map((asset) => {
-          const target = targetWeights[asset] || 0;
-          const actual = actualWeights[asset] || 0;
+          const target = currentTargetWeights?.[asset] ?? 0;
+          const actual = currentActualWeights?.[asset] ?? 0;
           const drift = actual - target;
           const cfg = ASSET_CONFIG[asset];
 

@@ -1,12 +1,12 @@
 import { memo } from "react";
-import { useDataStore } from "../../stores/alphaShieldStore";
+import { useRootStore } from "@/stores/rootStore";
 
 /**
  * TickerBar — Hardware-accelerated marquee ticker.
  * Extracted from AlphaShield.jsx. Fixed top position, z-50.
  */
 export const TickerBar = memo(function TickerBar() {
-  const macroInputs = useDataStore((s) => s.macroInputs);
+  const macroInputs = useRootStore((s) => s.macroInputs);
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 w-full overflow-hidden bg-neutral-950/90 border-b border-neutral-900 py-2 flex items-center">

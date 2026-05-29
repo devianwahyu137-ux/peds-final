@@ -13,15 +13,34 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   );
 }
 
-export const supabase = createClient(
-  SUPABASE_URL  ?? 'https://placeholder.supabase.co',
-  SUPABASE_ANON_KEY ?? 'placeholder-key',
-  {
-    realtime: {
-      params: { eventsPerSecond: 2 },
-    },
-  }
-);
+const isPlaceholder = !SUPABASE_URL || SUPABASE_URL.includes('placeholder');
+
+// Provide a mock client if credentials are missing so the app doesn't crash
+export const supabase = isPlaceholder 
+  ? {
+      from: () => ({
+        select: () => ({
+          order: () => ({
+            limit: async () => ({ data: [], error: null })
+          })
+        })
+      }),
+      channel: () => ({
+        on: () => ({
+          subscribe: () => {}
+        })
+      }),
+      removeChannel: () => {}
+    }
+  : createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY,
+      {
+        realtime: {
+          params: { eventsPerSecond: 2 },
+        },
+      }
+    );
 
 // Key mapping: Supabase column key → AlphaShield store key
 export const SUPABASE_KEY_MAP = {

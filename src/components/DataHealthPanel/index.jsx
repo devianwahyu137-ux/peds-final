@@ -3,7 +3,7 @@
 // Shows per-endpoint health, TTL, and manual refresh option
 
 import { useState, useEffect } from 'react';
-import { useDataStore } from '../../stores/alphaShieldStore';
+import { useRootStore } from "@/stores/rootStore";
 
 const ENDPOINT_REGISTRY = [
   {
@@ -78,9 +78,9 @@ function formatTTL(ms) {
 }
 
 export function DataHealthPanel() {
-  const endpointStatus = useDataStore((s) => s.endpointStatus);
-  const liveData       = useDataStore((s) => s.liveData);
-  const lastSyncAt     = useDataStore((s) => s.lastSyncAt);
+  const endpointStatus = useRootStore((s) => s.endpointStatus);
+  const liveData       = useRootStore((s) => s.liveData);
+  const lastSyncAt     = useRootStore((s) => s.lastSyncAt);
   const [now, setNow]  = useState(Date.now());
 
   // Tick every 10 seconds to update TTL displays

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDataStore } from "../stores/alphaShieldStore";
+import { useRootStore } from "@/stores/rootStore";
 
 const tenures = ["1Y", "3Y", "5Y", "10Y"];
 const ustYields = [4.95, 4.60, 4.50, 4.45];
@@ -62,16 +62,20 @@ const getCellColor = (val) => {
 };
 
 const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
-  const { scenarioId, crisisMode, macroInputs } = useDataStore();
+  const { scenarioId, crisisMode, macroInputs } = useRootStore();
   const [selectedCell, setSelectedCell] = useState(null);
   const [hoveredTenor, setHoveredTenor] = useState(null);
 
   const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : scenarioId;
   const accentColor = ACCENT_MAP[effectiveScenario] || ACCENT_MAP.EQUILIBRIUM;
 
-  const sbn10y = macroInputs.sbn10y; // in percent format
+  const sbn10y = typeof macroInputs?.sbn10y === 'number' && isFinite(macroInputs.sbn10y)
+    ? macroInputs.sbn10y
+    : 6.60; // fallback Equilibrium default
   const sbnBase = sbnMap[scenarioId] || sbnMap.EQUILIBRIUM;
-  const sbnYields = [...sbnBase, sbn10y];
+  const sbnYields = [...sbnBase, sbn10y].map(
+    v => (typeof v === 'number' && isFinite(v) ? v : 0)
+  );
 
   // SVG Chart Setup
   const W = 520, H = 240, pL = 50, pR = 25, pT = 25, pB = 40;
@@ -89,14 +93,14 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
   const sbnBezier = buildSmoothPath(sbnPoints);
   const ustBezier = buildSmoothPath(ustPoints);
 
-  const spread = sbn10y - 4.45;
+  const spread = (sbn10y ?? 0) - 4.45;
 
   // Build spread data for tooltip
   const spreadData = tenures.map((tenor, i) => ({
     tenor,
-    sbn: sbnYields[i].toFixed(2),
-    ust: ustYields[i].toFixed(2),
-    spread: Math.round((sbnYields[i] - ustYields[i]) * 100), // in bps
+    sbn: (sbnYields[i] ?? 0).toFixed(2),
+    ust: (ustYields[i] ?? 0).toFixed(2),
+    spread: Math.round(((sbnYields[i] ?? 0) - (ustYields[i] ?? 0)) * 100), // in bps
   }));
 
   return (
@@ -109,7 +113,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
             <p className="text-[10px] text-neutral-500 mt-1 uppercase tracking-wider">Dynamic SBN vs UST Tenure Bezier Plot</p>
           </div>
           <div className="text-[10px] font-mono text-neutral-500">
-            SPREAD 10Y: <span className="font-bold text-amber-400">+{spread.toFixed(2)}%</span>
+            SPREAD 10Y: <span className="font-bold text-amber-400">+{(spread ?? 0).toFixed(2)}%</span>
           </div>
         </div>
 
@@ -177,7 +181,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
                     textAnchor="middle" fontSize="8" fill="#fff" fontFamily="monospace"
                     style={{ pointerEvents: "none" }}
                   >
-                    {sbnYields[i].toFixed(2)}%
+                    {(sbnYields[i] ?? 0).toFixed(2)}%
                   </text>
                 </g>
               );

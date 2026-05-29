@@ -3,7 +3,7 @@
 // Auto-saves every 30 seconds + on scenario/weight changes (debounced 2s)
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useAlphaShieldStore } from '../stores/alphaShieldStore';
+import { useRootStore } from "@/stores/rootStore";
 import {
   persistSessionState,
   loadSessionState,
@@ -14,10 +14,10 @@ import {
 const AUTO_SAVE_INTERVAL = 30_000; // Save every 30 seconds
 
 export function usePortfolioPersistence() {
-  const scenarioId     = useAlphaShieldStore((s) => s.scenarioId);
-  const targetWeights  = useAlphaShieldStore((s) => s.targetWeights);
-  const setScenario    = useAlphaShieldStore((s) => s.setScenario);
-  const setWeightBulk  = useAlphaShieldStore((s) => s.setWeightBulk);
+  const scenarioId     = useRootStore((s) => s.scenarioId);
+  const targetWeights  = useRootStore((s) => s.targetWeights);
+  const setScenario    = useRootStore((s) => s.setScenario);
+  const setWeightBulk  = useRootStore((s) => s.setWeightBulk);
 
   const [savedSession, setSavedSession]   = useState(null);
   const [showBanner, setShowBanner]       = useState(false);

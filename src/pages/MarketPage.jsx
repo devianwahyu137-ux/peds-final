@@ -1,4 +1,4 @@
-import { useDataStore, SCENARIOS } from "../stores/alphaShieldStore";
+import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 import MacroIndicatorCards from "../components/MacroIndicatorCards";
 import { ACCENT, ScenarioButton } from "../components/SharedComponents";
 import { DataHealthPanel } from "../components/DataHealthPanel";
@@ -9,10 +9,10 @@ import { DataHealthPanel } from "../components/DataHealthPanel";
  * Adds scenario selector + MacroIndicatorCards.
  */
 export default function MarketPage() {
-  const scenarioId = useDataStore((s) => s.scenarioId);
-  const crisisMode = useDataStore((s) => s.crisisMode);
-  const setScenario = useDataStore((s) => s.setScenario);
-  const setCrisisMode = useDataStore((s) => s.setCrisisMode);
+  const scenarioId = useRootStore((s) => s.scenarioId);
+  const crisisMode = useRootStore((s) => s.crisisMode);
+  const setScenario = useRootStore((s) => s.setScenario);
+  const setCrisisMode = useRootStore((s) => s.setCrisisMode);
 
   const baseScenario = SCENARIOS[scenarioId] || SCENARIOS.EQUILIBRIUM;
   const currentAccent = crisisMode ? "red" : baseScenario.accent;

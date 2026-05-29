@@ -2,7 +2,7 @@
 // Container panel integrating simulation hook + frontier chart + summary stats
 
 import { useState } from 'react';
-import { useAlphaShieldStore } from '../../stores/alphaShieldStore';
+import { useRootStore } from "@/stores/rootStore";
 import { useMonteCarloSimulation } from '../../hooks/useMonteCarloSimulation';
 import { EfficientFrontierChart } from './EfficientFrontierChart';
 import { SimulationProgressBar } from './SimulationProgressBar.jsx';
@@ -23,8 +23,8 @@ function formatIDR(n) {
 }
 
 export function MonteCarloPanel() {
-  const scenarioId      = useAlphaShieldStore((s) => s.scenarioId);
-  const targetAnalytics = useAlphaShieldStore((s) => s.targetAnalytics);
+  const scenarioId      = useRootStore((s) => s.scenarioId);
+  const targetAnalytics = useRootStore((s) => s.targetAnalytics);
   const config          = SCENARIO_CONFIG[scenarioId];
   const [capital, setCapital]   = useState(100_000_000);
   const [inputVal, setInputVal] = useState('100000000');

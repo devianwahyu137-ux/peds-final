@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { supabase, SUPABASE_KEY_MAP } from '../lib/supabaseClient';
-import { useDataStore } from '../stores/alphaShieldStore';
+import { useRootStore } from "@/stores/rootStore";
 
 // Transform Supabase row → lean schema { v, d, t, src, ok }
 function transformSupabaseRow(row) {
@@ -19,8 +19,8 @@ function transformSupabaseRow(row) {
 }
 
 export function useSupabaseRealtimeData() {
-  const setLiveMetric     = useDataStore((s) => s.setLiveMetric);
-  const setEndpointStatus = useDataStore((s) => s.setEndpointStatus);
+  const setLiveMetric     = useRootStore((s) => s.setLiveMetric);
+  const setEndpointStatus = useRootStore((s) => s.setEndpointStatus);
   const channelRef        = useRef(null);
   const isMountedRef      = useRef(true);
 

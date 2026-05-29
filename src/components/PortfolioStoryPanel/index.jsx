@@ -3,7 +3,7 @@
 // Translates MPT numbers into plain Indonesian language
 
 import { useState, useMemo } from 'react';
-import { useAlphaShieldStore } from '../../stores/alphaShieldStore';
+import { useRootStore } from "@/stores/rootStore";
 import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
 import {
   narrateSharpRatio,
@@ -22,8 +22,8 @@ const WHAT_IF_PRESETS = [
 ];
 
 export function PortfolioStoryPanel() {
-  const scenarioId      = useAlphaShieldStore((s) => s.scenarioId);
-  const targetAnalytics = useAlphaShieldStore((s) => s.targetAnalytics);
+  const scenarioId      = useRootStore((s) => s.scenarioId);
+  const targetAnalytics = useRootStore((s) => s.targetAnalytics);
   const [selectedDelta, setSelectedDelta] = useState(50);
   const config = SCENARIO_CONFIG[scenarioId];
 

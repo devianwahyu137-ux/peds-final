@@ -1,4 +1,6 @@
 // src/stores/navigationStore.js
-// MIGRATION SHIM — forwards to unified rootStore
-export { useNavigationStore } from './rootStore.js';
-export * from './selectors.js';
+// Re-export shim — points to unified rootStore
+export {
+  useRootStore as useNavigationStore,
+  useRootStore,
+} from './rootStore';

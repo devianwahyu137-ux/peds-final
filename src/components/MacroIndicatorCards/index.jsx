@@ -1,5 +1,5 @@
 import React from "react";
-import { useDataStore } from "../../stores/alphaShieldStore";
+import { useRootStore } from "@/stores/rootStore";
 import { SPARKLINE_PRESETS } from "../../lib/historicalPresets";
 import MacroIndicatorCard from "./MacroIndicatorCard";
 
@@ -21,7 +21,8 @@ const MACRO_INDICATORS = [
  * Reads data from the Zustand store and maps to MacroIndicatorCard.
  */
 export default function MacroIndicatorCards() {
-  const { scenarioId, crisisMode, macroInputs, liveData, endpointStatus } = useDataStore();
+  const { scenarioId, crisisMode, macroInputs } = useRootStore();
+  const { liveData, endpointStatus } = useRootStore();
 
   const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : scenarioId;
   const presets = SPARKLINE_PRESETS[effectiveScenario] || SPARKLINE_PRESETS.EQUILIBRIUM;

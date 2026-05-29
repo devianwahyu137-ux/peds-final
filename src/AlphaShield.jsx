@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useDataStore, SCENARIOS } from "./stores/alphaShieldStore";
+import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 import MasterDetailLayout from "./components/MasterDetailLayout";
 import SovereignYieldCurve from "./components/SovereignYieldCurve";
 import SectorRotationCards from "./components/SectorRotationCards";
@@ -219,7 +219,7 @@ export default function AlphaShield() {
     targetAnalytics,
     setScenario,
     setCrisisMode
-  } = useDataStore();
+  } = useRootStore();
 
   useEffect(() => {
     const update = () => {

@@ -12,7 +12,7 @@
  */
 
 import { useEffect, useLayoutEffect, useRef, useCallback } from "react";
-import { useDataStore } from "../stores/alphaShieldStore";
+import { useRootStore } from "@/stores/rootStore";
 import { fetchSequentialWithAbort } from "../lib/apiFetcher";
 import { buildLiveEngineParams } from "../lib/macroMappings";
 import { runMPTEngine } from "../lib/mptEngine";
@@ -69,8 +69,9 @@ export function useLiveMarketData() {
   useSupabaseRealtimeData();
 
   // SECONDARY: Direct API polling (backup if Supabase unavailable)
-  const store = useDataStore();
-  const { liveData, scenarioId, targetWeights, actualWeights, setLiveMetric, setEndpointStatus, macroInputs } = store;
+  const { liveData, setLiveMetric, setEndpointStatus } = useRootStore();
+  const { scenarioId, weights, actualWeights, macroInputs, targetWeights: oldTargetWeights } = useRootStore();
+  const targetWeights = oldTargetWeights || weights || {};
 
   // ── Mutable refs for stable lifecycle management ──
   const timeoutRef = useRef(null);
@@ -222,7 +223,7 @@ export function useLiveMarketData() {
     const targetAnalytics = runMPTEngine(decWeightsTarget, scenarioId, decMacro);
     const actualAnalytics = runMPTEngine(decWeightsActual, scenarioId, decMacro);
 
-    useDataStore.setState({
+    useAlphaShieldStore.setState({
       targetAnalytics,
       actualAnalytics,
       analytics: {

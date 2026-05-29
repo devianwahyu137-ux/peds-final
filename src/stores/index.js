@@ -1,8 +1,10 @@
 // src/stores/index.js
-// Migration shim — re-exports everything from rootStore
-// Existing components using old store imports continue working
-// without modification during migration period
+// Central export hub — import anything store-related from here
+export {
+  useRootStore,
+  useAlphaShieldStore,
+  useDataStore,
+  useNavigationStore,
+} from './rootStore';
 
-export { useRootStore, useAlphaShieldStore, useDataStore,
-         useNavigationStore } from './rootStore.js';
-export * from './selectors.js';
+export * from './selectors';

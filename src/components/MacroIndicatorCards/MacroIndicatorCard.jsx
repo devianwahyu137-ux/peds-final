@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import MicroSparkline from "./MicroSparkline";
 import MacroTooltip from "./MacroTooltip";
-import { useDataStore } from "../../stores/alphaShieldStore";
+import { useRootStore } from "@/stores/rootStore";
 
 /**
  * Glow color map per scenario — smooth transitions via inline style.
@@ -156,7 +156,7 @@ export default function MacroIndicatorCard({
   }[status] || "#525252";
 
   // NEW — reads from dedicated deltaMap slice
-  const deltaInfo = useDataStore((s) => s.deltaMap[id]);
+  const deltaInfo = useRootStore((s) => s.deltaMap[id]);
   const delta     = deltaInfo?.delta     ?? 0;
   const direction = deltaInfo?.direction ?? 'flat';
 

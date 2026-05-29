@@ -1,6 +1,6 @@
 import { memo } from "react";
-import { useNavigationStore } from "../../stores/navigationStore";
-import { useDataStore } from "../../stores/alphaShieldStore";
+import { useRootStore } from "@/stores/rootStore";
+import { SCENARIOS } from "@/stores/rootStore";
 
 import { NavHealthIndicator } from "../NavHealthIndicator";
 
@@ -44,10 +44,10 @@ const SCENARIO_THEME = {
 };
 
 export const TopNavbar = memo(function TopNavbar() {
-  const activeTab  = useNavigationStore((s) => s.activeTab);
-  const setTab     = useNavigationStore((s) => s.setTab);
-  const scenarioId = useDataStore((s) => s.scenarioId);
-  const crisisMode = useDataStore((s) => s.crisisMode);
+  const activeTab  = useRootStore((s) => s.activeTab);
+  const setTab     = useRootStore((s) => s.setActiveTab);
+  const scenarioId = useRootStore((s) => s.scenarioId);
+  const crisisMode = useRootStore((s) => s.crisisMode);
 
   const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : scenarioId;
   const theme = SCENARIO_THEME[effectiveScenario] || SCENARIO_THEME.EQUILIBRIUM;
@@ -58,14 +58,16 @@ export const TopNavbar = memo(function TopNavbar() {
       style={{ background: "rgba(0,0,0,0.95)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}
     >
       {/* Risk Status Bar */}
-      <div
-        className="flex items-center justify-between px-6 py-1.5 border-b border-neutral-800/40"
-        style={{ background: theme.bg }}
-      >
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between px-4 md:px-6
+                      py-1.5 border-b border-neutral-800/40"
+           style={{ background: theme.bg, minHeight: '28px' }}>
+
+        {/* Left: portfolio status */}
+        <div className="flex items-center gap-2 flex-shrink-0">
           <span className="relative flex h-1.5 w-1.5">
             <span
-              className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50"
+              className="animate-ping absolute inline-flex h-full w-full
+                         rounded-full opacity-50"
               style={{ backgroundColor: theme.color }}
             />
             <span
@@ -74,48 +76,56 @@ export const TopNavbar = memo(function TopNavbar() {
             />
           </span>
           <span
-            className="text-[9px] font-mono font-bold tracking-[0.2em]"
+            className="text-[9px] font-mono font-bold tracking-[0.15em]
+                       whitespace-nowrap"
             style={{ color: theme.color }}
           >
             STATUS PORTOFOLIO: {theme.label}
           </span>
         </div>
-        <div className="flex items-center gap-3">
+
+        {/* Right: health + system label */}
+        <div className="flex items-center gap-3 ml-auto flex-shrink-0">
           <NavHealthIndicator />
-          <span className="text-[9px] font-mono text-neutral-700 hidden lg:block">
+          <span className="text-[8px] font-mono text-neutral-700
+                           tracking-widest hidden xl:block whitespace-nowrap">
             AlphaShield PEDS Core System v3.4
           </span>
         </div>
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex items-stretch px-2 sm:px-4 overflow-x-auto">
+      <div className="flex items-stretch overflow-x-auto
+                      scrollbar-hide px-2">
         {NAV_ITEMS.map((item) => {
           const isActive = activeTab === item.id;
           return (
             <button
               key={item.id}
               onClick={() => setTab(item.id)}
-              className={`
-                flex flex-col items-start px-3 sm:px-4 py-3 border-b-2 transition-all duration-200
-                cursor-pointer min-w-0 flex-1 text-left
-                ${isActive
-                  ? "bg-white/[0.02]"
-                  : "border-transparent hover:border-neutral-700 hover:bg-white/[0.01]"
-                }
-              `}
-              style={isActive ? { borderBottomColor: theme.color } : { borderBottomColor: "transparent" }}
+              className="flex flex-col items-start px-4 md:px-5 py-3
+                         border-b-2 transition-all duration-200
+                         cursor-pointer flex-shrink-0 text-left
+                         min-w-[100px] md:min-w-0 md:flex-1"
+              style={isActive
+                ? { borderBottomColor: theme.color, background: 'rgba(255,255,255,0.015)' }
+                : { borderBottomColor: 'transparent' }
+              }
             >
-              <div className="flex items-center gap-1.5 w-full">
-                <span className="text-xs">{item.icon}</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs flex-shrink-0">{item.icon}</span>
                 <span
-                  className="text-[9px] sm:text-[10px] font-mono font-bold tracking-widest uppercase truncate"
-                  style={{ color: isActive ? theme.color : "#525252" }}
+                  className="text-[9px] md:text-[10px] font-mono font-bold
+                             tracking-[0.1em] md:tracking-widest uppercase
+                             whitespace-nowrap"
+                  style={{ color: isActive ? theme.color : '#525252' }}
                 >
                   {item.label}
                 </span>
               </div>
-              <span className="text-[8px] font-mono text-neutral-700 mt-0.5 hidden md:block">
+              <span className="text-[7px] md:text-[8px] font-mono
+                               text-neutral-700 mt-0.5 hidden md:block
+                               whitespace-nowrap">
                 {item.sublabel}
               </span>
             </button>

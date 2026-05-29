@@ -1,5 +1,4 @@
-import { useDataStore, SCENARIOS } from "../stores/alphaShieldStore";
-import { useNavigationStore } from "../stores/navigationStore";
+import { useRootStore } from "@/stores/rootStore";
 import { ACCENT, ASSET_CONFIG } from "../components/SharedComponents";
 
 // ── Narasi Bahasa Indonesia per skenario ────────────────────────────────────────
@@ -43,21 +42,23 @@ const ASSET_BARS = [
 ];
 
 export default function HomePage() {
-  const scenarioId     = useDataStore((s) => s.scenarioId);
-  const crisisMode     = useDataStore((s) => s.crisisMode);
-  const targetWeights  = useDataStore((s) => s.targetWeights);
-  const targetAnalytics = useDataStore((s) => s.targetAnalytics);
-  const macroInputs    = useDataStore((s) => s.macroInputs);
-  const liveData       = useDataStore((s) => s.liveData);
-  const endpointStatus = useDataStore((s) => s.endpointStatus);
-  const setTab         = useNavigationStore((s) => s.setTab);
+  const scenarioId     = useRootStore((s) => s.scenarioId);
+  const crisisMode     = useRootStore((s) => s.crisisMode);
+  const targetWeights  = useRootStore((s) => s.targetWeights || s.weights);
+  const targetAnalytics = useRootStore((s) => s.targetAnalytics || s.analytics);
+  const macroInputs    = useRootStore((s) => s.macroInputs);
+  
+  const liveData       = useRootStore((s) => s.liveData || {});
+  const endpointStatus = useRootStore((s) => s.endpointStatus || {});
+  
+  const setTab         = useRootStore((s) => s.setTab);
 
   const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : scenarioId;
   const narrative = SCENARIO_NARRATIVE[effectiveScenario] || SCENARIO_NARRATIVE.EQUILIBRIUM;
   const accent = narrative.color;
 
   // Sharpe from store analytics — NEVER hardcoded
-  const sharpeRatio = targetAnalytics?.sharpeRatio ?? 0;
+  const sharpeRatio = targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0;
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto page-enter">
@@ -129,7 +130,7 @@ export default function HomePage() {
 
         <div className="space-y-3">
           {ASSET_BARS.map(({ key, label, icon, color }) => {
-            const pct = targetWeights[key] ?? 0;
+            const pct = targetWeights?.[key] ?? 0;
             return (
               <div key={key} className="flex items-center gap-3">
                 <span className="text-base w-6 flex-shrink-0">{icon}</span>
@@ -169,11 +170,11 @@ export default function HomePage() {
             const liveValue = liveData[key];
             let rawVal;
             if (typeof liveValue === "object" && liveValue !== null) {
-              rawVal = liveValue.v ?? liveValue.value ?? macroInputs[key];
+              rawVal = liveValue.v ?? liveValue.value ?? macroInputs?.[key];
             } else if (typeof liveValue === "number") {
               rawVal = liveValue;
             } else {
-              rawVal = macroInputs[key];
+              rawVal = macroInputs?.[key];
             }
 
             const display = rawVal != null

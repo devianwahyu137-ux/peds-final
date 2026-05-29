@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useDataStore } from "../stores/alphaShieldStore";
+import { useRootStore } from "@/stores/rootStore";
 
 const BROKER_FEE = 0.0020; // 0.20% flat fee
 
@@ -18,7 +18,10 @@ const ASSET_COLORS = {
 };
 
 const RebalancingCalculator = React.memo(function RebalancingCalculator() {
-  const { targetWeights, actualWeights, setEquityWeight } = useDataStore();
+  const { weights, actualWeights, targetWeights, setEquityWeight } = useRootStore();
+  const currentTargetWeights = targetWeights || weights || {};
+  const currentActualWeights = actualWeights || currentTargetWeights;
+  
   const [capitalRaw, setCapitalRaw] = useState("100000000");
 
   const capital = useMemo(() => {
@@ -29,8 +32,8 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
   const rebalanceData = useMemo(() => {
     const assets = ["stocks", "bonds", "gold", "cash"];
     return assets.map((asset) => {
-      const actualPct = actualWeights[asset] || 0;
-      const targetPct = targetWeights[asset] || 0;
+      const actualPct = currentActualWeights[asset] || 0;
+      const targetPct = currentTargetWeights[asset] || 0;
       
       const currentIDR = (actualPct / 100) * capital;
       const targetIDR = (targetPct / 100) * capital;
@@ -52,7 +55,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
         action
       };
     });
-  }, [actualWeights, targetWeights, capital]);
+  }, [currentActualWeights, currentTargetWeights, capital]);
 
   const totalFee = useMemo(() => {
     return rebalanceData.reduce((sum, r) => sum + r.fee, 0);
@@ -88,13 +91,13 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
 
         <div>
           <label className="block text-[9px] text-neutral-400 uppercase tracking-widest mb-1.5">
-            Current Equities Actual Weight: {Math.round(actualWeights.stocks)}%
+            Current Equities Actual Weight: {Math.round(currentActualWeights.stocks || 0)}%
           </label>
           <input
             type="range"
             min="0"
             max="100"
-            value={Math.round(actualWeights.stocks || 0)}
+            value={Math.round(currentActualWeights.stocks || 0)}
             onChange={(e) => setEquityWeight(parseFloat(e.target.value) || 0)}
             className="w-full h-1.5 bg-neutral-900 rounded-lg appearance-none cursor-pointer accent-emerald-400"
           />

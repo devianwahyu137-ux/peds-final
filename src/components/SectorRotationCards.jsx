@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { useDataStore, SCENARIOS } from "../stores/alphaShieldStore";
+import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 
 const SectorRotationCards = React.memo(function SectorRotationCards() {
-  const { targetWeights, scenarioId, macroInputs } = useDataStore();
+  const { targetWeights, weights, scenarioId, macroInputs } = useRootStore();
+  const currentWeights = targetWeights || weights || {};
   const [expandedId, setExpandedId] = useState(null);
 
   const scenarioName = SCENARIOS[scenarioId]?.label || "Normal";
@@ -46,7 +47,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
           tickers: ["FR0095", "FR0096", "ORI025", "SR020"],
           overweight: "Short-Duration Sovereign Bonds (SBN) - Tenor 1-3Y",
           underweight: "Long-Duration Sovereign Bonds (Tenor > 10Y), Low-Grade Corporate Debt",
-          rationale: `Suku bunga BI Rate yang tinggi sebesar ${(macroInputs.biRate || 0).toFixed(2)}% mengharuskan defensif duration strategy. Pilih SBN tenor pendek untuk membatasi price sensitivity terhadap volatilitas suku bunga.`
+          rationale: `Suku bunga BI Rate yang tinggi sebesar ${(macroInputs?.biRate || 0).toFixed(2)}% mengharuskan defensif duration strategy. Pilih SBN tenor pendek untuk membatasi price sensitivity terhadap volatilitas suku bunga.`
         };
       case "CURRENCY_STRESS":
         return {
@@ -54,7 +55,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
           tickers: ["SR021", "FR0101"],
           overweight: "SBN USD-Denominated (INDON seri USD), Cash Equivalents",
           underweight: "Rupiah Long-Term Sovereign Bonds",
-          rationale: `Tekanan devaluasi Rupiah mendongkrak yield SBN 10Y ke ${(macroInputs.sbn10y || 0).toFixed(2)}%. Batasi eksposur obligasi jangka panjang berdenominasi Rupiah untuk memitigasi duration risk dan kerugian selisih kurs.`
+          rationale: `Tekanan devaluasi Rupiah mendongkrak yield SBN 10Y ke ${(macroInputs?.sbn10y || 0).toFixed(2)}%. Batasi eksposur obligasi jangka panjang berdenominasi Rupiah untuk memitigasi duration risk dan kerugian selisih kurs.`
         };
       case "EQUILIBRIUM":
       default:
@@ -76,7 +77,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
           tickers: ["GOLD_PHYSICAL", "ANTM", "XAU/USD"],
           overweight: "Physical Gold Vault, USD-Denominated Gold ETF",
           underweight: "Non-yielding Cash Deposits, High-beta Rupiah Debt",
-          rationale: `Dalam skenario ${scenarioName}, emas bertindak sebagai pertahanan mutlak terhadap devaluasi Rupiah dan ancaman capital flight. DXY di ${(macroInputs.dxy || 0).toFixed(2)} memposisikan emas sebagai jangkar safe-haven.`
+          rationale: `Dalam skenario ${scenarioName}, emas bertindak sebagai pertahanan mutlak terhadap devaluasi Rupiah dan ancaman capital flight. DXY di ${(macroInputs?.dxy || 0).toFixed(2)} memposisikan emas sebagai jangkar safe-haven.`
         };
       case "TIGHTENING":
         return {
@@ -108,7 +109,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
       color: "#3b82f6",
       icon: "📈",
       title: "EQUITIES SECTOR ROTATION",
-      weight: targetWeights.stocks || 0,
+      weight: currentWeights?.stocks || 0,
       ...eq
     },
     {
@@ -116,7 +117,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
       color: "#a78bfa",
       icon: "🏛️",
       title: "FIXED INCOME DURATION STRATEGY",
-      weight: targetWeights.bonds || 0,
+      weight: currentWeights?.bonds || 0,
       ...fi
     },
     {
@@ -124,7 +125,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
       color: "#fbbf24",
       icon: "🥇",
       title: "HARD ASSETS VAULT STRATEGY",
-      weight: targetWeights.gold || 0,
+      weight: currentWeights?.gold || 0,
       ...gd
     }
   ];

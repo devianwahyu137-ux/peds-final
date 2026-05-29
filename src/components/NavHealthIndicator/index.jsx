@@ -4,13 +4,13 @@
 // Replaces confusing per-endpoint status scattered in navbar
 
 import { useMemo } from 'react';
-import { useDataStore } from '@/stores/alphaShieldStore';
+import { useRootStore } from "@/stores/rootStore";
 import { computeHealthScore, getLiveEndpointCount }
   from '@/lib/dataHealthScorer';
 
 export function NavHealthIndicator() {
-  const endpointStatus = useDataStore((s) => s.endpointStatus);
-  const lastSyncAt     = useDataStore((s) => s.lastSyncAt);
+  const endpointStatus = useRootStore((s) => s.endpointStatus);
+  const lastSyncAt     = useRootStore((s) => s.lastSyncAt);
 
   const health  = useMemo(
     () => computeHealthScore(endpointStatus),

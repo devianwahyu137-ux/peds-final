@@ -2,10 +2,10 @@
 // Detects scenario changes and triggers overlay + animations
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useAlphaShieldStore } from '../stores/alphaShieldStore';
+import { useRootStore } from "@/stores/rootStore";
 
 export function useScenarioPulse() {
-  const scenarioId      = useAlphaShieldStore((s) => s.scenarioId);
+  const scenarioId      = useRootStore((s) => s.scenarioId);
   const [showOverlay, setShowOverlay] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const prevScenarioRef = useRef(null);

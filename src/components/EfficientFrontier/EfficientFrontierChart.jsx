@@ -3,7 +3,7 @@
 // Shows the efficient frontier boundary approximation
 
 import { useMemo, useState, useRef } from 'react';
-import { useAlphaShieldStore } from '../../stores/alphaShieldStore';
+import { useRootStore } from "@/stores/rootStore";
 import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
 
 const CHART_PAD = { top: 20, right: 24, bottom: 40, left: 48 };
@@ -11,7 +11,7 @@ const CHART_W   = 660;
 const CHART_H   = 280;
 
 export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
-  const scenarioId          = useAlphaShieldStore((s) => s.scenarioId);
+  const scenarioId          = useRootStore((s) => s.scenarioId);
   const config              = SCENARIO_CONFIG[scenarioId];
   const [hovered, setHovered] = useState(null);
   const svgRef              = useRef(null);
