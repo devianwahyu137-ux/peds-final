@@ -15,10 +15,10 @@ const DriftMonitor = React.memo(function DriftMonitor() {
   const assets = ["stocks", "bonds", "gold", "cash"];
 
   return (
-    <div className="border border-neutral-900 bg-neutral-950/60 rounded-xl p-5 space-y-4">
+    <div className="border border-slate-200 dark:border-neutral-800 bg-white dark:bg-[#121212] rounded-xl p-5 space-y-4 transition-colors duration-300">
       <div>
-        <h3 className="text-sm font-bold text-white font-mono">[📊] DRIFT_MONITOR_CORE</h3>
-        <p className="text-[10px] text-neutral-500 mt-1 uppercase tracking-wider">Comparing actual weights vs target baseline weights</p>
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white font-mono">[📊] DRIFT_MONITOR_CORE</h3>
+        <p className="text-[10px] text-slate-500 dark:text-neutral-500 mt-1 uppercase tracking-wider">Comparing actual weights vs target baseline weights</p>
       </div>
 
       <div className="space-y-4">
@@ -30,17 +30,17 @@ const DriftMonitor = React.memo(function DriftMonitor() {
 
           const absDrift = Math.abs(drift);
           let statusLabel = "ALIGNMENT_OK";
-          let statusStyle = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+          let statusStyle = "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20";
           
           if (absDrift >= 10.0) {
             statusLabel = "CRITICAL";
-            statusStyle = "bg-red-500/10 text-red-400 border-red-500/20";
+            statusStyle = "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-200 dark:border-red-500/20";
           } else if (absDrift >= 5.0) {
             statusLabel = "WARNING";
-            statusStyle = "bg-amber-500/10 text-amber-400 border-amber-500/20";
+            statusStyle = "bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-500/20";
           }
 
-          const driftColor = drift === 0 ? "text-neutral-500" : drift > 0 ? "text-emerald-400" : "text-red-400";
+          const driftColor = drift === 0 ? "text-slate-500 dark:text-neutral-500" : drift > 0 ? "text-emerald-500 dark:text-emerald-400" : "text-red-500 dark:text-red-400";
           const driftSign = drift > 0 ? "+" : "";
 
           // Zero-centered alignment calculations (scaled to +/- 25% max visual limits)
@@ -48,11 +48,11 @@ const DriftMonitor = React.memo(function DriftMonitor() {
           const scaledPercent = Math.max(-100, Math.min(100, (drift / scaleLimit) * 50)); // -50% to +50% range relative to center (50%)
           
           return (
-            <div key={asset} className="border border-neutral-900/60 bg-black/40 rounded-xl p-4 space-y-3 font-mono">
+            <div key={asset} className="border border-slate-200 dark:border-neutral-900/60 bg-slate-50 dark:bg-black/40 rounded-xl p-4 space-y-3 font-mono transition-colors duration-300">
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <span>{cfg.icon}</span>
-                  <span className="font-bold text-neutral-300 text-[11px]">{cfg.label}</span>
+                  <span className="font-bold text-slate-700 dark:text-neutral-300 text-[11px]">{cfg.label}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className={`text-[7px] font-bold px-1.5 py-0.5 rounded border uppercase ${statusStyle}`}>{statusLabel}</span>
@@ -62,9 +62,9 @@ const DriftMonitor = React.memo(function DriftMonitor() {
 
               {/* Zero-Centered Divergence Velocity Bar */}
               <div className="space-y-1">
-                <div className="relative h-2 w-full bg-neutral-950 rounded-full overflow-hidden border border-neutral-900">
+                <div className="relative h-2 w-full bg-slate-200 dark:bg-neutral-950 rounded-full overflow-hidden border border-slate-300 dark:border-neutral-900">
                   {/* Anchor Center Zero-line */}
-                  <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-neutral-800 z-10" />
+                  <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-slate-400 dark:bg-neutral-800 z-10" />
                   
                   {/* Left or Right Divergence fill */}
                   <div
@@ -77,7 +77,7 @@ const DriftMonitor = React.memo(function DriftMonitor() {
                     }}
                   />
                 </div>
-                <div className="flex justify-between text-[7px] text-neutral-600 font-bold px-1 uppercase tracking-widest">
+                <div className="flex justify-between text-[7px] text-slate-400 dark:text-neutral-600 font-bold px-1 uppercase tracking-widest">
                   <span>-25% Under</span>
                   <span>Target Alignment</span>
                   <span>+25% Over</span>
@@ -85,9 +85,9 @@ const DriftMonitor = React.memo(function DriftMonitor() {
               </div>
 
               {/* Explicit Numerical Details */}
-              <div className="flex justify-between text-[9px] text-neutral-500 border-t border-neutral-900/40 pt-2">
-                <span>ACTUAL: <strong className="text-neutral-300">{actual.toFixed(1)}%</strong></span>
-                <span>TARGET: <strong className="text-neutral-400">{target.toFixed(1)}%</strong></span>
+              <div className="flex justify-between text-[9px] text-slate-500 dark:text-neutral-500 border-t border-slate-200 dark:border-neutral-900/40 pt-2">
+                <span>ACTUAL: <strong className="text-slate-700 dark:text-neutral-300">{actual.toFixed(1)}%</strong></span>
+                <span>TARGET: <strong className="text-slate-500 dark:text-neutral-400">{target.toFixed(1)}%</strong></span>
               </div>
             </div>
           );

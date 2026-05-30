@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@custom-variant dark (&:is(.dark *));
+
 :root {
   --t1-size: 1.125rem; /* 18px */
   --t2-size: 0.75rem;  /* 12px */
@@ -14,8 +16,6 @@
 }
 
 html, body, #root {
-  background-color: #050505 !important;
-  color: #ffffff;
   margin: 0;
   padding: 0;
   width: 100%;
