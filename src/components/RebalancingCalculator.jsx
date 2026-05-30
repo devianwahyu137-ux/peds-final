@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
 
 const BROKER_FEE = 0.0020; // 0.20% flat fee
@@ -84,7 +85,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
   return (
     <div className="border border-slate-200 dark:border-neutral-800 bg-white dark:bg-[#121212] rounded-xl p-5 space-y-5 font-mono transition-colors duration-300">
       <div>
-        <h3 className="text-sm font-bold text-slate-900 dark:text-white">[🛠️] REBALANCING_CALCULATOR</h3>
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white">[<Settings2 size={16} className="text-slate-400" />] REBALANCING_CALCULATOR</h3>
         <p className="text-[10px] text-slate-500 dark:text-neutral-500 mt-1 uppercase tracking-wider">Dynamic order calculation & trade delta sheets</p>
       </div>
 
@@ -97,7 +98,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
             type="text"
             value={capitalRaw ? parseInt(capitalRaw.replace(/\./g, "") || "0").toLocaleString("id-ID") : ""}
             onChange={(e) => setCapitalRaw(e.target.value.replace(/[^0-9]/g, ""))}
-            className="w-full bg-slate-50 dark:bg-black border border-slate-300 dark:border-neutral-800 rounded-lg px-3 py-2 text-slate-900 dark:text-white text-xs tabular-nums focus:outline-none focus:border-slate-400 dark:focus:border-neutral-700 transition-colors"
+            className="w-full bg-slate-50 dark:bg-black border border-slate-300 dark:border-neutral-800 rounded-lg px-4 py-4 text-slate-900 dark:text-white text-3xl font-mono font-bold tracking-tighter tabular-nums focus:outline-none focus:border-slate-400 dark:focus:border-neutral-700 transition-colors"
           />
         </div>
 
@@ -132,7 +133,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
               const isBuy = row.deltaIDR > 0;
               const isZero = row.action === "HOLD";
               return (
-                <tr key={row.asset} className="border-b border-slate-200 dark:border-neutral-900/60 hover:bg-slate-50 dark:hover:bg-neutral-900/10">
+                <tr key={row.asset} className="border-b border-slate-200 dark:border-neutral-900/60 hover:bg-slate-50 dark:hover:bg-white dark:bg-neutral-900/10">
                   <td className={`p-2 font-bold ${ASSET_COLORS[row.asset]}`}>
                     {ASSET_LABELS[row.asset]}
                   </td>
@@ -197,7 +198,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
             {activeOrders.map((order) => {
               const isBuy = order.action === "BUY";
               return (
-                <div key={order.asset} className="flex justify-between items-center bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-neutral-900/50 rounded-lg p-3">
+              <div key={order.asset} className="flex justify-between items-center bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-neutral-900/50 rounded-xl p-5">
                   <div className="flex items-center gap-3">
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                       isBuy ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20" : "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-200 dark:border-red-500/20"
@@ -206,7 +207,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
                     </span>
                     <span className="text-xs text-slate-700 dark:text-neutral-300 font-bold">{ASSET_LABELS[order.asset]}</span>
                   </div>
-                  <span className={`text-xs font-bold tabular-nums ${isBuy ? "text-emerald-500 dark:text-emerald-400" : "text-red-500 dark:text-red-400"}`}>
+                  <span className={`text-2xl font-mono font-bold tracking-tighter tabular-nums ${isBuy ? "text-emerald-500 dark:text-emerald-400" : "text-red-500 dark:text-red-400"}`}>
                     {formatIDR(Math.abs(order.deltaIDR))}
                   </span>
                 </div>

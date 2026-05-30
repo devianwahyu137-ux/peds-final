@@ -61,7 +61,7 @@ export function MacroSentimentSummary() {
     <div className="glass-card rounded-xl p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-[9px] text-neutral-500 uppercase tracking-widest font-mono font-bold">
+          <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-mono font-bold">
             Agregat Sentimen Pasar
           </div>
           <div className="text-[10px] text-neutral-600 font-mono mt-0.5">
@@ -85,7 +85,7 @@ export function MacroSentimentSummary() {
             { label: 'NEUTRAL',  pct: data.neutPct, color: '#525252' },
           ].map(({ label, pct, color }) => (
             <div key={label} className="flex items-center gap-3">
-              <span className="text-[8px] font-mono text-neutral-500 w-14 text-right uppercase tracking-wider">
+              <span className="text-[8px] font-mono text-slate-400 dark:text-neutral-500 w-14 text-right uppercase tracking-wider">
                 {label}
               </span>
               <div className="flex-1 h-2 bg-neutral-800/70 rounded-full overflow-hidden">
@@ -94,7 +94,7 @@ export function MacroSentimentSummary() {
                   style={{ width: `${pct}%`, backgroundColor: color }}
                 />
               </div>
-              <span className="text-[10px] font-mono font-bold text-neutral-400 w-8 tabular-nums">
+              <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-neutral-400 w-8 tabular-nums">
                 {pct}%
               </span>
             </div>
@@ -102,29 +102,29 @@ export function MacroSentimentSummary() {
         </div>
 
         {/* Summary text */}
-        <div className="text-[10px] font-mono text-neutral-400 leading-relaxed p-3 rounded-lg bg-neutral-900/50 border border-neutral-800/40">
+        <div className="text-[10px] font-mono text-slate-500 dark:text-neutral-400 leading-relaxed p-3 rounded-lg bg-white dark:bg-neutral-900/50 border border-slate-300 dark:border-neutral-800/40">
           {data.summary}
         </div>
 
         {/* Signal grid */}
         <div className="grid grid-cols-2 gap-2">
           {data.signals.map((sig, i) => (
-            <div key={i} className="flex items-center justify-between p-2.5 rounded-lg border border-neutral-800/40 bg-neutral-900/30">
-              <span className="text-[9px] font-mono text-neutral-500">
+            <div key={i} className="flex items-center justify-between p-2.5 rounded-lg border border-slate-300 dark:border-neutral-800/40 bg-white dark:bg-neutral-900/30">
+              <span className="text-[9px] font-mono text-slate-400 dark:text-neutral-500">
                 {sig.label}
               </span>
               <div className="flex items-center gap-1">
                 <span className={`text-[10px] ${
                   sig.dir === 'up'   ? 'text-emerald-400'
                   : sig.dir === 'down' ? 'text-red-400'
-                  : 'text-neutral-500'
+                  : 'text-slate-400 dark:text-neutral-500'
                 }`}>
                   {sig.dir === 'up' ? '↑' : sig.dir === 'down' ? '↓' : '→'}
                 </span>
                 <span className={`text-[10px] font-mono font-bold ${
                   sig.dir === 'up'   ? 'text-emerald-400'
                   : sig.dir === 'down' ? 'text-red-400'
-                  : 'text-neutral-400'
+                  : 'text-slate-500 dark:text-neutral-400'
                 }`}>
                   {sig.value}
                 </span>

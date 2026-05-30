@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 import MasterDetailLayout from "./components/MasterDetailLayout";
 import SovereignYieldCurve from "./components/SovereignYieldCurve";
@@ -32,10 +33,10 @@ const ACCENT = {
 };
 
 const ASSET_CONFIG = {
-  stocks: { label: "EQUITIES", sublabel: "Stocks", icon: "📈", color: "#3b82f6", colorDim: "rgba(59,130,246,0.15)" },
-  bonds: { label: "FIXED INCOME", sublabel: "Bonds", icon: "🏛️", color: "#a78bfa", colorDim: "rgba(167,139,250,0.15)" },
-  gold: { label: "PRECIOUS METALS", sublabel: "Gold", icon: "🥇", color: "#fbbf24", colorDim: "rgba(251,191,36,0.15)" },
-  cash: { label: "LIQUIDITY", sublabel: "Cash / USD", icon: "💵", color: "#34d399", colorDim: "rgba(52,211,153,0.15)" }
+  stocks: { label: "EQUITIES", sublabel: "Stocks", icon: <TrendingUp size={16} className="text-emerald-400" />, color: "#3b82f6", colorDim: "rgba(59,130,246,0.15)" },
+  bonds: { label: "FIXED INCOME", sublabel: "Bonds", icon: <Landmark size={16} className="text-indigo-400" />, color: "#a78bfa", colorDim: "rgba(167,139,250,0.15)" },
+  gold: { label: "PRECIOUS METALS", sublabel: "Gold", icon: <Coins size={16} className="text-amber-400" />, color: "#fbbf24", colorDim: "rgba(251,191,36,0.15)" },
+  cash: { label: "LIQUIDITY", sublabel: "Cash / USD", icon: <Wallet size={16} className="text-emerald-400" />, color: "#34d399", colorDim: "rgba(52,211,153,0.15)" }
 };
 
 
@@ -226,9 +227,9 @@ export default function AlphaShield() {
           </div>
           <div className="space-y-1.5">
             {[
-              { id: "portfolio", label: "PORTFOLIO_MATRIX", icon: "📊" },
+              { id: "portfolio", label: "PORTFOLIO_MATRIX", icon: <LineChart size={16} className="text-blue-400" /> },
               { id: "macro", label: "MACRO_INTELLIGENCE", icon: "🌎" },
-              { id: "rebalancing", label: "ASSET_REBALANCING", icon: "🛠️" }
+              { id: "rebalancing", label: "ASSET_REBALANCING", icon: <Settings2 size={16} className="text-slate-400" /> }
             ].map((item) => (
               <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full text-left px-3 py-2.5 rounded-lg text-xs font-bold border flex items-center gap-2.5 transition-all cursor-pointer ${activeTab === item.id ? `bg-neutral-900 border-neutral-700/60 ${acc.text}` : "bg-transparent border-transparent text-neutral-500 hover:text-neutral-300"}`}>
                 <span>{item.icon}</span> {item.label}
@@ -301,7 +302,7 @@ export default function AlphaShield() {
                     <div className="text-[9px] text-red-500 uppercase tracking-widest font-bold">Black Swan Stress Testing Array</div>
                     <div className="grid grid-cols-2 gap-2">
                       <button onClick={() => setCrisisMode(crisisMode === "HYPERINFLATION" ? null : "HYPERINFLATION")} className={`p-2 rounded border text-[10px] font-bold cursor-pointer transition-all ${crisisMode === "HYPERINFLATION" ? "bg-red-500/20 border-red-500 text-white" : "border-neutral-900 text-neutral-500"}`}>[ 🔥 HYPERINFLATION ]</button>
-                      <button onClick={() => setCrisisMode(crisisMode === "RUPIAH_CRASH" ? null : "RUPIAH_CRASH")} className={`p-2 rounded border text-[10px] font-bold cursor-pointer transition-all ${crisisMode === "RUPIAH_CRASH" ? "bg-red-500/20 border-red-500 text-white" : "border-neutral-900 text-neutral-500"}`}>[ 🚨 RUPIAH CRASH ]</button>
+                      <button onClick={() => setCrisisMode(crisisMode === "RUPIAH_CRASH" ? null : "RUPIAH_CRASH")} className={`p-2 rounded border text-[10px] font-bold cursor-pointer transition-all ${crisisMode === "RUPIAH_CRASH" ? "bg-red-500/20 border-red-500 text-white" : "border-neutral-900 text-neutral-500"}`}>[ <AlertTriangle size={16} className="text-amber-500" /> RUPIAH CRASH ]</button>
                     </div>
                   </div>
                 </div>

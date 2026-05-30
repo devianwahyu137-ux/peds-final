@@ -41,7 +41,7 @@ export function NavHealthIndicator() {
 
   return (
     <div className="flex items-center gap-2 px-3 py-1 rounded-lg
-                    border border-neutral-800/50 cursor-default"
+                    border border-slate-300 dark:border-neutral-800/50 cursor-default"
          style={{ background: 'rgba(10,10,10,0.8)' }}
          title={`Kesehatan Data: ${health.score}/100 — ${counts.live}/${counts.total} sumber aktif`}
     >
@@ -67,12 +67,12 @@ export function NavHealthIndicator() {
           <span className="text-xs font-bold font-mono tracking-tight" style={{ color: health.color }}>
             {health.score}
           </span>
-          <span className="text-[9px] font-mono text-neutral-500">/100</span>
+          <span className="text-[9px] font-mono text-slate-400 dark:text-neutral-500">/100</span>
           <span className="text-[8px] font-mono font-bold tracking-widest ml-1" style={{ color: health.color }}>
             {health.label}
           </span>
         </div>
-        <div className="text-[8px] font-mono text-neutral-500 mt-0.5">
+        <div className="text-[8px] font-mono text-slate-400 dark:text-neutral-500 mt-0.5">
           {counts.live}/{counts.total} live · {syncLabel} ago
         </div>
       </div>

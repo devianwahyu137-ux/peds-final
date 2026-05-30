@@ -92,7 +92,7 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
               SKENARIO AKTIF: {config.riskBadge}
             </span>
             <button
-              className="text-[9px] font-mono text-neutral-600 hover:text-neutral-400 transition-colors cursor-pointer px-2 py-1 rounded border border-neutral-800 hover:border-neutral-700"
+              className="text-[9px] font-mono text-neutral-600 hover:text-slate-500 dark:text-neutral-400 transition-colors cursor-pointer px-2 py-1 rounded border border-slate-300 dark:border-neutral-800 hover:border-neutral-700"
               onClick={onDismiss}
             >
               [ESC]
@@ -111,7 +111,7 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
           <div className="h-px w-full" style={{ background: config.colorBorder }} />
 
           {/* Summary */}
-          <p className="text-[11px] font-mono text-neutral-400 leading-relaxed">
+          <p className="text-[11px] font-mono text-slate-500 dark:text-neutral-400 leading-relaxed">
             {config.briefing.summary}
           </p>
 
@@ -129,7 +129,7 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
             >
               💡 Tindakan yang Disarankan
             </div>
-            <p className="text-[11px] font-mono text-neutral-300 leading-relaxed">
+            <p className="text-[11px] font-mono text-slate-700 dark:text-neutral-300 leading-relaxed">
               {config.briefing.action}
             </p>
           </div>

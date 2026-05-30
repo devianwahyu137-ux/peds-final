@@ -3,6 +3,7 @@
 // Shows per-endpoint health, TTL, and manual refresh option
 
 import { useState, useEffect } from 'react';
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
 
 const ENDPOINT_REGISTRY = [
@@ -10,7 +11,7 @@ const ENDPOINT_REGISTRY = [
     key:       'biRate',
     label:     'BI Rate & Inflasi',
     provider:  'Supabase Edge',
-    icon:      '🏦',
+    icon:      <Landmark size={16} className="text-indigo-400" />,
     ttlMs:     60 * 60 * 1000,
     userLabel: 'Bank Indonesia / BPS',
   },
@@ -26,7 +27,7 @@ const ENDPOINT_REGISTRY = [
     key:       'dxy',
     label:     'DXY Dollar Index',
     provider:  'FRED API',
-    icon:      '💵',
+    icon:      <Wallet size={16} className="text-emerald-400" />,
     ttlMs:     15 * 60 * 1000,
     userLabel: 'Federal Reserve St. Louis',
   },
@@ -42,7 +43,7 @@ const ENDPOINT_REGISTRY = [
     key:       'ihsg',
     label:     'IHSG Composite',
     provider:  'Alpha Vantage',
-    icon:      '📈',
+    icon:      <TrendingUp size={16} className="text-emerald-400" />,
     ttlMs:     10 * 60 * 1000,
     userLabel: 'Alpha Vantage Markets',
   },
@@ -109,12 +110,12 @@ export function DataHealthPanel() {
               }}
             />
           </div>
-          <span className="text-[10px] font-bold tracking-widest text-neutral-400 uppercase font-mono">
+          <span className="text-[10px] font-bold tracking-widest text-slate-500 dark:text-neutral-400 uppercase font-mono">
             Status Sumber Data
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono text-neutral-500">
+          <span className="text-[10px] font-mono text-slate-400 dark:text-neutral-500">
             {liveCount}/{total} sumber aktif
           </span>
           {lastSyncAt > 0 && (
@@ -176,7 +177,7 @@ export function DataHealthPanel() {
               {/* Names + TTL bar */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono font-bold text-neutral-300 truncate">
+                  <span className="text-[10px] font-mono font-bold text-slate-700 dark:text-neutral-300 truncate">
                     {ep.label}
                   </span>
                   <span className="text-[8px] font-mono text-neutral-600 truncate hidden sm:inline">
@@ -185,7 +186,7 @@ export function DataHealthPanel() {
                 </div>
                 {/* TTL progress bar */}
                 {status === 'ok' && (
-                  <div className="h-[2px] w-full bg-neutral-900 rounded-full mt-1 overflow-hidden">
+                  <div className="h-[2px] w-full bg-white dark:bg-neutral-900 rounded-full mt-1 overflow-hidden">
                     <div
                       className="h-full rounded-full"
                       style={{
@@ -201,7 +202,7 @@ export function DataHealthPanel() {
               {/* Value preview */}
               <div className="text-right flex-shrink-0 w-20">
                 {displayValue != null ? (
-                  <span className="text-[10px] font-mono font-bold text-neutral-300 tabular-nums">
+                  <span className="text-[10px] font-mono font-bold text-slate-700 dark:text-neutral-300 tabular-nums">
                     {typeof displayValue === 'number'
                       ? displayValue.toLocaleString('id-ID', { maximumFractionDigits: 2 })
                       : displayValue}

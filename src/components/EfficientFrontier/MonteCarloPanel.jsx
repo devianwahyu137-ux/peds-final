@@ -2,6 +2,7 @@
 // Container panel integrating simulation worker + frontier chart + summary stats
 
 import { useState, useEffect, useRef } from 'react';
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
 import { EfficientFrontierChart } from './EfficientFrontierChart';
 import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
@@ -169,8 +170,8 @@ export function MonteCarloPanel() {
       <div className="p-5 pb-3 flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-base">🎲</span>
-            <span className="text-[10px] font-bold tracking-widest text-neutral-400 uppercase font-mono">
+            <span className="text-base"><Dices size={16} className="text-slate-400" /></span>
+            <span className="text-[10px] font-bold tracking-widest text-slate-500 dark:text-neutral-400 uppercase font-mono">
               Monte Carlo Simulation Engine
             </span>
           </div>
@@ -217,7 +218,7 @@ export function MonteCarloPanel() {
                 value={parseInt(inputVal || '0').toLocaleString('id-ID')}
                 onChange={(e) => handleCapitalChange(e.target.value)}
                 disabled={isCalculating}
-                className="bg-black border border-neutral-800/70 rounded-lg pl-8 pr-3 py-2 text-white font-mono text-xs tabular-nums focus:outline-none w-40 disabled:opacity-50"
+                className="bg-slate-50 dark:bg-black border border-slate-300 dark:border-neutral-800/70 rounded-lg pl-8 pr-3 py-2 text-slate-900 dark:text-white font-mono text-xs tabular-nums focus:outline-none w-40 disabled:opacity-50"
                 style={{ borderColor: (config?.colorBorder ?? 'rgba(16,185,129,0.30)') + '80' }}
               />
             </div>
@@ -274,16 +275,16 @@ export function MonteCarloPanel() {
             ].map((stat) => (
               <div
                 key={stat.label}
-                className="rounded-lg p-3 space-y-1"
+                className="rounded-xl p-6 flex flex-col gap-2"
                 style={{ background: 'rgba(10,10,10,0.50)', border: '1px solid rgba(255,255,255,0.05)' }}
               >
-                <div className="text-[8px] font-mono text-neutral-600 uppercase tracking-widest">
+                <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-sans font-bold">
                   {stat.label}
                 </div>
-                <div className="text-sm font-black font-mono tabular-nums" style={{ color: stat.color }}>
+                <div className="text-3xl font-mono font-bold tracking-tighter tabular-nums" style={{ color: stat.color }}>
                   {stat.value}
                 </div>
-                <div className="text-[9px] font-mono text-neutral-500">
+                <div className="text-[9px] font-mono text-slate-400 dark:text-neutral-500">
                   {stat.sub}
                 </div>
               </div>
@@ -293,7 +294,7 @@ export function MonteCarloPanel() {
 
         {/* Efficient Frontier Chart */}
         <div className="space-y-2">
-          <div className="text-[9px] font-mono text-neutral-500 uppercase tracking-widest">
+          <div className="text-[9px] font-mono text-slate-400 dark:text-neutral-500 uppercase tracking-widest">
             Peta Efisiensi Portofolio — Efficient Frontier
           </div>
           <div className="text-[9px] font-mono text-neutral-600 leading-relaxed">

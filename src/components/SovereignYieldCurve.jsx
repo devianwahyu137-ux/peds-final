@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
 
 const tenures = ["1Y", "3Y", "5Y", "10Y"];
@@ -109,15 +110,15 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
       <div className="glass-card rounded-xl p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-bold text-white font-mono">[🌎] SOVEREIGN_YIELD_CURVE_DETECTOR</h3>
-            <p className="text-[10px] text-neutral-500 mt-1 uppercase tracking-wider">Dynamic SBN vs UST Tenure Bezier Plot</p>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white font-mono">[🌎] SOVEREIGN_YIELD_CURVE_DETECTOR</h3>
+            <p className="text-[10px] text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">Dynamic SBN vs UST Tenure Bezier Plot</p>
           </div>
-          <div className="text-[10px] font-mono text-neutral-500">
+          <div className="text-[10px] font-mono text-slate-400 dark:text-neutral-500">
             SPREAD 10Y: <span className="font-bold text-amber-400">+{(spread ?? 0).toFixed(2)}%</span>
           </div>
         </div>
 
-        <div className="border border-neutral-800/50 rounded-lg bg-black/40 p-4 overflow-x-auto">
+        <div className="border border-slate-300 dark:border-neutral-800/50 rounded-lg bg-slate-50 dark:bg-black/40 p-4 overflow-x-auto">
           <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 240 }}>
             {/* Grid Lines */}
             {[mn, mn + (mx - mn) * 0.25, mn + (mx - mn) * 0.5, mn + (mx - mn) * 0.75, mx].map((v, i) => (
@@ -245,7 +246,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
           </svg>
         </div>
 
-        <div className="flex items-center gap-6 text-[10px] font-mono text-neutral-500">
+        <div className="flex items-center gap-6 text-[10px] font-mono text-slate-400 dark:text-neutral-500">
           <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 rounded" style={{ backgroundColor: accentColor }} /> SBN Indonesia</span>
           <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 bg-neutral-500" /> US Treasury</span>
           <span className="ml-auto text-neutral-700">ACTIVE: {scenarioId.toUpperCase()}</span>
@@ -255,8 +256,8 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
       {/* 4x4 Correlation Matrix */}
       <div className="glass-card rounded-xl p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-white font-mono">[📊] MACRO_CORRELATION_MATRIX</h3>
-          <p className="text-[10px] text-neutral-500 mt-1 uppercase tracking-wider">Click cell for qualitative macro risk definition analysis</p>
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white font-mono">[<LineChart size={16} className="text-blue-400" />] MACRO_CORRELATION_MATRIX</h3>
+          <p className="text-[10px] text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">Click cell for qualitative macro risk definition analysis</p>
         </div>
 
         <div className="overflow-x-auto">
@@ -265,14 +266,14 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
               <tr>
                 <th className="p-2 w-20" />
                 {cL.map(l => (
-                  <th key={l} className="p-2 text-center text-neutral-400 font-bold w-20">{l}</th>
+                  <th key={l} className="p-2 text-center text-slate-500 dark:text-neutral-400 font-bold w-20">{l}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {cL.map((row, ri) => (
                 <tr key={row}>
-                  <td className="p-2 text-right text-neutral-400 font-bold">{row}</td>
+                  <td className="p-2 text-right text-slate-500 dark:text-neutral-400 font-bold">{row}</td>
                   {cD[ri].map((val, ci) => {
                     const ck = ri < ci ? `${ri}-${ci}` : `${ci}-${ri}`;
                     const isDiag = ri === ci;
@@ -281,7 +282,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
                       <td
                         key={ci}
                         onClick={() => !isDiag && setSelectedCell(isSelected ? null : ck)}
-                        className={`p-3 text-center font-bold cursor-pointer transition-all border border-neutral-900/40 rounded ${
+                        className={`p-3 text-center font-bold cursor-pointer transition-all border border-slate-200 dark:border-neutral-900/40 rounded ${
                           isDiag ? "text-neutral-700 bg-transparent" : "hover:scale-[1.05]"
                         } ${isSelected ? "ring-2 ring-white/60 bg-white/5" : ""}`}
                         style={{
@@ -300,10 +301,10 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
         </div>
 
         {selectedCell && cI[selectedCell] && (
-          <div className="p-4 bg-neutral-900/40 border border-neutral-800 rounded-lg text-xs leading-relaxed text-neutral-300 font-mono animate-fadeIn">
+          <div className="p-4 bg-white dark:bg-neutral-900/40 border border-slate-300 dark:border-neutral-800 rounded-lg text-xs leading-relaxed text-slate-700 dark:text-neutral-300 font-mono animate-fadeIn">
             <div className="flex items-center gap-2 mb-1.5">
               <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">INTERPRETASI</span>
-              <span className="text-[10px] text-neutral-500">Cell {selectedCell.split("-").map(i => cL[i]).join(" vs ")}</span>
+              <span className="text-[10px] text-slate-400 dark:text-neutral-500">Cell {selectedCell.split("-").map(i => cL[i]).join(" vs ")}</span>
             </div>
             <p>{cI[selectedCell]}</p>
           </div>

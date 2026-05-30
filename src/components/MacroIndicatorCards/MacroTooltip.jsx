@@ -34,7 +34,7 @@ export default function MacroTooltip({ indicatorId, children }) {
     <div className="relative inline-block">
       <button
         type="button"
-        className="text-[9px] text-neutral-600 hover:text-neutral-400 transition-colors cursor-help ml-1"
+        className="text-[9px] text-neutral-600 hover:text-slate-500 dark:text-neutral-400 transition-colors cursor-help ml-1"
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         onFocus={() => setIsVisible(true)}

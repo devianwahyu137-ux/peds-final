@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 
 const SectorRotationCards = React.memo(function SectorRotationCards() {
@@ -107,7 +108,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
     {
       id: "equities",
       color: "#3b82f6",
-      icon: "📈",
+      icon: <TrendingUp size={16} className="text-emerald-400" />,
       title: "EQUITIES SECTOR ROTATION",
       weight: currentWeights?.stocks || 0,
       ...eq
@@ -115,7 +116,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
     {
       id: "fixed_income",
       color: "#a78bfa",
-      icon: "🏛️",
+      icon: <Landmark size={16} className="text-indigo-400" />,
       title: "FIXED INCOME DURATION STRATEGY",
       weight: currentWeights?.bonds || 0,
       ...fi
@@ -123,7 +124,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
     {
       id: "hard_assets",
       color: "#fbbf24",
-      icon: "🥇",
+      icon: <Coins size={16} className="text-amber-400" />,
       title: "HARD ASSETS VAULT STRATEGY",
       weight: currentWeights?.gold || 0,
       ...gd
@@ -144,7 +145,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
             <div key={card.id} className="border border-slate-200 dark:border-neutral-900 rounded-xl bg-slate-50 dark:bg-black/40 overflow-hidden transition-all duration-200">
               <button
                 onClick={() => setExpandedId(isOpen ? null : card.id)}
-                className="w-full text-left p-4 flex items-center justify-between cursor-pointer hover:bg-slate-100 dark:hover:bg-neutral-900/10 transition-colors"
+                className="w-full text-left p-4 flex items-center justify-between cursor-pointer hover:bg-slate-100 dark:hover:bg-white dark:bg-neutral-900/10 transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-lg">{card.icon}</span>

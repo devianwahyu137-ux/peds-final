@@ -1,4 +1,5 @@
 import { useRootStore } from "@/stores/rootStore";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { SPARKLINE_PRESETS } from "../../lib/historicalPresets";
 import MacroIndicatorCard from "./MacroIndicatorCard";
 
@@ -7,12 +8,12 @@ import MacroIndicatorCard from "./MacroIndicatorCard";
  * Each maps to a store key and sparkline preset.
  */
 const MACRO_INDICATORS = [
-  { id: "biRate",  label: "BI Rate",         unit: "%",   icon: "🏦", storeKey: "biRate"  },
-  { id: "cpi",     label: "Inflasi YoY",     unit: "%",   icon: "📊", storeKey: "cpi"     },
+  { id: "biRate",  label: "BI Rate",         unit: "%",   icon: <Landmark size={16} className="text-indigo-400" />, storeKey: "biRate"  },
+  { id: "cpi",     label: "Inflasi YoY",     unit: "%",   icon: <LineChart size={16} className="text-blue-400" />, storeKey: "cpi"     },
   { id: "usdIdr",  label: "USD/IDR",         unit: "IDR", icon: "💱", storeKey: "usdIdr"  },
-  { id: "dxy",     label: "DXY Index",       unit: "pts", icon: "💵", storeKey: "dxy"     },
+  { id: "dxy",     label: "DXY Index",       unit: "pts", icon: <Wallet size={16} className="text-emerald-400" />, storeKey: "dxy"     },
   { id: "gs10",    label: "US 10Y Yield",    unit: "%",   icon: "🇺🇸", storeKey: "gs10"   },
-  { id: "ihsg",    label: "IHSG Composite",  unit: "pts", icon: "📈", storeKey: "ihsg"    },
+  { id: "ihsg",    label: "IHSG Composite",  unit: "pts", icon: <TrendingUp size={16} className="text-emerald-400" />, storeKey: "ihsg"    },
 ];
 
 /**
@@ -28,7 +29,7 @@ export default function MacroIndicatorCards() {
 
   return (
     <div className="space-y-3">
-      <div className="text-[9px] text-neutral-500 uppercase tracking-widest font-mono">
+      <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-mono">
         Macro Economic Indicators
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">

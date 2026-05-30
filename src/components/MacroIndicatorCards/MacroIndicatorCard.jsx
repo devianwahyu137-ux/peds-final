@@ -187,12 +187,12 @@ export default function MacroIndicatorCard({
       />
 
       {/* Content */}
-      <div className="relative z-10 p-5">
+      <div className="relative z-10 p-6 flex flex-col gap-2">
         {/* Header: Icon, Label, Status Dot, Tooltip */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-base">{icon}</span>
-            <span className="text-[10px] font-bold tracking-widest text-neutral-400 uppercase font-mono">
+            <span className="text-[10px] uppercase tracking-widest text-slate-500 dark:text-neutral-500 font-sans font-bold">
               {label}
             </span>
             <MacroTooltip indicatorId={id}>?</MacroTooltip>
@@ -208,7 +208,7 @@ export default function MacroIndicatorCard({
 
         {/* Main Value — Animated */}
         <div
-          className={`text-xl font-black font-mono tabular-nums tracking-tight ${isChanging ? "value-updated" : ""}`}
+          className={`text-4xl font-black font-mono tracking-tighter tabular-nums ${isChanging ? "value-updated" : ""}`}
           style={{ color: glow.color }}
         >
           {animatedValue}

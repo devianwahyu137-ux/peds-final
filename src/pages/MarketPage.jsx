@@ -1,4 +1,5 @@
 import { useRootStore, SCENARIOS } from "@/stores/rootStore";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import MacroIndicatorCards from "../components/MacroIndicatorCards";
 import { ACCENT, ScenarioButton } from "../components/SharedComponents";
 import { DataHealthPanel } from "../components/DataHealthPanel";
@@ -25,11 +26,11 @@ export default function MarketPage() {
       <DataHealthPanel />
 
       {/* Header */}
-      <div className="border-b border-neutral-900 pb-4">
+      <div className="border-b border-slate-200 dark:border-neutral-900 pb-4">
         <h1 className="text-lg font-black font-mono uppercase tracking-tight">
           Kondisi Pasar <span style={{ color: acc.neon }}>// Makroekonomi</span>
         </h1>
-        <p className="text-[10px] font-mono text-neutral-500 mt-1 uppercase tracking-wider">
+        <p className="text-[10px] font-mono text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">
           Indikator Ekonomi Indonesia &amp; Global — Simulasi Data Live
         </p>
       </div>
@@ -38,7 +39,7 @@ export default function MarketPage() {
         {/* Left: Scenario Selector */}
         <div className="lg:col-span-4 space-y-4">
           <div className="glass-card rounded-xl p-4">
-            <div className="text-[9px] text-neutral-500 uppercase tracking-widest mb-3 font-mono">
+            <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest mb-3 font-mono">
               Skenario Ekonomi
             </div>
             <div className="space-y-2">
@@ -63,8 +64,8 @@ export default function MarketPage() {
                 onClick={() => setCrisisMode(crisisMode === "HYPERINFLATION" ? null : "HYPERINFLATION")}
                 className={`p-2 rounded border text-[10px] font-bold cursor-pointer transition-all font-mono ${
                   crisisMode === "HYPERINFLATION"
-                    ? "bg-red-500/20 border-red-500 text-white"
-                    : "border-neutral-900 text-neutral-500"
+                    ? "bg-red-500/20 border-red-500 text-slate-900 dark:text-white"
+                    : "border-slate-200 dark:border-neutral-900 text-slate-400 dark:text-neutral-500"
                 }`}
               >
                 🔥 HIPERINFLASI
@@ -73,11 +74,11 @@ export default function MarketPage() {
                 onClick={() => setCrisisMode(crisisMode === "RUPIAH_CRASH" ? null : "RUPIAH_CRASH")}
                 className={`p-2 rounded border text-[10px] font-bold cursor-pointer transition-all font-mono ${
                   crisisMode === "RUPIAH_CRASH"
-                    ? "bg-red-500/20 border-red-500 text-white"
-                    : "border-neutral-900 text-neutral-500"
+                    ? "bg-red-500/20 border-red-500 text-slate-900 dark:text-white"
+                    : "border-slate-200 dark:border-neutral-900 text-slate-400 dark:text-neutral-500"
                 }`}
               >
-                🚨 RUPIAH CRASH
+                <AlertTriangle size={16} className="text-amber-500" /> RUPIAH CRASH
               </button>
             </div>
           </div>

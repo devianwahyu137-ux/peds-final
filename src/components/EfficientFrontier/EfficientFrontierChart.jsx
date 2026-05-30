@@ -72,7 +72,7 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
   return (
     <div className="space-y-2">
       {/* Legend */}
-      <div className="flex flex-wrap items-center gap-4 text-[8px] font-mono text-neutral-500 px-1">
+      <div className="flex flex-wrap items-center gap-4 text-[8px] font-mono text-slate-400 dark:text-neutral-500 px-1">
         <span className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: '#10b981' }} />
           Sharpe ≥ 1.2

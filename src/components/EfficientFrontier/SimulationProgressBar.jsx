@@ -21,7 +21,7 @@ export function SimulationProgressBar({ progress, status }) {
   return (
     <div className="space-y-2 py-2">
       <div className="flex items-center justify-between">
-        <span className="text-[9px] font-mono text-neutral-500">
+        <span className="text-[9px] font-mono text-slate-400 dark:text-neutral-500">
           {stageLabel}
         </span>
         <span
@@ -31,7 +31,7 @@ export function SimulationProgressBar({ progress, status }) {
           {Math.round(progress)}%
         </span>
       </div>
-      <div className="h-1 w-full rounded-full bg-neutral-900 overflow-hidden">
+      <div className="h-1 w-full rounded-full bg-white dark:bg-neutral-900 overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-300 ease-out"
           style={{

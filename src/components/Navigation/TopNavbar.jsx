@@ -1,3 +1,4 @@
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { memo, useState, useEffect } from "react";
 import { useRootStore } from "@/stores/rootStore";
 import { exportTearSheet } from "@/lib/tearSheetExporter";
@@ -28,13 +29,13 @@ const NAV_ITEMS = [
     id: "strategy",
     label: "STRATEGI",
     sublabel: "Rebalancing",
-    icon: "⚖️",
+    icon: <ActivitySquare size={16} className="text-slate-400" />,
   },
   {
     id: "analysis",
     label: "ANALISIS",
     sublabel: "Riset & Berita",
-    icon: "📊",
+    icon: <LineChart size={16} className="text-blue-400" />,
   },
 ];
 

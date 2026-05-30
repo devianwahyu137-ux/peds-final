@@ -1,12 +1,13 @@
 import SentimentBar from "./SentimentBar";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 
 /**
  * Badge class map for sentiment badges.
  */
 const BADGE_CONFIG = {
-  BULLISH: { cls: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30", emoji: "📈" },
-  BEARISH: { cls: "bg-red-500/15 text-red-400 border border-red-500/30", emoji: "📉" },
-  NEUTRAL: { cls: "bg-neutral-700/40 text-neutral-400 border border-neutral-700/40", emoji: "➡️" },
+  BULLISH: { cls: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30", emoji: <TrendingUp size={16} className="text-emerald-400" /> },
+  BEARISH: { cls: "bg-red-500/15 text-red-400 border border-red-500/30", emoji: <TrendingDown size={16} className="text-red-400" /> },
+  NEUTRAL: { cls: "bg-neutral-700/40 text-slate-500 dark:text-neutral-400 border border-neutral-700/40", emoji: <ArrowRight size={16} className="text-slate-400" /> },
 };
 
 /**
@@ -74,7 +75,7 @@ export default function NewsCard({
       <div className="p-4">
         {/* Source + Time */}
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[9px] font-mono text-neutral-500 uppercase tracking-wider">
+          <span className="text-[9px] font-mono text-slate-400 dark:text-neutral-500 uppercase tracking-wider">
             {source}
           </span>
           <span className="text-[9px] font-mono text-neutral-600 tabular-nums">
@@ -83,7 +84,7 @@ export default function NewsCard({
         </div>
 
         {/* Title */}
-        <h4 className="text-xs font-bold leading-snug text-white mb-1.5 line-clamp-2 font-mono">
+        <h4 className="text-xs font-bold leading-snug text-slate-900 dark:text-white mb-1.5 line-clamp-2 font-mono">
           <a
             href={url}
             target="_blank"
@@ -95,7 +96,7 @@ export default function NewsCard({
         </h4>
 
         {/* Summary */}
-        <p className="text-[10px] text-neutral-500 leading-relaxed font-mono line-clamp-2 mb-3">
+        <p className="text-[10px] text-slate-400 dark:text-neutral-500 leading-relaxed font-mono line-clamp-2 mb-3">
           {summary}
         </p>
 
@@ -105,7 +106,7 @@ export default function NewsCard({
             {tags?.map((tag) => (
               <span
                 key={tag}
-                className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-neutral-800/60 text-neutral-500 border border-neutral-800"
+                className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-neutral-800/60 text-slate-400 dark:text-neutral-500 border border-slate-300 dark:border-neutral-800"
               >
                 {tag}
               </span>

@@ -41,11 +41,11 @@ export default function PortfolioPage() {
   return (
     <div className="space-y-6 w-full page-enter mt-2">
       {/* Header */}
-      <div className="border-b border-neutral-900 pb-4">
+      <div className="border-b border-slate-200 dark:border-neutral-900 pb-4">
         <h1 className="text-lg font-black font-mono uppercase tracking-tight">
           Portofoliomu <span style={{ color: acc.neon }}>// Alokasi Aset</span>
         </h1>
-        <p className="text-[10px] font-mono text-neutral-500 mt-1 uppercase tracking-wider">
+        <p className="text-[10px] font-mono text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">
           Distribusi optimal berdasarkan skenario {scenarioId}
         </p>
       </div>
@@ -54,7 +54,7 @@ export default function PortfolioPage() {
         {/* Left: Donut + Asset Bars */}
         <div className="xl:col-span-7 space-y-4">
           <div className="glass-card rounded-xl p-5 overflow-visible">
-            <div className="text-[9px] text-neutral-500 uppercase tracking-widest mb-4 font-mono">
+            <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest mb-4 font-mono">
               Asset Allocation Matrix
             </div>
             <div className="flex flex-col md:flex-row items-center gap-8">
@@ -76,11 +76,11 @@ export default function PortfolioPage() {
 
           {/* Technical Execution Ledger */}
           <div className="glass-card rounded-xl p-4 font-mono text-[11px] space-y-2">
-            <div className="text-[9px] text-neutral-500 uppercase tracking-widest mb-1">
+            <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest mb-1">
               Technical Execution Ledger
             </div>
             {baseScenario.ledger.map((ledgerLine, ledgerIndex) => (
-              <div key={ledgerIndex} className="border-l-2 border-neutral-800 pl-3 text-neutral-400">
+              <div key={ledgerIndex} className="border-l-2 border-slate-300 dark:border-neutral-800 pl-3 text-slate-500 dark:text-neutral-400">
                 {ledgerLine}
               </div>
             ))}
@@ -90,7 +90,7 @@ export default function PortfolioPage() {
         {/* Right: MPT Analytics with interpretations */}
         <div className="xl:col-span-5 space-y-4">
           <div className="glass-card rounded-xl p-4">
-            <div className="text-[9px] text-neutral-500 uppercase tracking-widest mb-3 font-mono">
+            <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest mb-3 font-mono">
               Analisis MPT — dengan Interpretasi
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -7,6 +7,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 
 // ── ACCENT CONFIGURATION ────────────────────────────────────────────────────────
 
@@ -34,10 +35,10 @@ export const ACCENT = {
 // ── ASSET CONFIGURATION ─────────────────────────────────────────────────────────
 
 export const ASSET_CONFIG = {
-  stocks: { label: "EQUITIES", sublabel: "Stocks", icon: "📈", color: "#3b82f6", colorDim: "rgba(59,130,246,0.15)" },
-  bonds: { label: "FIXED INCOME", sublabel: "Bonds", icon: "🏛️", color: "#a78bfa", colorDim: "rgba(167,139,250,0.15)" },
-  gold: { label: "PRECIOUS METALS", sublabel: "Gold", icon: "🥇", color: "#fbbf24", colorDim: "rgba(251,191,36,0.15)" },
-  cash: { label: "LIQUIDITY", sublabel: "Cash / USD", icon: "💵", color: "#34d399", colorDim: "rgba(52,211,153,0.15)" }
+  stocks: { label: "EQUITIES", sublabel: "Stocks", icon: <TrendingUp size={16} className="text-emerald-400" />, color: "#3b82f6", colorDim: "rgba(59,130,246,0.15)" },
+  bonds: { label: "FIXED INCOME", sublabel: "Bonds", icon: <Landmark size={16} className="text-indigo-400" />, color: "#a78bfa", colorDim: "rgba(167,139,250,0.15)" },
+  gold: { label: "PRECIOUS METALS", sublabel: "Gold", icon: <Coins size={16} className="text-amber-400" />, color: "#fbbf24", colorDim: "rgba(251,191,36,0.15)" },
+  cash: { label: "LIQUIDITY", sublabel: "Cash / USD", icon: <Wallet size={16} className="text-emerald-400" />, color: "#34d399", colorDim: "rgba(52,211,153,0.15)" }
 };
 
 // ── ANIMATED NUMBER ─────────────────────────────────────────────────────────────
@@ -94,7 +95,7 @@ export function AllocationRow({ assetKey, pct }) {
           </div>
           <span className="text-sm font-bold tabular-nums" style={{ color: cfg.color }}>{pct}%</span>
         </div>
-        <div className="h-1.5 w-full rounded-full bg-neutral-900 overflow-hidden">
+        <div className="h-1.5 w-full rounded-full bg-white dark:bg-neutral-900 overflow-hidden">
           <div className="h-full rounded-full transition-all duration-700 ease-out" style={{ width: `${pct}%`, backgroundColor: cfg.color }} />
         </div>
       </div>
@@ -107,12 +108,12 @@ export function AllocationRow({ assetKey, pct }) {
 export function ScenarioButton({ scenario, isActive, onClick }) {
   const acc = ACCENT[scenario.accent];
   return (
-    <button onClick={onClick} className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 cursor-pointer ${isActive ? `${acc.bg} ${acc.border} ring-1 ring-${scenario.accent}-500/20` : "bg-neutral-900/40 border-neutral-850 hover:border-neutral-700/60"}`}>
+    <button onClick={onClick} className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 cursor-pointer ${isActive ? `${acc.bg} ${acc.border} ring-1 ring-${scenario.accent}-500/20` : "bg-white dark:bg-neutral-900/40 border-neutral-850 hover:border-neutral-700/60"}`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: isActive ? acc.neon : "#444" }} />
           <div>
-            <div className={`text-xs font-mono tracking-widest uppercase font-bold ${isActive ? acc.text : "text-neutral-500"}`}>{scenario.id}</div>
+            <div className={`text-xs font-mono tracking-widest uppercase font-bold ${isActive ? acc.text : "text-slate-400 dark:text-neutral-500"}`}>{scenario.id}</div>
             <div className={`text-[11px] mt-0.5 ${isActive ? acc.textBright : "text-neutral-600"}`}>{scenario.label}</div>
           </div>
         </div>
@@ -216,7 +217,7 @@ export function DonutChart({ accentColor, hovered, setHovered, animPct, analytic
  */
 export function MetricWithContext({ label, value, unit, interpretation, color }) {
   return (
-    <div className="border border-neutral-900 p-3 rounded-lg bg-black/20 font-mono space-y-1">
+    <div className="border border-slate-200 dark:border-neutral-900 p-3 rounded-lg bg-slate-50 dark:bg-black/20 font-mono space-y-1">
       <div className="text-[8px] text-neutral-600 uppercase tracking-widest">{label}</div>
       <div className="text-xl font-black tabular-nums" style={{ color }}>
         {value}{unit}

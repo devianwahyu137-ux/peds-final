@@ -1,11 +1,12 @@
 import React from "react";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
 
 const ASSET_CONFIG = {
-  stocks: { label: "Equities (IDX)", icon: "📈", color: "#3b82f6" },
-  bonds: { label: "SBN / Bonds", icon: "🏛️", color: "#a78bfa" },
-  gold: { label: "Physical Gold", icon: "🥇", color: "#fbbf24" },
-  cash: { label: "Cash / Liquidity", icon: "💵", color: "#34d399" }
+  stocks: { label: "Equities (IDX)", icon: <TrendingUp size={16} className="text-emerald-400" />, color: "#3b82f6" },
+  bonds: { label: "SBN / Bonds", icon: <Landmark size={16} className="text-indigo-400" />, color: "#a78bfa" },
+  gold: { label: "Physical Gold", icon: <Coins size={16} className="text-amber-400" />, color: "#fbbf24" },
+  cash: { label: "Cash / Liquidity", icon: <Wallet size={16} className="text-emerald-400" />, color: "#34d399" }
 };
 
 const DriftMonitor = React.memo(function DriftMonitor() {
@@ -17,7 +18,7 @@ const DriftMonitor = React.memo(function DriftMonitor() {
   return (
     <div className="border border-slate-200 dark:border-neutral-800 bg-white dark:bg-[#121212] rounded-xl p-5 space-y-4 transition-colors duration-300">
       <div>
-        <h3 className="text-sm font-bold text-slate-900 dark:text-white font-mono">[📊] DRIFT_MONITOR_CORE</h3>
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white font-mono">[<LineChart size={16} className="text-blue-400" />] DRIFT_MONITOR_CORE</h3>
         <p className="text-[10px] text-slate-500 dark:text-neutral-500 mt-1 uppercase tracking-wider">Comparing actual weights vs target baseline weights</p>
       </div>
 

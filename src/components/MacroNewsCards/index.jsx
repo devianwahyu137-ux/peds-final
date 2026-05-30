@@ -99,16 +99,16 @@ export default function MacroNewsCards() {
 
   return (
     <div className="glass-card rounded-xl p-5 mt-6 font-mono">
-      <div className="flex items-center justify-between border-b border-neutral-800/50 pb-3 mb-4">
+      <div className="flex items-center justify-between border-b border-slate-300 dark:border-neutral-800/50 pb-3 mb-4">
         <div>
-          <div className="text-[10px] font-bold tracking-widest text-neutral-400 uppercase">
+          <div className="text-[10px] font-bold tracking-widest text-slate-500 dark:text-neutral-400 uppercase">
             MACRO NEWS FEED // SENTIMENT STREAM
           </div>
           <div className="text-[9px] text-neutral-600 uppercase mt-0.5">
             Real-Time News Analytics & Sentiment Tracking
           </div>
         </div>
-        <div className="text-[9px] px-2.5 py-0.5 rounded border border-neutral-800 bg-black/40 text-neutral-500 uppercase font-mono">
+        <div className="text-[9px] px-2.5 py-0.5 rounded border border-slate-300 dark:border-neutral-800 bg-slate-50 dark:bg-black/40 text-slate-400 dark:text-neutral-500 uppercase font-mono">
           {status}
         </div>
       </div>

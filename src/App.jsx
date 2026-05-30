@@ -1,5 +1,6 @@
 // src/App.jsx — complete file
 import { lazy, Suspense, Component } from 'react';
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore } from '@/stores/rootStore';
 import { TickerBar }    from '@/components/Navigation/TickerBar';
 import { TopNavbar }    from '@/components/Navigation/TopNavbar';
@@ -43,7 +44,7 @@ class PageErrorBoundary extends Component {
                         min-h-[60vh] gap-4">
           <div className="text-[10px] font-mono text-red-500
                           tracking-widest uppercase">
-            ⚠ ERROR MEMUAT HALAMAN
+            <AlertTriangle size={16} className="text-amber-500" /> ERROR MEMUAT HALAMAN
           </div>
           <div className="text-[9px] font-mono text-slate-600 dark:text-neutral-400
                           max-w-md text-center leading-relaxed">

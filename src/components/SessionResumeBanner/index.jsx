@@ -46,7 +46,7 @@ export function SessionResumeBanner({
         }}
       >
         {/* Countdown progress bar */}
-        <div className="h-[2px] bg-neutral-900">
+        <div className="h-[2px] bg-white dark:bg-neutral-900">
           <div
             className="h-full"
             style={{
@@ -68,7 +68,7 @@ export function SessionResumeBanner({
 
           {/* Content */}
           <div className="flex-1 min-w-0">
-            <div className="text-[10px] font-mono font-bold text-neutral-300">
+            <div className="text-[10px] font-mono font-bold text-slate-700 dark:text-neutral-300">
               Sesi Portofolio Tersimpan
             </div>
             <div className="text-[9px] font-mono text-neutral-600 mt-0.5">
@@ -82,13 +82,13 @@ export function SessionResumeBanner({
           <div className="flex items-center gap-2 flex-shrink-0">
             <button
               onClick={onClear}
-              className="text-[8px] font-mono text-neutral-700 hover:text-neutral-500 transition-colors cursor-pointer"
+              className="text-[8px] font-mono text-neutral-700 hover:text-slate-400 dark:text-neutral-500 transition-colors cursor-pointer"
             >
               Hapus
             </button>
             <button
               onClick={onDismiss}
-              className="text-[9px] font-mono px-2.5 py-1.5 rounded-lg border border-neutral-800 text-neutral-500 hover:text-neutral-300 transition-colors cursor-pointer"
+              className="text-[9px] font-mono px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-neutral-800 text-slate-400 dark:text-neutral-500 hover:text-slate-700 dark:text-neutral-300 transition-colors cursor-pointer"
             >
               Abaikan ({countdown})
             </button>

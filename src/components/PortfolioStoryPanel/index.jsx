@@ -2,6 +2,7 @@
 // COMPLETE FILE — narrativo panel with What-If simulator
 
 import { useState, useMemo } from 'react';
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore } from '@/stores/rootStore';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
 import {
@@ -55,7 +56,7 @@ export function PortfolioStoryPanel() {
       narrative: beta != null ? narrateBeta(beta) : '',
     },
     {
-      id: 'mdd', icon: '🛡️', label: 'Risiko Penurunan Maks',
+      id: 'mdd', icon: <Shield size={16} className="text-blue-400" />, label: 'Risiko Penurunan Maks',
       value: estimatedMaxDrawdown != null
         ? `-${Math.abs(estimatedMaxDrawdown).toFixed(1)}` : '—',
       unit: '%',
@@ -63,7 +64,7 @@ export function PortfolioStoryPanel() {
         ? narrateMaxDrawdown(estimatedMaxDrawdown) : '',
     },
     {
-      id: 'vol', icon: '〰️', label: 'Volatilitas Portofolio',
+      id: 'vol', icon: <Activity size={16} className="text-slate-400" />, label: 'Volatilitas Portofolio',
       value: portfolioStdDev?.toFixed(1) ?? '—', unit: '%',
       narrative: portfolioStdDev != null
         ? narrateVolatility(portfolioStdDev, scenarioId) : '',
@@ -76,14 +77,14 @@ export function PortfolioStoryPanel() {
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-1">
         <div className="w-1 h-5 rounded-full" style={{ background: config.color }} />
-        <div className="text-xs font-bold font-mono text-white">
+        <div className="text-xs font-bold font-mono text-slate-900 dark:text-white">
           Narasi Portofolio
         </div>
       </div>
 
       {STORY_METRICS.map((m) => (
         <div key={m.id}
-             className="rounded-xl p-4 border border-neutral-800/40"
+             className="rounded-xl p-4 border border-slate-300 dark:border-neutral-800/40"
              style={{ background: 'rgba(10,10,10,0.6)' }}>
           <div className="flex items-baseline gap-2 mb-2">
             <span className="text-lg">{m.icon}</span>
@@ -97,7 +98,7 @@ export function PortfolioStoryPanel() {
               {m.label}
             </span>
           </div>
-          <p className="text-[10px] font-mono text-neutral-400 leading-relaxed">
+          <p className="text-[10px] font-mono text-slate-500 dark:text-neutral-400 leading-relaxed">
             {m.narrative}
           </p>
         </div>
@@ -111,7 +112,7 @@ export function PortfolioStoryPanel() {
                style={{ color: config.color }}>
             🔮 Simulasi What-If — Perubahan BI Rate
           </div>
-          <div className="text-[9px] font-mono text-neutral-500 mt-0.5">
+          <div className="text-[9px] font-mono text-slate-400 dark:text-neutral-500 mt-0.5">
             Konteks: BI Rate saat ini 5.25% (naik 50bps Mei 2026)
           </div>
         </div>
@@ -131,14 +132,14 @@ export function PortfolioStoryPanel() {
             ))}
           </div>
           {whatIf && (
-            <p className="text-[10px] font-mono text-neutral-300 leading-relaxed">
+            <p className="text-[10px] font-mono text-slate-700 dark:text-neutral-300 leading-relaxed">
               {whatIf.interpretation}
             </p>
           )}
           <div className="flex items-center gap-3 mt-3">
             <div className="text-center">
               <div className="text-[7px] font-mono text-neutral-700 uppercase">Saat Ini</div>
-              <div className="text-base font-black font-mono text-neutral-300">
+              <div className="text-base font-black font-mono text-slate-700 dark:text-neutral-300">
                 {sharpe?.toFixed(2)}σ
               </div>
             </div>

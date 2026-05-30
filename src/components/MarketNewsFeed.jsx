@@ -47,7 +47,7 @@ function getSentimentStyle(label) {
   if (lbl.includes("BEARISH")) {
     return { badge: "[ BEARISH ]", class: "text-red-400 font-bold" };
   }
-  return { badge: "[ NEUTRAL ]", class: "text-neutral-500" };
+  return { badge: "[ NEUTRAL ]", class: "text-slate-400 dark:text-neutral-500" };
 }
 
 export default function MarketNewsFeed() {
@@ -79,13 +79,13 @@ export default function MarketNewsFeed() {
   }, []);
 
   return (
-    <div className="b-panel bg-neutral-950/40 rounded-xl p-5 mt-6 font-mono">
-      <div className="flex items-center justify-between border-b border-neutral-900 pb-3 mb-4">
+    <div className="b-panel bg-slate-50 dark:bg-neutral-950/40 rounded-xl p-5 mt-6 font-mono">
+      <div className="flex items-center justify-between border-b border-slate-200 dark:border-neutral-900 pb-3 mb-4">
         <div>
           <div className="t2 tracking-widest">LIVE MARKET FEED // SENTIMENT STREAM</div>
-          <div className="text-[10px] text-neutral-500 uppercase mt-0.5">Real-Time News Analytics & Sentiment Tracking</div>
+          <div className="text-[10px] text-slate-400 dark:text-neutral-500 uppercase mt-0.5">Real-Time News Analytics & Sentiment Tracking</div>
         </div>
-        <div className="text-[9px] px-2.5 py-0.5 rounded border border-neutral-850 bg-black/40 text-neutral-500 uppercase">
+        <div className="text-[9px] px-2.5 py-0.5 rounded border border-neutral-850 bg-slate-50 dark:bg-black/40 text-slate-400 dark:text-neutral-500 uppercase">
           Status: {status}
         </div>
       </div>
@@ -97,19 +97,19 @@ export default function MarketNewsFeed() {
           {news.slice(0, 5).map((item, idx) => {
             const sentiment = getSentimentStyle(item.overall_sentiment_label);
             return (
-              <div key={idx} className="b-panel bg-black/20 rounded-xl p-4 transition-all duration-200 hover:border-neutral-800">
+              <div key={idx} className="b-panel bg-slate-50 dark:bg-black/20 rounded-xl p-4 transition-all duration-200 hover:border-slate-300 dark:border-neutral-800">
                 <div className="flex flex-wrap items-center gap-2.5 mb-2">
                   <span className={`text-[10px] tracking-wider ${sentiment.class}`}>
                     {sentiment.badge}
                   </span>
                   <span className="text-[10px] text-neutral-600">|</span>
-                  <span className="text-[9px] text-neutral-500 uppercase">{item.source}</span>
+                  <span className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase">{item.source}</span>
                   <span className="text-[10px] text-neutral-600">|</span>
-                  <span className="text-[9px] text-neutral-500 tabular-nums">{formatNewsTime(item.time_published)}</span>
+                  <span className="text-[9px] text-slate-400 dark:text-neutral-500 tabular-nums">{formatNewsTime(item.time_published)}</span>
                 </div>
                 
                 <h4 className="text-xs font-bold leading-snug">
-                  <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-white hover:text-emerald-400 transition-colors">
+                  <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-slate-900 dark:text-white hover:text-emerald-400 transition-colors">
                     {item.title}
                   </a>
                 </h4>
