@@ -45,7 +45,7 @@ class PageErrorBoundary extends Component {
                           tracking-widest uppercase">
             ⚠ ERROR MEMUAT HALAMAN
           </div>
-          <div className="text-[9px] font-mono text-neutral-600
+          <div className="text-[9px] font-mono text-slate-600 dark:text-neutral-400
                           max-w-md text-center leading-relaxed">
             {this.state.error?.message ?? 'Unknown render error'}
           </div>
@@ -55,8 +55,8 @@ class PageErrorBoundary extends Component {
               window.location.reload();
             }}
             className="text-[9px] font-mono px-4 py-2 rounded-lg
-                       border border-neutral-700 text-neutral-400
-                       hover:border-neutral-500 cursor-pointer
+                       border border-slate-300 dark:border-neutral-700 text-slate-600 dark:text-neutral-400
+                       hover:border-slate-400 dark:hover:border-neutral-500 cursor-pointer
                        transition-colors"
           >
             Muat Ulang Halaman
@@ -72,10 +72,10 @@ function PageSkeleton() {
   return (
     <div className="flex items-center justify-center min-h-[50vh]">
       <div className="flex flex-col items-center gap-3">
-        <div className="w-6 h-6 border border-neutral-700
+        <div className="w-6 h-6 border border-slate-200 dark:border-neutral-700
                         border-t-emerald-500 rounded-full
                         animate-spin" />
-        <div className="text-[9px] font-mono text-neutral-700
+        <div className="text-[9px] font-mono text-slate-500 dark:text-neutral-700
                         tracking-widest animate-pulse">
           MEMUAT MODUL...
         </div>
@@ -116,7 +116,7 @@ export default function App() {
   const CurrentPage = PAGE_MAP[activeTab] ?? <HomePage />;
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-black text-white overflow-hidden">
+    <div className="h-screen w-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-[#0a0a0a] dark:text-neutral-100 overflow-hidden transition-colors duration-300">
 
       {/* Fixed ticker bar — z-50 */}
       <div className="print:hidden shrink-0">

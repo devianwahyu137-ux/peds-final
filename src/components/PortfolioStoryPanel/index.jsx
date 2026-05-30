@@ -1,17 +1,15 @@
 // src/components/PortfolioStoryPanel/index.jsx
-// Narrative panel for PortfolioPage
-// Translates MPT numbers into plain Indonesian language
+// COMPLETE FILE — narrativo panel with What-If simulator
 
 import { useState, useMemo } from 'react';
-import { useRootStore } from "@/stores/rootStore";
-import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
+import { useRootStore } from '@/stores/rootStore';
+import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
 import {
   narrateSharpRatio,
   narrateBeta,
   narrateMaxDrawdown,
   narrateVolatility,
-  generateWhatIfImpact,
-} from '../../lib/portfolioNarrator';
+} from '@/lib/portfolioNarrator';
 
 const WHAT_IF_PRESETS = [
   { label: '+25bps', delta: 25  },
@@ -21,211 +19,145 @@ const WHAT_IF_PRESETS = [
   { label: '-50bps', delta: -50 },
 ];
 
+function generateWhatIfImpact(currentSharpe, biRateDelta) {
+  const impact      = -(biRateDelta / 100) * 0.15;
+  const newSharpe   = Math.max(0, currentSharpe + impact).toFixed(2);
+  const abs         = Math.abs(biRateDelta);
+  return {
+    newSharpe,
+    interpretation: biRateDelta > 0
+      ? `Jika BI Rate naik ${abs}bps lagi (dari 5.25% saat ini), estimasi Sharpe turun dari ${currentSharpe?.toFixed(2)} ke ${newSharpe}. Tekanan berlanjut pada ekuitas dan obligasi jangka panjang.`
+      : `Jika BI Rate turun ${abs}bps, estimasi Sharpe naik dari ${currentSharpe?.toFixed(2)} ke ${newSharpe}. Positif untuk ekuitas dan obligasi jangka menengah.`,
+  };
+}
+
 export function PortfolioStoryPanel() {
-  const scenarioId      = useRootStore((s) => s.scenarioId);
-  const targetAnalytics = useRootStore((s) => s.targetAnalytics);
-  const [selectedDelta, setSelectedDelta] = useState(50);
+  const scenarioId = useRootStore((s) => s.scenarioId);
+  const analytics  = useRootStore((s) => s.analytics);
+  const [selectedDelta, setSelectedDelta] = useState(25);
   const config = SCENARIO_CONFIG[scenarioId];
-
-  // Map store analytics to narrator-compatible values
-  // Store returns: sharpeRatio, portfolioBeta, maxDrawdown (decimal), portfolioVolatility (decimal)
-  const sharpe      = targetAnalytics?.sharpeRatio ?? 0;
-  const beta        = targetAnalytics?.portfolioBeta ?? 0;
-  const mddDecimal  = targetAnalytics?.maxDrawdown ?? 0;
-  const volDecimal  = targetAnalytics?.portfolioVolatility ?? 0;
-
-  // Convert to percentage for narrator display
-  const mddPct = Math.abs(mddDecimal * 100);
-  const volPct = volDecimal * 100;
+  const { sharpe, beta, estimatedMaxDrawdown, portfolioStdDev } = analytics ?? {};
 
   const whatIf = useMemo(
-    () => generateWhatIfImpact(sharpe, selectedDelta),
+    () => sharpe != null ? generateWhatIfImpact(sharpe, selectedDelta) : null,
     [sharpe, selectedDelta]
   );
 
-  if (!targetAnalytics) return null;
-
   const STORY_METRICS = [
     {
-      id:        'sharpe',
-      icon:      '⚡',
-      label:     'Efisiensi Portofolio',
-      value:     sharpe.toFixed(2),
-      unit:      'σ',
-      narrative: narrateSharpRatio(sharpe, scenarioId),
-      color:     config?.color ?? '#10b981',
+      id: 'sharpe', icon: '⚡', label: 'Efisiensi Portofolio',
+      value: sharpe?.toFixed(2) ?? '—', unit: 'σ',
+      narrative: sharpe != null ? narrateSharpRatio(sharpe, scenarioId) : '',
     },
     {
-      id:        'beta',
-      icon:      '🧭',
-      label:     'Sensitivitas Pasar',
-      value:     beta.toFixed(2),
-      unit:      'β',
-      narrative: narrateBeta(beta),
-      color:     '#a78bfa',
+      id: 'beta', icon: '🧭', label: 'Sensitivitas Pasar',
+      value: beta?.toFixed(2) ?? '—', unit: 'β',
+      narrative: beta != null ? narrateBeta(beta) : '',
     },
     {
-      id:        'mdd',
-      icon:      '🛡️',
-      label:     'Risiko Penurunan Maks',
-      value:     `-${mddPct.toFixed(1)}`,
-      unit:      '%',
-      narrative: narrateMaxDrawdown(mddPct),
-      color:     '#ef4444',
+      id: 'mdd', icon: '🛡️', label: 'Risiko Penurunan Maks',
+      value: estimatedMaxDrawdown != null
+        ? `-${Math.abs(estimatedMaxDrawdown).toFixed(1)}` : '—',
+      unit: '%',
+      narrative: estimatedMaxDrawdown != null
+        ? narrateMaxDrawdown(estimatedMaxDrawdown) : '',
     },
     {
-      id:        'vol',
-      icon:      '〰️',
-      label:     'Volatilitas Portofolio',
-      value:     volPct.toFixed(1),
-      unit:      '%',
-      narrative: narrateVolatility(volPct, scenarioId),
-      color:     '#a3a3a3',
+      id: 'vol', icon: '〰️', label: 'Volatilitas Portofolio',
+      value: portfolioStdDev?.toFixed(1) ?? '—', unit: '%',
+      narrative: portfolioStdDev != null
+        ? narrateVolatility(portfolioStdDev, scenarioId) : '',
     },
   ];
 
+  if (!analytics) return null;
+
   return (
     <div className="space-y-4">
-
-      {/* Section header */}
-      <div className="flex items-center gap-3 pt-2">
-        <div
-          className="w-1 h-8 rounded-full"
-          style={{ background: `linear-gradient(180deg, ${config?.color ?? '#10b981'}, transparent)` }}
-        />
-        <div>
-          <div className="text-[10px] font-bold tracking-widest text-neutral-400 uppercase font-mono">
-            Narasi Portofolio
-          </div>
-          <div className="text-[9px] font-mono text-neutral-600 mt-0.5">
-            Apa arti angka-angka ini untuk kamu?
-          </div>
+      <div className="flex items-center gap-2 mb-1">
+        <div className="w-1 h-5 rounded-full" style={{ background: config.color }} />
+        <div className="text-xs font-bold font-mono text-white">
+          Narasi Portofolio
         </div>
       </div>
 
-      {/* Story metric cards */}
-      <div className="space-y-3">
-        {STORY_METRICS.map((m) => (
-          <div
-            key={m.id}
-            className="rounded-xl p-4 transition-all duration-300 hover:bg-white/[0.02]"
-            style={{
-              background: 'rgba(10,10,10,0.50)',
-              border: '1px solid rgba(255,255,255,0.05)',
-            }}
-          >
-            <div className="flex items-start gap-3">
-              <span className="text-lg mt-0.5 flex-shrink-0">{m.icon}</span>
-              <div className="flex-1 min-w-0 space-y-2">
-                <div className="flex items-baseline gap-2">
-                  <span
-                    className="text-lg font-black font-mono tabular-nums"
-                    style={{ color: m.color }}
-                  >
-                    {m.value}
-                  </span>
-                  <span className="text-[10px] font-mono text-neutral-500">{m.unit}</span>
-                  <span className="text-[9px] font-mono text-neutral-600 tracking-wider uppercase ml-auto">
-                    {m.label}
-                  </span>
-                </div>
-                <p className="text-[10px] font-mono text-neutral-400 leading-relaxed">
-                  {m.narrative}
-                </p>
-              </div>
-            </div>
+      {STORY_METRICS.map((m) => (
+        <div key={m.id}
+             className="rounded-xl p-4 border border-neutral-800/40"
+             style={{ background: 'rgba(10,10,10,0.6)' }}>
+          <div className="flex items-baseline gap-2 mb-2">
+            <span className="text-lg">{m.icon}</span>
+            <span className="text-xl font-black font-mono tabular-nums"
+                  style={{ color: config.color }}>
+              {m.value}
+            </span>
+            <span className="text-xs font-mono text-neutral-600">{m.unit}</span>
+            <span className="text-[9px] font-mono text-neutral-600 uppercase
+                             tracking-widest ml-auto">
+              {m.label}
+            </span>
           </div>
-        ))}
-      </div>
+          <p className="text-[10px] font-mono text-neutral-400 leading-relaxed">
+            {m.narrative}
+          </p>
+        </div>
+      ))}
 
       {/* What-If Simulator */}
-      <div
-        className="rounded-xl overflow-hidden"
-        style={{
-          background: 'rgba(10,10,10,0.50)',
-          border: `1px solid ${config?.colorBorder ?? 'rgba(16,185,129,0.30)'}`,
-        }}
-      >
-        <div className="p-4 space-y-3">
-          <div>
-            <div
-              className="text-[10px] font-mono font-bold tracking-widest uppercase"
-              style={{ color: config?.color ?? '#10b981' }}
-            >
-              🔮 Simulasi What-If
-            </div>
-            <div className="text-[9px] font-mono text-neutral-600 mt-0.5">
-              Jika BI Rate berubah, bagaimana dampak ke portofolio?
-            </div>
+      <div className="rounded-xl border overflow-hidden"
+           style={{ borderColor: config.color + '30', background: config.color + '08' }}>
+        <div className="px-4 py-3 border-b" style={{ borderColor: config.color + '20' }}>
+          <div className="text-[9px] font-mono font-bold tracking-widest uppercase"
+               style={{ color: config.color }}>
+            🔮 Simulasi What-If — Perubahan BI Rate
           </div>
-
-          <div className="space-y-3">
-            {/* Preset buttons */}
-            <div className="flex flex-wrap gap-1.5">
-              {WHAT_IF_PRESETS.map((preset) => (
-                <button
-                  key={preset.label}
-                  onClick={() => setSelectedDelta(preset.delta)}
-                  className="text-[9px] font-mono px-2.5 py-1.5 rounded-lg border transition-all duration-150 cursor-pointer"
-                  style={{
-                    background:   selectedDelta === preset.delta ? (config?.colorDim ?? 'rgba(16,185,129,0.12)') : 'rgba(0,0,0,0.4)',
-                    borderColor:  selectedDelta === preset.delta ? (config?.color ?? '#10b981')   : 'rgba(255,255,255,0.08)',
-                    color:        selectedDelta === preset.delta ? (config?.color ?? '#10b981')   : '#525252',
-                  }}
-                >
-                  {preset.label}
-                </button>
-              ))}
-            </div>
-
-            {/* What-if result */}
-            {whatIf && (
-              <div className="space-y-3">
-                <p className="text-[10px] font-mono text-neutral-400 leading-relaxed">
-                  {whatIf.interpretation}
-                </p>
-                <div className="flex items-center gap-3 justify-center py-2">
-                  <div className="text-center">
-                    <div className="text-[8px] font-mono text-neutral-600 uppercase tracking-widest">
-                      Saat Ini
-                    </div>
-                    <div
-                      className="text-base font-black font-mono tabular-nums mt-1"
-                      style={{ color: config?.color ?? '#10b981' }}
-                    >
-                      {sharpe.toFixed(2)}σ
-                    </div>
-                  </div>
-                  <div
-                    className="text-lg font-mono"
-                    style={{ color: selectedDelta > 0 ? '#ef4444' : '#10b981' }}
-                  >
-                    {selectedDelta > 0 ? '→' : '←'}
-                  </div>
-                  <div className="text-center">
-                    <div className="text-[8px] font-mono text-neutral-600 uppercase tracking-widest">
-                      Estimasi Baru
-                    </div>
-                    <div
-                      className="text-base font-black font-mono tabular-nums mt-1"
+          <div className="text-[9px] font-mono text-neutral-500 mt-0.5">
+            Konteks: BI Rate saat ini 5.25% (naik 50bps Mei 2026)
+          </div>
+        </div>
+        <div className="p-4">
+          <div className="flex flex-wrap gap-2 mb-4">
+            {WHAT_IF_PRESETS.map((p) => (
+              <button key={p.label} onClick={() => setSelectedDelta(p.delta)}
+                      className="text-[9px] font-mono px-2.5 py-1.5 rounded-lg border
+                                 transition-all duration-150 cursor-pointer"
                       style={{
-                        color: parseFloat(whatIf.newSharpe) < sharpe ? '#ef4444' : '#10b981',
-                      }}
-                    >
-                      {whatIf.newSharpe}σ
-                    </div>
-                  </div>
-                </div>
+                        background:  selectedDelta === p.delta ? config.color + '20' : 'rgba(0,0,0,0.4)',
+                        borderColor: selectedDelta === p.delta ? config.color : 'rgba(255,255,255,0.08)',
+                        color:       selectedDelta === p.delta ? config.color : '#525252',
+                      }}>
+                {p.label}
+              </button>
+            ))}
+          </div>
+          {whatIf && (
+            <p className="text-[10px] font-mono text-neutral-300 leading-relaxed">
+              {whatIf.interpretation}
+            </p>
+          )}
+          <div className="flex items-center gap-3 mt-3">
+            <div className="text-center">
+              <div className="text-[7px] font-mono text-neutral-700 uppercase">Saat Ini</div>
+              <div className="text-base font-black font-mono text-neutral-300">
+                {sharpe?.toFixed(2)}σ
               </div>
-            )}
+            </div>
+            <div className="flex-1 h-px"
+                 style={{ background: `linear-gradient(90deg, ${config.color}40, ${config.color})` }} />
+            <div className="text-center">
+              <div className="text-[7px] font-mono text-neutral-700 uppercase">Estimasi Baru</div>
+              <div className="text-base font-black font-mono" style={{ color: config.color }}>
+                {whatIf?.newSharpe}σ
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Disclaimer */}
-      <p className="text-[8px] font-mono text-neutral-700 leading-relaxed px-1">
-        * Simulasi What-If menggunakan model elastisitas MPT yang disederhanakan.
-        Bukan proyeksi akurat — hanya untuk referensi edukasi.
+      <p className="text-[8px] font-mono text-neutral-700 leading-relaxed">
+        * Simulasi What-If menggunakan elastisitas MPT yang disederhanakan.
+        Bukan proyeksi akurat — hanya referensi edukasi.
+        Konteks aktual: BI Rate sudah naik ke 5.25% per 20 Mei 2026.
       </p>
     </div>
   );

@@ -15,6 +15,7 @@
     "idb-keyval": "^6.2.4",
     "immer": "^11.1.8",
     "jspdf": "^4.2.1",
+    "lucide-react": "^1.17.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "zustand": "^5.0.13"

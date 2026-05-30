@@ -142,9 +142,9 @@ function safeRunMPT(scenarioId, macroInputs, weights) {
 }
 
 // Compute initial analytics synchronously on store creation
-const INITIAL_MACRO  = SCENARIO_DEFAULTS.EQUILIBRIUM;
-const INITIAL_WEIGHTS = SCENARIO_DEFAULTS.EQUILIBRIUM.weights;
-const INITIAL_ANALYTICS = safeRunMPT('EQUILIBRIUM', INITIAL_MACRO, INITIAL_WEIGHTS);
+const INITIAL_MACRO  = SCENARIO_DEFAULTS.TIGHTENING;
+const INITIAL_WEIGHTS = SCENARIO_DEFAULTS.TIGHTENING.weights;
+const INITIAL_ANALYTICS = safeRunMPT('TIGHTENING', INITIAL_MACRO, INITIAL_WEIGHTS);
 
 // ── ROOT STORE ────────────────────────────────────────────────
 export const useRootStore = create(
@@ -152,7 +152,7 @@ export const useRootStore = create(
     immer((set, get) => ({
 
       // ── SCENARIO STATE ──────────────────────────────────────
-      scenarioId:    'EQUILIBRIUM',
+      scenarioId:    'TIGHTENING',
       macroInputs:   INITIAL_MACRO,
       weights:       INITIAL_WEIGHTS,
       actualWeights: null,

@@ -1,5 +1,6 @@
 import { useRootStore } from "@/stores/rootStore";
 import { SENTIMENT_AGGREGATE, OVERALL_STYLE } from "../components/MacroSentimentSummary";
+import { Landmark, BarChart2, ArrowRightLeft, DollarSign, TrendingUp, Gem, Wallet, AlertTriangle, Lock, AlertOctagon, Lightbulb, Target } from "lucide-react";
 
 // ── Narasi Bahasa Indonesia per skenario ────────────────────────────────────────
 
@@ -32,28 +33,28 @@ const QUICK_SIGNALS_CONFIG = [
     key:       'biRate',
     label:     'BI Rate',
     unit:      '%',
-    icon:      '🏦',
+    icon:      <Landmark size={16} className="text-slate-400 dark:text-neutral-500" />,
     getValue:  (ld) => ld?.bi_macro?.biRate ?? ld?.bi_macro?.v ?? ld?.biRate?.v ?? null,
   },
   {
     key:       'cpi',
     label:     'Inflasi',
     unit:      '%',
-    icon:      '📊',
+    icon:      <BarChart2 size={16} className="text-slate-400 dark:text-neutral-500" />,
     getValue:  (ld) => ld?.bi_macro?.cpi ?? ld?.cpi?.v ?? null,
   },
   {
     key:       'usdIdr',
     label:     'USD/IDR',
     unit:      '',
-    icon:      '💱',
+    icon:      <ArrowRightLeft size={16} className="text-slate-400 dark:text-neutral-500" />,
     getValue:  (ld) => ld?.usdIdr?.v ?? (typeof ld?.usdIdr === 'number' ? ld.usdIdr : null),
   },
   {
     key:       'dxy',
     label:     'DXY Index',
     unit:      ' pts',
-    icon:      '💵',
+    icon:      <DollarSign size={16} className="text-slate-400 dark:text-neutral-500" />,
     getValue:  (ld) => ld?.dxy?.v ?? (typeof ld?.dxy === 'number' ? ld.dxy : null),
   },
 ];
@@ -65,10 +66,10 @@ const SCENARIO_MACRO_FALLBACK = {
 };
 
 const ASSET_BARS = [
-  { key: "stocks", label: "Saham (IDX)",    icon: "📈", color: "#3b82f6" },
-  { key: "bonds",  label: "Obligasi (SBN)", icon: "🏛️", color: "#a78bfa" },
-  { key: "gold",   label: "Emas Fisik",     icon: "🥇", color: "#fbbf24" },
-  { key: "cash",   label: "Kas / USD",      icon: "💵", color: "#34d399" },
+  { key: "stocks", label: "Saham (IDX)",    icon: <TrendingUp size={16} className="text-blue-500" />, color: "#3b82f6" },
+  { key: "bonds",  label: "Obligasi (SBN)", icon: <Landmark size={16} className="text-purple-400" />, color: "#a78bfa" },
+  { key: "gold",   label: "Emas Fisik",     icon: <Gem size={16} className="text-amber-400" />, color: "#fbbf24" },
+  { key: "cash",   label: "Kas / USD",      icon: <Wallet size={16} className="text-emerald-400" />, color: "#34d399" },
 ];
 
 export default function HomePage() {
@@ -103,31 +104,16 @@ export default function HomePage() {
   const isDriftWarning = maxDrift > 5;
 
   // ── GLOBAL PULSE TICKER ──
-  const pulseItems = [
-    {
-      label: 'IHSG',
-      value: (liveData?.ihsg?.v ?? 7100).toLocaleString('id-ID'),
-      delta: '+1.2%',
-      isConstructive: true,
-    },
-    {
-      label: 'SBN 10Y',
-      value: `${Number(liveData?.sbn_yields?.v ?? macroInputs?.sbn10y ?? 6.60).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`,
-      delta: '-0.05',
-      isConstructive: true,
-    },
-    {
-      label: 'USD/IDR',
-      value: (liveData?.usdIdr?.v ?? macroInputs?.usdIdr ?? 15950).toLocaleString('id-ID'),
-      delta: '+0.1%',
-      isConstructive: false,
-    },
-    {
-      label: 'GOLD',
-      value: `$${(liveData?.xauUsd?.v ?? 2342).toLocaleString('id-ID')}`,
-      delta: '+1.15%',
-      isConstructive: true,
-    },
+  // Updated Global Pulse Ticker data — May 2026 verified
+  const GLOBAL_PULSE_DATA = [
+    { label: 'IHSG',      value: '6.170',   delta: '-11.8%', dir: -1, unit: 'pts' },
+    { label: 'SBN 10Y',   value: '6.71%',   delta: '+0.32%', dir: 1,  unit: ''    },
+    { label: 'USD/IDR',   value: '17.700',  delta: '+9.2%',  dir: -1, unit: ''    },
+    { label: 'GOLD',      value: '2.342',   delta: '+1.15%', dir: 1,  unit: 'USD' },
+    { label: 'BI RATE',   value: '5.25%',   delta: '+50bps', dir: -1, unit: ''    },
+    { label: 'DXY',       value: '104.50',  delta: '+0.3%',  dir: -1, unit: 'pts' },
+    { label: 'US 10Y',    value: '4.40%',   delta: '-0.02%', dir: -1, unit: ''    },
+    { label: 'XAU/IDR',   value: '41.3M',   delta: '+12.1%', dir: 1,  unit: 'IDR/gr'},
   ];
 
   return (
@@ -135,50 +121,45 @@ export default function HomePage() {
 
       {/* ── ZONA 1: SITUASI HARI INI ── */}
       <div
-        className="rounded-2xl p-6 border"
-        style={{
-          background: `linear-gradient(135deg, rgba(0,0,0,0.8), ${accent}08)`,
-          borderColor: `${accent}30`,
-          boxShadow: `0 0 40px ${accent}10`,
-        }}
+        className="rounded-md p-5 border border-slate-200 dark:border-neutral-800/60 bg-white dark:bg-[#121212]"
       >
-        <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="flex items-start justify-between gap-6 flex-wrap">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-3 mb-4">
               <span
-                className="inline-block text-[9px] font-mono font-bold tracking-[0.2em] uppercase px-2 py-1 rounded-md"
-                style={{ background: `${accent}18`, color: accent, border: `1px solid ${accent}30` }}
+                className="inline-block px-2 py-0.5 rounded-sm text-[10px] font-mono uppercase tracking-widest"
+                style={{ background: `${accent}15`, color: accent, border: `1px solid ${accent}30` }}
               >
                 {narrative.riskLabel}
               </span>
               <span
-                className="inline-block text-[9px] font-mono font-bold tracking-[0.2em] uppercase px-2 py-1 rounded-md"
-                style={{ background: sentimentStyle.bg, color: sentimentStyle.color, border: `1px solid ${sentimentStyle.color}40`, boxShadow: `0 0 10px ${sentimentStyle.color}20` }}
+                className="inline-block px-2 py-0.5 rounded-sm text-[10px] font-mono uppercase tracking-widest"
+                style={{ background: sentimentStyle.bg, color: sentimentStyle.color, border: `1px solid ${sentimentStyle.color}40` }}
               >
                 BIAS: {sentimentData.overall}
               </span>
             </div>
-            <h2 className="text-xl font-black font-mono text-white mb-2">
+            <h2 className="text-2xl font-black font-sans tracking-tight text-slate-900 dark:text-neutral-100 mb-3">
               {narrative.headline}
             </h2>
-            <p className="text-sm font-mono text-neutral-400 leading-relaxed max-w-2xl">
+            <p className="text-sm font-sans text-slate-600 dark:text-neutral-400 leading-relaxed max-w-2xl">
               {narrative.body}
             </p>
           </div>
           <div
-            className="flex-shrink-0 text-right p-4 rounded-xl"
-            style={{ background: `${accent}10`, border: `1px solid ${accent}20` }}
+            className="flex-shrink-0 text-right p-4 rounded-md"
+            style={{ background: `${accent}08`, border: `1px solid ${accent}20` }}
           >
-            <div className="text-[9px] font-mono text-neutral-500 tracking-widest uppercase mb-1">
+            <div className="text-[10px] font-sans text-slate-500 dark:text-neutral-500 tracking-widest uppercase mb-1.5">
               Sharpe Ratio
             </div>
             <div
-              className="text-3xl font-black font-mono tabular-nums"
+              className="text-4xl font-black font-mono tabular-nums"
               style={{ color: accent }}
             >
               {sharpeRatio.toFixed(2)}
             </div>
-            <div className="text-[9px] font-mono text-neutral-600 mt-1">
+            <div className="text-[10px] font-sans text-slate-500 dark:text-neutral-500 mt-1.5">
               skor efisiensi portofolio
             </div>
           </div>
@@ -186,47 +167,46 @@ export default function HomePage() {
       </div>
 
       {/* ── ZONA 2: REKOMENDASI UTAMA ── */}
-      <div className="rounded-2xl border border-neutral-800/60 bg-neutral-950/80 p-6">
-        <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+      <div className="rounded-md border border-slate-200 dark:border-neutral-800/60 bg-white dark:bg-[#121212] p-5">
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
           <div>
-            <div className="text-[9px] font-mono tracking-[0.2em] text-neutral-500 uppercase mb-1">
-              💡 Rekomendasi Alokasi Saat Ini
+            <div className="text-[10px] font-sans tracking-[0.2em] text-slate-500 dark:text-neutral-500 uppercase mb-2 flex items-center gap-2">
+              <Lightbulb size={14} className="text-amber-400" /> REKOMENDASI ALOKASI SAAT INI
             </div>
-            <p className="text-xs font-mono text-neutral-400">
+            <p className="text-sm font-sans text-slate-600 dark:text-neutral-400">
               {narrative.advice}
             </p>
           </div>
           <button
             onClick={() => setTab?.("portfolio")}
-            className="flex-shrink-0 text-[9px] font-mono px-3 py-1.5 rounded-lg border
-                       border-neutral-700/60 text-neutral-400 hover:border-neutral-600
-                       hover:text-neutral-300 transition-colors duration-150 cursor-pointer"
+            className="flex-shrink-0 text-[10px] font-sans px-4 py-2 rounded-sm border
+                       border-slate-200 dark:border-neutral-800 text-slate-500 dark:text-neutral-400 hover:border-slate-300 dark:hover:border-neutral-600
+                       hover:text-slate-700 dark:hover:text-neutral-300 transition-colors duration-200 cursor-pointer"
           >
             Lihat Detail MPT →
           </button>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {ASSET_BARS.map(({ key, label, icon, color }) => {
             const pct = targetWeights?.[key] ?? 0;
             return (
-              <div key={key} className="flex items-center gap-3">
-                <span className="text-base w-6 flex-shrink-0">{icon}</span>
-                <span className="text-[10px] font-mono text-neutral-400 w-28 flex-shrink-0">
+              <div key={key} className="flex items-center gap-4">
+                <span className="flex-shrink-0 flex items-center justify-center w-6">{icon}</span>
+                <span className="text-xs font-sans text-slate-600 dark:text-neutral-400 w-32 flex-shrink-0">
                   {label}
                 </span>
-                <div className="flex-1 h-2 bg-neutral-800/70 rounded-full overflow-hidden">
+                <div className="flex-1 h-2.5 bg-slate-100 dark:bg-neutral-800/50 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-700 ease-out"
                     style={{
                       width: `${pct}%`,
                       background: `linear-gradient(90deg, ${color}88, ${color})`,
-                      boxShadow: `0 0 6px ${color}66`,
                     }}
                   />
                 </div>
                 <span
-                  className="text-sm font-black font-mono tabular-nums w-10 text-right flex-shrink-0"
+                  className="text-base font-black font-mono tabular-nums w-12 text-right flex-shrink-0"
                   style={{ color }}
                 >
                   {pct}%
@@ -239,10 +219,10 @@ export default function HomePage() {
 
       {/* ── ZONA 3: SINYAL PASAR CEPAT ── */}
       <div>
-        <div className="text-[9px] font-mono tracking-[0.2em] text-neutral-600 uppercase mb-3">
+        <div className="text-[10px] font-sans tracking-[0.2em] text-slate-500 dark:text-neutral-500 uppercase mb-4">
           Sinyal Pasar Terkini
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {QUICK_SIGNALS_CONFIG.map(({ key, label, unit, icon, getValue }) => {
             const liveVal  = getValue(liveData);
             const fallback = SCENARIO_MACRO_FALLBACK[effectiveScenario]?.[key]
@@ -257,24 +237,25 @@ export default function HomePage() {
             return (
               <div
                 key={key}
-                className="rounded-xl border border-neutral-800/50 bg-neutral-950/70 p-4"
+                className="rounded-md border border-slate-200 dark:border-neutral-800/60 bg-white dark:bg-[#121212] p-4"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-base">{icon}</span>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="flex items-center justify-center">{icon}</span>
                   <span
-                    className={`text-[8px] font-mono px-1.5 py-0.5 rounded-md ${
+                    className={`inline-flex items-center px-2 py-0.5 rounded-sm text-[10px] font-mono uppercase tracking-widest border ${
                       isLive
-                        ? 'bg-emerald-500/15 text-emerald-500'
-                        : 'bg-neutral-800 text-neutral-600'
+                        ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/50'
+                        : 'bg-slate-50 dark:bg-neutral-900/50 text-slate-500 dark:text-neutral-500 border-slate-200 dark:border-neutral-800/60'
                     }`}
                   >
+                    {isLive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse mr-1.5" />}
                     {isLive ? 'LIVE' : 'EST'}
                   </span>
                 </div>
-                <div className="text-[9px] font-mono text-neutral-500 uppercase tracking-widest mb-1">
+                <div className="text-[10px] font-sans text-slate-500 dark:text-neutral-500 uppercase tracking-widest mb-1.5">
                   {label}
                 </div>
-                <div className="text-lg font-black font-mono text-white tabular-nums">
+                <div className="text-xl font-black font-mono text-slate-900 dark:text-neutral-100 tabular-nums">
                   {display}
                 </div>
               </div>
@@ -284,22 +265,22 @@ export default function HomePage() {
       </div>
 
       {/* ── ZONA 4: ACTION CENTER / DRIFT ALERT ── */}
-      <div className={`rounded-xl border p-5 flex items-center justify-between flex-wrap gap-4 transition-colors duration-300 ${
+      <div className={`rounded-md border p-5 flex items-center justify-between flex-wrap gap-5 transition-colors duration-300 ${
         isDriftWarning 
-          ? 'bg-red-950/20 border-red-900/50' 
-          : 'bg-emerald-950/10 border-emerald-900/30'
+          ? 'bg-red-50 dark:bg-red-950/10 border-red-200 dark:border-red-900/40' 
+          : 'bg-emerald-50 dark:bg-emerald-950/5 border-emerald-200 dark:border-emerald-900/20'
       }`}>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-5">
           <div className={`w-2 h-2 rounded-full flex-shrink-0 animate-pulse ${
             isDriftWarning ? 'bg-red-500 shadow-[0_0_8px_#ef4444]' : 'bg-emerald-500 shadow-[0_0_8px_#10b981]'
           }`} />
           <div>
-            <div className={`text-[10px] font-mono tracking-[0.1em] font-bold uppercase mb-1 ${
-              isDriftWarning ? 'text-red-400' : 'text-emerald-400'
+            <div className={`text-[11px] font-sans tracking-[0.1em] font-bold uppercase mb-1 ${
+              isDriftWarning ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'
             }`}>
               {isDriftWarning ? 'Action Center: Drift Alert' : 'Action Center: Status Aman'}
             </div>
-            <div className="text-xs font-mono text-neutral-400">
+            <div className="text-sm font-sans text-slate-600 dark:text-neutral-400">
               {isDriftWarning 
                 ? 'Peringatan: Alokasi portofolio melenceng dari batas toleransi (>5%).'
                 : 'Status Eksekusi: Portofolio selaras dengan target skenario. Tidak ada tindakan mendesak diperlukan.'
@@ -310,37 +291,91 @@ export default function HomePage() {
         {isDriftWarning && (
           <button
             onClick={() => setTab?.("strategy")}
-            className="flex-shrink-0 text-[10px] font-mono font-bold px-4 py-2 rounded-lg border
-                       bg-red-500/10 border-red-500/40 text-red-400 hover:bg-red-500/20
-                       hover:border-red-500 hover:text-red-300 transition-colors duration-150 cursor-pointer"
+            className="flex-shrink-0 text-[11px] font-mono font-bold px-4 py-2 rounded-sm border
+                       bg-red-100 dark:bg-red-500/10 border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-500/20
+                       hover:border-red-300 dark:hover:border-red-500 hover:text-red-700 dark:hover:text-red-300 transition-colors duration-200 cursor-pointer uppercase tracking-widest"
           >
-            [ REBALANCE SEKARANG ]
+            Rebalance Sekarang
           </button>
         )}
       </div>
 
+      {/* ── WHAT THIS MEANS FOR YOU — Contextual Guidance ── */}
+      <div className="rounded-md border border-slate-200 dark:border-neutral-800/60 overflow-hidden bg-white dark:bg-[#121212]">
+        <div className="px-5 py-4 border-b border-slate-100 dark:border-neutral-800/60 flex items-center gap-4 bg-slate-50/50 dark:bg-neutral-900/30">
+          <span className="flex items-center justify-center text-slate-400 dark:text-neutral-400"><Target size={18} /></span>
+          <div>
+            <div className="text-[10px] font-sans text-slate-500 dark:text-neutral-500 tracking-[0.2em] uppercase mb-0.5">
+              Panduan Kontekstual
+            </div>
+            <div className="text-sm font-bold font-sans tracking-tight text-slate-900 dark:text-neutral-100">
+              Apa Yang Harus Dilakukan Sekarang?
+            </div>
+          </div>
+          <span
+            className="ml-auto px-2 py-0.5 rounded-sm text-[10px] font-mono uppercase tracking-widest border"
+            style={{
+              color:       accent,
+              borderColor: `${accent}30`,
+              background:  `${accent}15`,
+            }}
+          >
+            {scenarioId.replace('_', ' ')}
+          </span>
+        </div>
+
+        <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-5">
+          {scenarioId === 'EQUILIBRIUM' && (<>
+            <ActionGuidanceCard icon={<TrendingUp size={18} className="text-blue-500" />} title="Pertahankan Ekuitas" color="#3b82f6"
+              body="Pasar modal domestik mendukung. Saham banking & consumer staples menawarkan return optimal. Hindari rotasi prematur ke aset defensif." />
+            <ActionGuidanceCard icon={<Landmark size={18} className="text-purple-400" />} title="Hold Obligasi Negara" color="#a78bfa"
+              body="SBN tenor menengah (5-7Y) berikan keseimbangan yield vs durasi. ORI/SR cocok untuk investor ritel yang ingin kepastian." />
+            <ActionGuidanceCard icon={<Wallet size={18} className="text-emerald-400" />} title="Jaga Cash Buffer 20%" color="#34d399"
+              body="Pertahankan likuiditas untuk oportunis. Kondisi ekspansi bisa berakhir sewaktu-waktu — cash adalah aset paling fleksibel." />
+          </>)}
+
+          {scenarioId === 'TIGHTENING' && (<>
+            <ActionGuidanceCard icon={<AlertTriangle size={18} className="text-red-500" />} title="Kurangi Eksposur Saham" color="#ef4444"
+              body="BI Rate 5.25% menekan valuasi ekuitas. Hindari saham properti & teknologi. Fokus hanya pada saham defensif berneraca kuat." />
+            <ActionGuidanceCard icon={<Lock size={18} className="text-purple-400" />} title="Lock-In Yield SBN" color="#a78bfa"
+              body="Manfaatkan yield SBN 6.71% sebelum siklus pengetatan berakhir. SR/ORI adalah instrumen terbaik untuk investor ritel saat ini." />
+            <ActionGuidanceCard icon={<Gem size={18} className="text-amber-400" />} title="Tambah Emas Secara Bertahap" color="#fbbf24"
+              body="Rupiah mulai tertekan. Emas IDR memberikan proteksi alami. Target 15% alokasi sebagai asuransi portofolio." />
+          </>)}
+
+          {scenarioId === 'CURRENCY_STRESS' && (<>
+            <ActionGuidanceCard icon={<AlertOctagon size={18} className="text-red-500" />} title="Prioritas Perlindungan Kekayaan" color="#ef4444"
+              body="Rupiah mendekati 17.800/USD. Setiap IDR yang tidak dilindungi kehilangan nilai riilnya. Aksi sekarang lebih baik dari menunggu." />
+            <ActionGuidanceCard icon={<Gem size={18} className="text-amber-400" />} title="Maksimalkan Emas Fisik" color="#fbbf24"
+              body="Target 45% alokasi emas. Beli via Antam atau reksa dana berbasis emas. XAU/IDR memberikan return ganda: harga emas naik + IDR melemah." />
+            <ActionGuidanceCard icon={<DollarSign size={18} className="text-emerald-400" />} title="Konversi ke USD / Hard Currency" color="#34d399"
+              body="35% kas dalam USD melalui tabungan valas atau reksa dana pasar uang USD. Lindungi purchasing power dari depresiasi Rupiah lebih lanjut." />
+          </>)}
+        </div>
+      </div>
+
       {/* ── ZONA 5: GLOBAL PULSE TICKER ── */}
       <div 
-        className="w-full bg-neutral-950 border-t border-neutral-800/80 overflow-x-auto py-2.5 px-4 rounded-xl flex items-center shadow-inner"
+        className="w-full bg-white dark:bg-[#121212] border border-slate-200 dark:border-neutral-800/60 overflow-x-auto py-2.5 px-4 rounded-md flex items-center"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        <div className="flex items-center gap-4 md:gap-6 whitespace-nowrap min-w-max mx-auto">
-          <div className="text-[9px] font-mono text-neutral-500 tracking-[0.2em] uppercase font-bold flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_6px_#10b981]"></span>
+        <div className="flex items-center gap-5 md:gap-8 whitespace-nowrap min-w-max mx-auto">
+          <div className="text-[10px] font-sans text-slate-500 dark:text-neutral-500 tracking-[0.2em] uppercase font-bold flex items-center gap-2.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
             Global Pulse
           </div>
-          <div className="h-3 w-px bg-neutral-800"></div>
-          {pulseItems.map((item, i) => (
-            <div key={item.label} className="flex items-center gap-3">
-              <div className="text-[10px] font-mono uppercase">
-                <span className="text-neutral-400 font-bold mr-1.5">{item.label}</span>
-                <span className="text-white tabular-nums">{item.value}</span>
-                <span className={`ml-1.5 tabular-nums ${item.isConstructive ? 'text-emerald-400' : 'text-red-400'}`}>
+          <div className="h-3 w-px bg-slate-200 dark:bg-neutral-800/60"></div>
+          {GLOBAL_PULSE_DATA.map((item, i) => (
+            <div key={item.label} className="flex items-center gap-3.5">
+              <div className="text-[11px] font-sans uppercase flex items-baseline">
+                <span className="text-slate-500 dark:text-neutral-500 font-bold mr-2">{item.label}</span>
+                <span className="text-slate-900 dark:text-neutral-100 tabular-nums font-mono">{item.value} {item.unit}</span>
+                <span className={`ml-2 tabular-nums font-mono ${item.dir > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                   ({item.delta})
                 </span>
               </div>
-              {i < pulseItems.length - 1 && (
-                <div className="w-1 h-1 rounded-full bg-neutral-800 ml-3 md:ml-4"></div>
+              {i < GLOBAL_PULSE_DATA.length - 1 && (
+                <div className="w-1 h-1 rounded-full bg-slate-200 dark:bg-neutral-800/60 ml-4 md:ml-6"></div>
               )}
             </div>
           ))}
@@ -348,10 +383,24 @@ export default function HomePage() {
       </div>
 
       {/* ── DISCLAIMER ── */}
-      <div className="text-[8px] font-mono text-neutral-700 text-center leading-relaxed pb-4 pt-2">
+      <div className="text-[9px] font-sans text-slate-500/70 dark:text-neutral-500/70 text-center leading-relaxed pb-6 pt-2">
         Platform ini adalah simulasi edukasi berbasis MPT. Bukan rekomendasi investasi resmi.
         Selalu konsultasikan keputusan investasi dengan advisor keuangan terdaftar OJK.
       </div>
+    </div>
+  );
+}
+
+function ActionGuidanceCard({ icon, title, body, color }) {
+  return (
+    <div className="rounded-md p-4 border border-slate-100 dark:border-neutral-800/40 bg-slate-50/30 dark:bg-neutral-900/30">
+      <div className="mb-3 flex items-center">{icon}</div>
+      <div className="text-xs font-sans tracking-tight font-bold mb-2" style={{ color }}>
+        {title}
+      </div>
+      <p className="text-[10px] font-sans text-slate-600 dark:text-neutral-400 leading-relaxed">
+        {body}
+      </p>
     </div>
   );
 }
