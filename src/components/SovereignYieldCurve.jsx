@@ -256,7 +256,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
       {/* 4x4 Correlation Matrix */}
       <div className="glass-card rounded-xl p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white font-mono">[<LineChart size={16} className="text-blue-400" />] MACRO_CORRELATION_MATRIX</h3>
+          <h3 className="flex flex-row items-center gap-2 text-sm font-bold text-slate-900 dark:text-white font-mono"><ActivitySquare size={16} className="text-blue-400" /> MACRO_CORRELATION_MATRIX</h3>
           <p className="text-[10px] text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">Click cell for qualitative macro risk definition analysis</p>
         </div>
 

@@ -85,7 +85,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
   return (
     <div className="border border-slate-200 dark:border-neutral-800 bg-white dark:bg-[#121212] rounded-xl p-5 space-y-5 font-mono transition-colors duration-300">
       <div>
-        <h3 className="text-sm font-bold text-slate-900 dark:text-white">[<Settings2 size={16} className="text-slate-400" />] REBALANCING_CALCULATOR</h3>
+        <h3 className="flex flex-row items-center gap-2 text-sm font-bold text-slate-900 dark:text-white"><Settings2 size={16} className="text-slate-400" /> REBALANCING_CALCULATOR</h3>
         <p className="text-[10px] text-slate-500 dark:text-neutral-500 mt-1 uppercase tracking-wider">Dynamic order calculation & trade delta sheets</p>
       </div>
 
@@ -178,7 +178,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
       {/* ── TRADE ORDER BLOTTER ── */}
       <div className="border-t border-slate-200 dark:border-neutral-900/60 pt-4">
         <div className="flex justify-between items-center mb-3">
-          <h3 className="text-xs font-bold text-slate-500 dark:text-neutral-400 tracking-wider">[&gt;] EXECUTION TICKET</h3>
+          <h3 className="text-xs font-bold text-slate-500 dark:text-neutral-400 tracking-wider"><ArrowRight size={16} className="text-slate-400" /> EXECUTION TICKET</h3>
           {activeOrders.length > 0 && (
             <button
               onClick={handleCopyOrders}

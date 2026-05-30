@@ -1,5 +1,5 @@
 import { useRootStore, SCENARIOS } from "@/stores/rootStore";
-import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
+import { Flame, Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import MacroIndicatorCards from "../components/MacroIndicatorCards";
 import { ACCENT, ScenarioButton } from "../components/SharedComponents";
 import { DataHealthPanel } from "../components/DataHealthPanel";
@@ -68,7 +68,7 @@ export default function MarketPage() {
                     : "border-slate-200 dark:border-neutral-900 text-slate-400 dark:text-neutral-500"
                 }`}
               >
-                🔥 HIPERINFLASI
+                <Flame size={16} className="text-red-500" /> HIPERINFLASI
               </button>
               <button
                 onClick={() => setCrisisMode(crisisMode === "RUPIAH_CRASH" ? null : "RUPIAH_CRASH")}

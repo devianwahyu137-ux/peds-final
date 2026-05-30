@@ -18,7 +18,7 @@ const DriftMonitor = React.memo(function DriftMonitor() {
   return (
     <div className="border border-slate-200 dark:border-neutral-800 bg-white dark:bg-[#121212] rounded-xl p-5 space-y-4 transition-colors duration-300">
       <div>
-        <h3 className="text-sm font-bold text-slate-900 dark:text-white font-mono">[<LineChart size={16} className="text-blue-400" />] DRIFT_MONITOR_CORE</h3>
+        <h3 className="flex flex-row items-center gap-2 text-sm font-bold text-slate-900 dark:text-white font-mono"><LineChart size={16} className="text-blue-400" /> DRIFT_MONITOR_CORE</h3>
         <p className="text-[10px] text-slate-500 dark:text-neutral-500 mt-1 uppercase tracking-wider">Comparing actual weights vs target baseline weights</p>
       </div>
 

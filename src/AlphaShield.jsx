@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
+import { Flame, Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 import MasterDetailLayout from "./components/MasterDetailLayout";
 import SovereignYieldCurve from "./components/SovereignYieldCurve";
@@ -301,8 +301,8 @@ export default function AlphaShield() {
                   <div className="border border-red-950 bg-red-950/5 rounded-xl p-4 space-y-2">
                     <div className="text-[9px] text-red-500 uppercase tracking-widest font-bold">Black Swan Stress Testing Array</div>
                     <div className="grid grid-cols-2 gap-2">
-                      <button onClick={() => setCrisisMode(crisisMode === "HYPERINFLATION" ? null : "HYPERINFLATION")} className={`p-2 rounded border text-[10px] font-bold cursor-pointer transition-all ${crisisMode === "HYPERINFLATION" ? "bg-red-500/20 border-red-500 text-white" : "border-neutral-900 text-neutral-500"}`}>[ 🔥 HYPERINFLATION ]</button>
-                      <button onClick={() => setCrisisMode(crisisMode === "RUPIAH_CRASH" ? null : "RUPIAH_CRASH")} className={`p-2 rounded border text-[10px] font-bold cursor-pointer transition-all ${crisisMode === "RUPIAH_CRASH" ? "bg-red-500/20 border-red-500 text-white" : "border-neutral-900 text-neutral-500"}`}>[ <AlertTriangle size={16} className="text-amber-500" /> RUPIAH CRASH ]</button>
+                      <button onClick={() => setCrisisMode(crisisMode === "HYPERINFLATION" ? null : "HYPERINFLATION")} className={`p-2 rounded border text-[10px] font-bold cursor-pointer transition-all ${crisisMode === "HYPERINFLATION" ? "bg-red-500/20 border-red-500 text-white" : "border-neutral-900 text-neutral-500"}`}><Flame size={16} className="text-red-500" /> HYPERINFLATION </button>
+                      <button onClick={() => setCrisisMode(crisisMode === "RUPIAH_CRASH" ? null : "RUPIAH_CRASH")} className={`p-2 rounded border text-[10px] font-bold cursor-pointer transition-all ${crisisMode === "RUPIAH_CRASH" ? "bg-red-500/20 border-red-500 text-white" : "border-neutral-900 text-neutral-500"}`}><AlertTriangle size={16} className="text-amber-500" /> RUPIAH CRASH </button>
                     </div>
                   </div>
                 </div>
