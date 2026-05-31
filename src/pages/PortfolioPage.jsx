@@ -53,7 +53,7 @@ export default function PortfolioPage() {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         {/* Left: Donut + Asset Bars */}
         <div className="xl:col-span-7 space-y-4">
-          <div className="glass-card rounded-xl p-5 overflow-visible">
+          <div className="card-tier-2 overflow-visible">
             <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-4 font-mono">
               Asset Allocation Matrix
             </div>
@@ -75,7 +75,7 @@ export default function PortfolioPage() {
           </div>
 
           {/* Technical Execution Ledger */}
-          <div className="glass-card rounded-xl p-4 font-mono text-[11px] space-y-2">
+          <div className="card-tier-3 font-mono text-[11px] space-y-2">
             <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-1">
               Technical Execution Ledger
             </div>
@@ -89,7 +89,7 @@ export default function PortfolioPage() {
 
         {/* Right: MPT Analytics with interpretations */}
         <div className="xl:col-span-5 space-y-4">
-          <div className="glass-card rounded-xl p-4">
+          <div className="card-tier-2">
             <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-3 font-mono">
               Analisis MPT — dengan Interpretasi
             </div>
@@ -126,7 +126,7 @@ export default function PortfolioPage() {
           </div>
 
           {/* Risk Theme badge */}
-          <div className="glass-card rounded-xl p-4 flex flex-col items-center text-center">
+          <div className="card-tier-3 flex flex-col items-center text-center">
             <span className="text-[8px] text-[var(--as-text-dim)] font-semibold uppercase font-mono tracking-widest">
               Tema Risiko Aktif
             </span>

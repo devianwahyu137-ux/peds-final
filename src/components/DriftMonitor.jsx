@@ -16,7 +16,7 @@ const DriftMonitor = React.memo(function DriftMonitor() {
   const assets = ["stocks", "bonds", "gold", "cash"];
 
   return (
-    <div className="border border-[var(--as-border-secondary)] bg-[var(--as-bg-card)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 rounded-xl p-5 space-y-4 transition-colors duration-300">
+    <div className="card-tier-2 space-y-4 transition-colors duration-300">
       <div>
         <div className="flex items-center gap-2 text-[var(--as-text-primary)]"><LineChart size={18} className="text-blue-400" /><span className="font-bold tracking-wide text-sm uppercase">Drift Monitor Core</span></div>
         <p className="text-[10px] font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">Comparing actual weights vs target baseline weights</p>
@@ -49,7 +49,7 @@ const DriftMonitor = React.memo(function DriftMonitor() {
           const scaledPercent = Math.max(-100, Math.min(100, (drift / scaleLimit) * 50)); // -50% to +50% range relative to center (50%)
           
           return (
-            <div key={asset} className="border border-[var(--as-border-primary)] shadow-sm bg-[var(--as-bg-tertiary)] rounded-xl p-4 space-y-3 font-mono transition-colors duration-300">
+            <div key={asset} className="card-tier-3 space-y-3 font-mono transition-colors duration-300">
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <span>{cfg.icon}</span>

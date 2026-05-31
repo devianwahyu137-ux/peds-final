@@ -90,145 +90,41 @@ export function DataHealthPanel() {
   const allLive   = liveCount === total;
 
   return (
-    <div className="glass-card rounded-xl p-4 space-y-4 mb-6">
-
-      {/* Panel header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="relative flex items-center justify-center">
-            {allLive && (
-              <div
-                className="absolute w-5 h-5 rounded-full animate-ping"
-                style={{ backgroundColor: 'rgba(16,185,129,0.30)' }}
-              />
-            )}
-            <div
-              className="w-2.5 h-2.5 rounded-full relative z-10"
-              style={{
-                backgroundColor: allLive ? '#10b981' : '#f59e0b',
-                boxShadow: allLive ? '0 0 8px #10b981' : '0 0 6px #f59e0b',
-              }}
-            />
-          </div>
-          <span className="text-[10px] font-bold tracking-widest text-slate-500 dark:text-neutral-400 uppercase font-mono">
-            Status Sumber Data
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono text-slate-400 dark:text-neutral-500">
-            {liveCount}/{total} sumber aktif
-          </span>
-          {lastSyncAt > 0 && (
-            <span className="text-[9px] font-mono text-neutral-600">
-              · sinkronisasi {formatAge(now - lastSyncAt)}
-            </span>
-          )}
-        </div>
+    <div className="flex items-center justify-between px-6 py-3 rounded-xl mb-8"
+         style={{ background: 'var(--as-bg-tertiary)' }}>
+      <div className="flex items-center gap-3">
+        {/* status dot */}
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full
+                           rounded-full opacity-40"
+                style={{ backgroundColor: allLive ? '#10b981' : '#f59e0b' }} />
+          <span className="relative inline-flex rounded-full h-2 w-2"
+                style={{ backgroundColor: allLive ? '#10b981' : '#f59e0b' }} />
+        </span>
+        <span className="text-[10px] font-mono font-bold tracking-widest"
+              style={{ color: 'var(--as-text-secondary)' }}>
+          STATUS SUMBER DATA
+        </span>
+        <span className="text-[10px] font-mono"
+              style={{ color: 'var(--as-text-dim)' }}>
+          {liveCount}/{total} sumber aktif
+        </span>
       </div>
 
-      {/* Info bar for non-live data */}
-      {!allLive && (
-        <div className="flex items-start gap-2 px-3 py-2 rounded-lg" style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.12)' }}>
-          <span className="text-[10px] mt-0.5">ℹ</span>
-          <span className="text-[10px] font-mono text-amber-200/70 leading-relaxed">
-            Beberapa data menggunakan estimasi terakhir yang tersimpan.
-            Angka tetap valid sebagai referensi analisis.
-          </span>
-        </div>
-      )}
-
-      {/* Endpoint rows */}
-      <div className="space-y-1">
+      {/* Endpoint pills — horizontal, compact */}
+      <div className="flex items-center gap-2 flex-wrap hidden md:flex">
         {ENDPOINT_REGISTRY.map((ep) => {
-          const status  = endpointStatus[ep.key] ?? 'idle';
-          const cfg     = STATUS_CONFIG[status] ?? STATUS_CONFIG.idle;
-          const data    = liveData[ep.key];
-          const dataTimestamp = (typeof data === 'object' && data !== null) ? data.t : null;
-          const age     = dataTimestamp ? now - dataTimestamp : null;
-          const ttlLeft = ep.ttlMs - (age ?? ep.ttlMs);
-          const ttlPct  = Math.max(0, Math.min(100, (ttlLeft / ep.ttlMs) * 100));
-
-          // Extract numeric value for display
-          let displayValue = null;
-          if (typeof data === 'object' && data !== null) {
-            displayValue = data.v ?? data.value ?? null;
-          } else if (typeof data === 'number') {
-            displayValue = data;
-          }
-
+          const status = endpointStatus[ep.key] ?? 'idle';
+          const isOk   = status === 'ok';
           return (
-            <div
-              key={ep.key}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-white/[0.02]"
-              style={{ background: cfg.bg }}
-            >
-              {/* Status dot */}
-              <div
-                className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                style={{
-                  backgroundColor: cfg.dot,
-                  boxShadow: status === 'ok' ? `0 0 6px ${cfg.dot}` : 'none',
-                }}
-              />
-
-              {/* Icon */}
-              <span className="text-sm flex-shrink-0">{ep.icon}</span>
-
-              {/* Names + TTL bar */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono font-bold text-slate-700 dark:text-neutral-300 truncate">
-                    {ep.label}
-                  </span>
-                  <span className="text-[8px] font-mono text-neutral-600 truncate hidden sm:inline">
-                    via {ep.userLabel}
-                  </span>
-                </div>
-                {/* TTL progress bar */}
-                {status === 'ok' && (
-                  <div className="h-[2px] w-full bg-white dark:bg-neutral-900 rounded-full mt-1 overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${ttlPct}%`,
-                        backgroundColor: ttlPct > 50 ? '#10b981' : ttlPct > 20 ? '#f59e0b' : '#ef4444',
-                        transition: 'width 10s linear',
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Value preview */}
-              <div className="text-right flex-shrink-0 w-20">
-                {displayValue != null ? (
-                  <span className="text-[10px] font-mono font-bold text-slate-700 dark:text-neutral-300 tabular-nums">
-                    {typeof displayValue === 'number'
-                      ? displayValue.toLocaleString('id-ID', { maximumFractionDigits: 2 })
-                      : displayValue}
-                  </span>
-                ) : (
-                  <span className="text-[10px] font-mono text-neutral-700">—</span>
-                )}
-              </div>
-
-              {/* Status badge */}
-              <span
-                className="text-[8px] font-mono font-bold tracking-wider px-1.5 py-0.5 rounded flex-shrink-0"
-                style={{
-                  color: cfg.labelColor,
-                  background: cfg.bg,
-                  border: `1px solid ${cfg.dot}22`,
-                }}
-              >
-                {cfg.label}
-              </span>
-
-              {/* Age */}
-              <span className="text-[9px] font-mono text-neutral-600 w-12 text-right flex-shrink-0">
-                {age ? formatAge(age) : '—'}
-              </span>
-            </div>
+            <span key={ep.key}
+                  className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5"
+                  style={{
+                    background: isOk ? 'rgba(16,185,129,0.10)' : 'var(--as-bg-secondary)',
+                    color:      isOk ? '#10b981' : 'var(--as-text-dim)',
+                  }}>
+              <span>{ep.icon}</span> <span>{isOk ? 'LIVE' : status.toUpperCase()}</span>
+            </span>
           );
         })}
       </div>

@@ -58,7 +58,7 @@ export function MacroSentimentSummary() {
   const style  = OVERALL_STYLE[data.overall] ?? OVERALL_STYLE.CAUTIOUS;
 
   return (
-    <div className="glass-card rounded-xl p-5 space-y-4">
+    <div className="card-tier-2 space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-mono font-bold">
@@ -107,9 +107,9 @@ export function MacroSentimentSummary() {
         </div>
 
         {/* Signal grid */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-3">
           {data.signals.map((sig, i) => (
-            <div key={i} className="flex items-center justify-between p-2.5 rounded-lg border border-slate-300 dark:border-neutral-800/40 bg-white dark:bg-neutral-900/30">
+            <div key={i} className="card-tier-3 flex items-center justify-between">
               <span className="text-[9px] font-mono text-slate-400 dark:text-neutral-500">
                 {sig.label}
               </span>

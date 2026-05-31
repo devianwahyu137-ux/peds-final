@@ -107,7 +107,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
   return (
     <div className="space-y-6">
       {/* Dynamic SBN vs UST Plot */}
-      <div className="glass-card rounded-xl p-5 space-y-4">
+      <div className="card-tier-2 space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 text-[var(--as-text-primary)]"><Globe size={18} className="text-blue-400" /><span className="font-bold tracking-wide text-sm uppercase">Sovereign Yield Curve Detector</span></div>
@@ -254,7 +254,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
       </div>
 
       {/* 4x4 Correlation Matrix */}
-      <div className="glass-card rounded-xl p-5 space-y-4">
+      <div className="card-tier-2 space-y-4">
         <div>
           <div className="flex items-center gap-2 text-[var(--as-text-primary)]"><ActivitySquare size={16} className="text-blue-400" /><span className="font-bold tracking-wide text-sm uppercase">Macro Correlation Matrix</span></div>
           <p className="text-[10px] text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">Click cell for qualitative macro risk definition analysis</p>

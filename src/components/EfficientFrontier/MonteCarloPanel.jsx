@@ -164,7 +164,7 @@ export function MonteCarloPanel() {
   }, []);
 
   return (
-    <div className="glass-card rounded-xl overflow-hidden">
+    <div className="card-tier-1 !p-0 overflow-hidden">
 
       {/* Panel header */}
       <div className="p-5 pb-3 flex flex-col md:flex-row md:items-start justify-between gap-4">

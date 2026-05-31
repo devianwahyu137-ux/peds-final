@@ -82,8 +82,8 @@ export const TopNavbar = memo(function TopNavbar() {
     >
       {/* Risk Status Bar */}
       <div className="w-full flex flex-row items-center justify-between px-2 md:px-4 gap-1 md:gap-4
-                      py-1.5 border-b border-slate-200 dark:border-neutral-800/40 transition-colors duration-300"
-           style={{ background: theme.bg, minHeight: '28px' }}>
+                      py-1 border-b border-slate-200 dark:border-neutral-800/40 transition-colors duration-300"
+           style={{ background: theme.bg, minHeight: '26px' }}>
 
         {/* Left: portfolio status */}
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -99,7 +99,7 @@ export const TopNavbar = memo(function TopNavbar() {
             />
           </span>
           <span
-            className="text-[8px] md:text-xs font-mono font-bold tracking-tighter md:tracking-normal whitespace-nowrap"
+            className="text-[8px] md:text-[10px] font-mono font-bold tracking-tighter md:tracking-widest whitespace-nowrap"
             style={{ color: theme.color }}
           >
             STATUS PORTOFOLIO: {theme.label}
@@ -137,7 +137,7 @@ export const TopNavbar = memo(function TopNavbar() {
           <NavHealthIndicator />
           <span className="text-[8px] font-mono tracking-widest hidden xl:block whitespace-nowrap transition-colors duration-300"
                 style={{ color: 'var(--as-text-dim)' }}>
-            AlphaShield PEDS Core System v3.7
+            AlphaShield PEDS Core System v3.8
           </span>
         </div>
       </div>
@@ -150,27 +150,28 @@ export const TopNavbar = memo(function TopNavbar() {
             <button
               key={item.id}
               onClick={() => setTab(item.id)}
-              className="flex flex-col items-start px-4 md:px-5 py-3
-                         border-b-2 transition-all duration-200
+              className="flex flex-col items-start px-4 md:px-6 py-3.5
+                         transition-all duration-200
                          cursor-pointer flex-shrink-0 text-left
                          min-w-[100px] md:min-w-0 md:flex-1 hover:bg-slate-50 dark:hover:bg-transparent"
-              style={isActive
-                ? { borderBottomColor: theme.color, background: 'var(--as-bg-hover)' }
-                : { borderBottomColor: 'transparent' }
-              }
+              style={{
+                borderBottom: isActive ? `3px solid ${theme.color}` : '3px solid transparent',
+                background: isActive ? 'var(--as-bg-hover)' : 'transparent',
+                minHeight: '52px'
+              }}
             >
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs flex-shrink-0">{item.icon}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm flex-shrink-0">{item.icon}</span>
                 <span
                   className="text-[9px] md:text-[10px] font-mono font-bold
                              tracking-[0.1em] md:tracking-widest uppercase
                              whitespace-nowrap transition-colors duration-200"
-                  style={{ color: isActive ? theme.color : 'var(--as-text-tertiary)' }}
+                  style={{ color: isActive ? theme.color : 'var(--as-text-dim)' }}
                 >
                   {item.label}
                 </span>
               </div>
-              <span className="text-[7px] md:text-[8px] font-mono mt-0.5 hidden md:block
+              <span className="text-[7px] md:text-[8px] font-mono mt-0.5 hidden lg:block
                                whitespace-nowrap transition-colors duration-300"
                     style={{ color: 'var(--as-text-dim)' }}>
                 {item.sublabel}

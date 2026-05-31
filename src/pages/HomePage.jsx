@@ -117,49 +117,58 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="flex flex-col gap-8 w-full page-enter">
+    <div className="w-full page-enter" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-xl)' }}>
 
       {/* ── ZONA 1: SITUASI HARI INI ── */}
-      <div
-        className="rounded-xl p-6 border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 bg-[var(--as-bg-card)] transition-colors duration-300"
-      >
+      <div className="card-tier-1" style={{
+        background: `linear-gradient(135deg, var(--as-bg-primary), ${accent}08)`,
+        borderColor: `${accent}25`,
+        boxShadow: `0 0 0 1px rgba(255,255,255,0.02), 0 8px 48px rgba(0,0,0,0.50), 0 0 60px ${accent}08`,
+      }}>
+        {/* Left: text content */}
         <div className="flex items-start justify-between gap-8 flex-wrap">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-4 mb-5">
-              <span
-                className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-widest"
-                style={{ background: `${accent}15`, color: accent, border: `1px solid ${accent}30` }}
-              >
+            {/* Badge */}
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-[9px] font-mono font-bold tracking-[0.25em]
+                               uppercase px-3 py-1.5 rounded-full"
+                    style={{ background: accent + '18', color: accent,
+                             border: `1px solid ${accent}30` }}>
                 {narrative.riskLabel}
               </span>
-              <span
-                className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-widest"
-                style={{ background: sentimentStyle.bg, color: sentimentStyle.color, border: `1px solid ${sentimentStyle.color}40` }}
-              >
-                BIAS: {sentimentData.overall}
+              <span className="text-[9px] font-mono text-neutral-600 uppercase">
+                {scenarioId.replace('_', ' ')}
               </span>
             </div>
-            <h2 className="text-xl md:text-2xl font-black font-sans uppercase tracking-tight text-[var(--as-text-primary)] mb-4">
+
+            {/* Headline — make this much bigger */}
+            <h2 className="text-3xl font-black font-mono text-[var(--as-text-primary)]
+                           leading-tight tracking-tight mb-4">
               {narrative.headline}
             </h2>
-            <p className="text-xs font-sans font-light text-[var(--as-text-tertiary)] leading-relaxed max-w-2xl">
+
+            {/* Body — more line height, bigger font */}
+            <p className="text-sm font-mono leading-loose max-w-2xl"
+               style={{ color: 'var(--as-text-secondary)' }}>
               {narrative.body}
             </p>
           </div>
-          <div
-            className="flex-shrink-0 text-right p-6 rounded-xl flex flex-col justify-center border border-[var(--as-border-primary)] shadow-inner"
-            style={{ background: `${accent}08` }}
-          >
-            <div className="text-[10px] font-semibold font-sans text-[var(--as-text-dim)] tracking-widest uppercase mb-2">
-              Sharpe Ratio
+
+          {/* Sharpe Ratio — make this the HERO NUMBER */}
+          <div className="flex-shrink-0 text-center p-8 rounded-2xl min-w-[160px]"
+               style={{ background: accent + '10',
+                        border: `1px solid ${accent}20` }}>
+            <div className="text-[9px] font-mono tracking-[0.25em] uppercase mb-3"
+                 style={{ color: 'var(--as-text-dim)' }}>
+              SHARPE RATIO
             </div>
-            <div
-              className="text-5xl font-mono font-black tracking-tighter tabular-nums"
-              style={{ color: accent }}
-            >
+            <div className="text-[52px] font-black font-mono leading-none tabular-nums"
+                 style={{ color: accent,
+                          textShadow: `0 0 32px ${accent}50` }}>
               {sharpeRatio.toFixed(2)}
             </div>
-            <div className="text-[10px] font-sans font-light text-[var(--as-text-tertiary)] mt-2">
+            <div className="text-[9px] font-mono mt-3"
+                 style={{ color: 'var(--as-text-dim)' }}>
               skor efisiensi portofolio
             </div>
           </div>
@@ -167,13 +176,18 @@ export default function HomePage() {
       </div>
 
       {/* ── ZONA 2: REKOMENDASI UTAMA ── */}
-      <div className="rounded-xl border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 bg-[var(--as-bg-card)] p-6 transition-colors duration-300">
-        <div className="flex items-center justify-between mb-8 flex-wrap gap-5">
-          <div className="flex flex-col gap-2">
-            <div className="text-xs font-semibold uppercase tracking-widest text-[var(--as-text-dim)] flex items-center gap-3">
-              <Lightbulb size={16} className="text-amber-400" /> REKOMENDASI ALOKASI SAAT INI
+      <div className="card-tier-2">
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <div className="text-[9px] font-mono tracking-[0.25em] uppercase mb-2"
+                 style={{ color: 'var(--as-text-dim)' }}>
+              PANDUAN KONTEKSTUAL
             </div>
-            <p className="text-xs font-sans font-light text-[var(--as-text-tertiary)]">
+            <h2 className="text-lg font-bold font-mono"
+                style={{ color: 'var(--as-text-primary)' }}>
+              Rekomendasi Alokasi Saat Ini
+            </h2>
+            <p className="text-xs font-sans font-light text-[var(--as-text-tertiary)] mt-2">
               {narrative.advice}
             </p>
           </div>
@@ -187,30 +201,28 @@ export default function HomePage() {
           </button>
         </div>
 
-        <div className="flex flex-col gap-5">
+        <div className="space-y-5">
           {ASSET_BARS.map(({ key, label, icon, color }) => {
             const pct = targetWeights?.[key] ?? 0;
             return (
-              <div key={key} className="flex items-center justify-between gap-5">
-                <div className="flex items-center gap-4 w-40 flex-shrink-0">
-                  <span className="flex-shrink-0 flex items-center justify-center w-6">{icon}</span>
-                  <span className="text-xs font-semibold text-[var(--as-text-secondary)] truncate">
-                    {label}
-                  </span>
-                </div>
-                
-                <div className="flex-1 h-2 bg-[var(--as-border-secondary)] rounded-full overflow-hidden">
+              <div key={key} className="flex items-center gap-4">
+                <span className="text-xl w-7 flex-shrink-0">{icon}</span>
+                <span className="text-[11px] font-mono w-32 flex-shrink-0"
+                      style={{ color: 'var(--as-text-secondary)' }}>
+                  {label}
+                </span>
+                <div className="flex-1 h-2 bg-[var(--as-bg-tertiary)] rounded-full overflow-hidden">
                   <div
-                    className="h-full rounded-full transition-all duration-700 ease-out shadow-inner"
+                    className="h-full rounded-full transition-all duration-700 ease-out"
                     style={{
                       width: `${pct}%`,
-                      background: `linear-gradient(90deg, ${color}88, ${color})`,
+                      background: `linear-gradient(90deg, ${color}80, ${color})`,
+                      boxShadow: `0 0 8px ${color}60`,
                     }}
                   />
                 </div>
-                
                 <span
-                  className="text-lg font-black font-mono tabular-nums w-14 text-right flex-shrink-0"
+                  className="text-lg font-black font-mono tabular-nums w-12 text-right flex-shrink-0"
                   style={{ color }}
                 >
                   {pct}%
@@ -222,11 +234,21 @@ export default function HomePage() {
       </div>
 
       {/* ── ZONA 3: SINYAL PASAR CEPAT ── */}
-      <div className="flex flex-col gap-5">
-        <div className="text-xs font-semibold uppercase tracking-widest text-[var(--as-text-dim)]">
-          Sinyal Pasar Terkini
+      <div className="w-full">
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <div className="text-[9px] font-mono tracking-[0.25em] uppercase mb-2"
+                 style={{ color: 'var(--as-text-dim)' }}>
+              MONITOR MAKRO
+            </div>
+            <h2 className="text-lg font-bold font-mono"
+                style={{ color: 'var(--as-text-primary)' }}>
+              Sinyal Pasar Terkini
+            </h2>
+          </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {QUICK_SIGNALS_CONFIG.map(({ key, label, unit, icon, getValue }) => {
             const liveVal  = getValue(liveData);
             const fallback = SCENARIO_MACRO_FALLBACK[effectiveScenario]?.[key]
@@ -239,30 +261,23 @@ export default function HomePage() {
               : '—';
 
             return (
-              <div
-                key={key}
-                className="rounded-xl border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 bg-[var(--as-bg-card)] p-8 flex flex-col gap-2 justify-between transition-colors duration-300"
-              >
+              <div key={key} className="card-tier-3">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="flex items-center justify-center">{icon}</span>
-                  <span
-                    className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-widest border ${
-                      isLive
-                        ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
-                        : 'bg-slate-500/10 text-[var(--as-text-tertiary)] border-[var(--as-border-secondary)]'
-                    }`}
-                  >
-                    {isLive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mr-2" />}
+                  <span className="text-2xl">{icon}</span>
+                  <span className={`text-[8px] font-mono px-2 py-0.5 rounded-md
+                                    ${isLive ? 'bg-emerald-500/15 text-emerald-500'
+                                             : 'text-neutral-600'}`}
+                        style={isLive ? {} : { background: 'var(--as-bg-tertiary)' }}>
                     {isLive ? 'LIVE' : 'EST'}
                   </span>
                 </div>
-                <div>
-                  <div className="text-[10px] uppercase tracking-widest text-[var(--as-text-dim)] font-sans font-semibold mb-1.5">
-                    {label}
-                  </div>
-                  <div className="text-4xl font-black font-mono tracking-tighter text-[var(--as-text-primary)] tabular-nums drop-shadow-sm">
-                    {display}
-                  </div>
+                <div className="text-[10px] font-mono tracking-[0.2em] uppercase mb-2"
+                     style={{ color: 'var(--as-text-dim)' }}>
+                  {label}
+                </div>
+                <div className="text-[28px] font-black font-mono tabular-nums
+                                leading-none text-[var(--as-text-primary)]">
+                  {display}
                 </div>
               </div>
             );
@@ -307,19 +322,20 @@ export default function HomePage() {
       </div>
 
       {/* ── WHAT THIS MEANS FOR YOU — Contextual Guidance ── */}
-      <div className="rounded-xl border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 overflow-hidden bg-[var(--as-bg-card)] transition-colors duration-300">
-        <div className="px-6 py-5 border-b border-[var(--as-border-secondary)] flex items-center gap-5 bg-[var(--as-bg-secondary)]">
-          <span className="flex items-center justify-center text-[var(--as-text-dim)]"><Target size={20} /></span>
-          <div className="flex flex-col gap-1">
-            <div className="text-[10px] font-semibold uppercase tracking-widest text-[var(--as-text-dim)]">
-              Panduan Kontekstual
+      <div className="card-tier-2 overflow-hidden">
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <div className="text-[9px] font-mono tracking-[0.25em] uppercase mb-2"
+                 style={{ color: 'var(--as-text-dim)' }}>
+              PANDUAN KONTEKSTUAL
             </div>
-            <div className="text-xs font-semibold uppercase tracking-widest text-[var(--as-text-primary)]">
+            <h2 className="text-lg font-bold font-mono"
+                style={{ color: 'var(--as-text-primary)' }}>
               Apa Yang Harus Dilakukan Sekarang?
-            </div>
+            </h2>
           </div>
           <span
-            className="ml-auto px-4 py-1.5 rounded-lg text-[10px] font-bold font-mono uppercase tracking-widest border"
+            className="flex-shrink-0 px-4 py-1.5 rounded-lg text-[10px] font-bold font-mono uppercase tracking-widest border"
             style={{
               color:       accent,
               borderColor: `${accent}30`,
@@ -330,7 +346,7 @@ export default function HomePage() {
           </span>
         </div>
 
-        <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {scenarioId === 'EQUILIBRIUM' && (<>
             <ActionGuidanceCard icon={<TrendingUp size={20} className="text-blue-500" />} title="Pertahankan Ekuitas" color="#3b82f6"
               body="Pasar modal domestik mendukung. Saham banking & consumer staples menawarkan return optimal. Hindari rotasi prematur ke aset defensif." />
@@ -399,9 +415,9 @@ export default function HomePage() {
 
 function ActionGuidanceCard({ icon, title, body, color }) {
   return (
-    <div className="rounded-xl p-5 border border-[var(--as-border-secondary)] bg-[var(--as-bg-tertiary)] flex flex-col justify-start transition-colors duration-300">
+    <div className="card-tier-3 flex flex-col justify-start transition-colors duration-300">
       <div className="mb-4 flex items-center">{icon}</div>
-      <div className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{ color }}>
+      <div className="text-[10px] font-bold font-mono uppercase tracking-widest mb-3" style={{ color }}>
         {title}
       </div>
       <p className="text-xs font-sans font-light text-[var(--as-text-tertiary)] leading-relaxed">

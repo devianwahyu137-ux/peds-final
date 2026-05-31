@@ -132,7 +132,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
   ];
 
   return (
-    <div className="border border-[var(--as-border-secondary)] bg-[var(--as-bg-card)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 rounded-xl p-5 space-y-4 transition-colors duration-300">
+    <div className="card-tier-2 space-y-4 transition-colors duration-300">
       <div>
         <div className="flex items-center gap-2 text-[var(--as-text-primary)]"><ActivitySquare size={18} className="text-blue-400" /><span className="font-bold tracking-wide text-sm uppercase">Rotation Tactics Playbook</span></div>
         <p className="text-[10px] font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">Contextual sector and asset class rotation matrix</p>
@@ -142,7 +142,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
         {sectorCards.map((card) => {
           const isOpen = expandedId === card.id;
           return (
-            <div key={card.id} className="border border-[var(--as-border-primary)] shadow-sm bg-[var(--as-bg-tertiary)] rounded-xl overflow-hidden transition-all duration-200">
+            <div key={card.id} className="card-tier-3 !p-0 overflow-hidden transition-all duration-200">
               <button
                 onClick={() => setExpandedId(isOpen ? null : card.id)}
                 className="w-full text-left p-4 flex items-center justify-between cursor-pointer hover:bg-slate-100 dark:hover:bg-white dark:bg-neutral-900/10 transition-colors"

@@ -64,25 +64,27 @@ export function MacroInterpretationPanel() {
   const points     = MACRO_INTERPRETATION[scenarioId] ?? MACRO_INTERPRETATION.EQUILIBRIUM;
 
   return (
-    <div className="glass-card rounded-xl p-5 space-y-4">
-      <div>
-        <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-mono font-bold">
-          Interpretasi Makro
+    <div className="card-tier-1">
+      <div className="mb-6">
+        <div className="text-[9px] font-mono tracking-[0.25em] uppercase mb-2"
+             style={{ color: 'var(--as-text-dim)' }}>
+          INTERPRETASI MAKRO
         </div>
-        <div className="text-[10px] text-neutral-600 font-mono mt-0.5">
+        <h2 className="text-lg font-bold font-mono"
+            style={{ color: 'var(--as-text-primary)' }}>
           Implikasi Kondisi Saat Ini
-        </div>
+        </h2>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-5">
         {points.map((pt, i) => (
-          <div key={i} className="flex gap-3 p-3 rounded-lg border border-slate-300 dark:border-neutral-800/40 bg-white dark:bg-neutral-900/30">
-            <span className="text-lg flex-shrink-0 mt-0.5">{pt.icon}</span>
+          <div key={i} className="card-tier-3 flex gap-4">
+            <span className="text-xl flex-shrink-0 mt-0.5">{pt.icon}</span>
             <div className="min-w-0">
-              <div className="text-xs font-bold font-mono text-slate-900 dark:text-white mb-1">
+              <div className="text-sm font-bold font-mono text-[var(--as-text-primary)] mb-2">
                 {pt.title}
               </div>
-              <div className="text-[10px] font-mono text-slate-500 dark:text-neutral-400 leading-relaxed">
+              <div className="text-xs font-mono text-[var(--as-text-secondary)] leading-relaxed">
                 {pt.body}
               </div>
             </div>

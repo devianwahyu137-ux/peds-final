@@ -133,9 +133,10 @@ export default function App() {
 
       <main
         className="flex-1 overflow-y-auto overflow-x-hidden
-                   pt-4 px-4 md:px-6 lg:px-8
-                   pb-16 w-full max-w-[1600px] mx-auto
+                   pt-8 px-6 md:px-10 lg:px-12
+                   pb-16 w-full mx-auto
                    print:overflow-visible print:pt-0 print:px-0 print:pb-0 print:w-full print:block"
+        style={{ maxWidth: 'var(--content-max)' }}
       >
         <PageErrorBoundary key={activeTab}>
           <Suspense fallback={<PageSkeleton />}>

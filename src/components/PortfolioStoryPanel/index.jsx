@@ -74,7 +74,7 @@ export function PortfolioStoryPanel() {
   if (!analytics) return null;
 
   return (
-    <div className="space-y-4">
+    <div className="card-tier-2 space-y-4">
       <div className="flex items-center gap-2 mb-1">
         <div className="w-1 h-5 rounded-full" style={{ background: config.color }} />
         <div className="text-xs font-bold font-mono text-slate-900 dark:text-white">

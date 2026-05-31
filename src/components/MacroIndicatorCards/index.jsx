@@ -32,7 +32,7 @@ export default function MacroIndicatorCards() {
       <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-mono">
         Macro Economic Indicators
       </div>
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {MACRO_INDICATORS.map((indicator) => {
           // Resolve value: prefer liveData, fall back to macroInputs
           const liveValue = liveData[indicator.storeKey];

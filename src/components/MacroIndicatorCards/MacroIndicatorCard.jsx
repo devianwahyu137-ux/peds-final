@@ -162,23 +162,15 @@ export default function MacroIndicatorCard({
 
   return (
     <div
-      className="relative rounded-2xl overflow-hidden scenario-transition"
+      className="card-tier-2 relative overflow-hidden scenario-transition"
       style={{
-        backdropFilter: "blur(16px) saturate(180%)",
-        WebkitBackdropFilter: "blur(16px) saturate(180%)",
-        background: "var(--as-bg-secondary)",
-        border: "1px solid var(--as-border-primary)",
-        boxShadow: isActive || isChanging
-          ? `0 8px 32px var(--as-bg-tertiary), 0 0 20px ${glow.shadow}`
-          : "0 8px 32px var(--as-bg-tertiary)",
-        borderColor: isActive || isChanging
-          ? `${glow.color}33`
-          : "var(--as-border-primary)",
+        borderColor: isActive || isChanging ? `${glow.color}33` : undefined,
+        boxShadow: isActive || isChanging ? `0 8px 32px var(--as-bg-tertiary), 0 0 20px ${glow.shadow}` : undefined,
       }}
     >
       {/* Glow aura pseudo-element replacement */}
       <div
-        className="absolute inset-0 rounded-2xl pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background: `radial-gradient(ellipse at 50% 0%, ${glow.color}15 0%, transparent 70%)`,
           opacity: isActive || isChanging ? 1 : 0,
@@ -186,74 +178,72 @@ export default function MacroIndicatorCard({
         }}
       />
 
-      {/* Content */}
-      <div className="relative z-10 p-6 flex flex-col gap-2">
-        {/* Header: Icon, Label, Status Dot, Tooltip */}
-        <div className="flex items-center justify-between mb-3">
+      {/* Header: Icon, Label, Status Dot, Tooltip */}
+      <div className="flex items-center justify-between mb-6 relative z-10">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">{icon}</span>
           <div className="flex items-center gap-2">
-            <span className="text-base">{icon}</span>
-            <span className="text-[10px] uppercase tracking-widest text-[var(--as-text-dim)] font-sans font-semibold">
+            <div className="text-[9px] font-mono tracking-[0.2em] uppercase"
+                 style={{ color: 'var(--as-text-dim)' }}>
               {label}
-            </span>
+            </div>
             <MacroTooltip indicatorId={id}>?</MacroTooltip>
           </div>
-          <div className="flex items-center gap-1.5">
-            <div
-              className="w-1.5 h-1.5 rounded-full"
-              style={{ backgroundColor: statusColor, boxShadow: `0 0 4px ${statusColor}` }}
-            />
-            <span className="text-[8px] font-mono text-neutral-600 uppercase">{status || "idle"}</span>
-          </div>
         </div>
-
-        {/* Main Value — Animated */}
-        <div
-          className={`text-4xl font-black font-mono tracking-tighter tabular-nums ${isChanging ? "value-updated" : ""}`}
-          style={{ color: glow.color }}
-        >
-          {animatedValue}
-        </div>
-
-        {/* Unit label */}
-        <div className="text-[9px] font-mono font-light text-[var(--as-text-dim)] mt-0.5">{unit}</div>
-
-        {/* Sparkline */}
-        <div className="mt-3 mb-2">
-          <MicroSparkline
-            data={sparklineData}
-            color={glow.color}
-            width={120}
-            height={36}
-            showArea={true}
+        {/* Status badge */}
+        <span className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5"
+              style={{ background: 'var(--as-bg-tertiary)',
+                       color: 'var(--as-text-dim)' }}>
+          <div
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ backgroundColor: statusColor, boxShadow: `0 0 4px ${statusColor}` }}
           />
-        </div>
+          {status || "idle"}
+        </span>
+      </div>
 
-        {/* Footer: Delta Badge + Last Updated */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5 mt-2">
-            <span
-              className="text-[9px] font-mono font-bold tabular-nums"
-              style={{
-                color: direction === 'up'   ? '#10b981'
-                     : direction === 'down' ? '#ef4444'
-                     : 'var(--as-text-tertiary)',
-              }}
-            >
-              {direction === 'up'   ? '▲' : direction === 'down' ? '▼' : '—'}
-              {' '}
-              {delta !== 0
-                ? `${delta > 0 ? '+' : ''}${delta.toFixed(2)}%`
-                : 'tidak berubah'
-              }
-            </span>
-            <span className="text-[8px] font-mono font-light text-[var(--as-text-tertiary)]">
-              vs periode lalu
-            </span>
-          </div>
-          <span className="text-[9px] font-mono font-light text-[var(--as-text-tertiary)] mt-2">
-            {formatTimeAgo(timestamp)}
-          </span>
-        </div>
+      {/* Main Value — Animated */}
+      <div
+        className={`text-[32px] font-black font-mono tracking-tighter tabular-nums leading-none mb-1 relative z-10 ${isChanging ? "value-updated" : ""}`}
+        style={{ color: glow.color }}
+      >
+        {animatedValue}
+      </div>
+
+      {/* Unit label */}
+      <div className="text-[9px] font-mono mb-6 relative z-10" style={{ color: 'var(--as-text-dim)' }}>
+        {unit}
+      </div>
+
+      {/* Sparkline */}
+      <div className="relative z-10 -mx-2">
+        <MicroSparkline
+          data={sparklineData}
+          color={glow.color}
+          width={undefined}
+          height={56}
+          showArea={true}
+        />
+      </div>
+
+      {/* Footer: Delta Badge + Last Updated */}
+      <div className="flex items-center justify-between mt-4 pt-4 relative z-10"
+           style={{ borderTop: '1px solid var(--as-border-secondary)' }}>
+        <span
+          className="text-[9px] font-mono font-bold tabular-nums"
+          style={{
+            color: direction === 'up'   ? '#10b981'
+                 : direction === 'down' ? '#ef4444'
+                 : 'var(--as-text-tertiary)',
+          }}
+        >
+          {direction === 'up' ? '▲ ' : direction === 'down' ? '▼ ' : ''}
+          {delta !== 0 ? `${delta > 0 ? '+' : ''}${delta.toFixed(2)}%` : '—'}
+        </span>
+        <span className="text-[8px] font-mono font-light text-[var(--as-text-tertiary)] flex flex-col items-end">
+          <span>vs periode lalu</span>
+          {timestamp && <span className="mt-1 opacity-60">{formatTimeAgo(timestamp)}</span>}
+        </span>
       </div>
     </div>
   );

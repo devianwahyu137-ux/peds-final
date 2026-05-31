@@ -95,8 +95,8 @@ export function AllocationRow({ assetKey, pct }) {
           </div>
           <span className="text-sm font-bold tabular-nums" style={{ color: cfg.color }}>{pct}%</span>
         </div>
-        <div className="h-1.5 w-full rounded-full bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="h-full rounded-full transition-all duration-700 ease-out" style={{ width: `${pct}%`, backgroundColor: cfg.color }} />
+        <div className="h-3 w-full rounded-full bg-[var(--as-bg-tertiary)] overflow-hidden">
+          <div className="h-full rounded-full transition-all duration-700 ease-out" style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${cfg.color}80, ${cfg.color})` }} />
         </div>
       </div>
     </div>

@@ -101,8 +101,8 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
       <svg
         ref={svgRef}
         viewBox={`0 0 ${CHART_W} ${CHART_H}`}
-        className="w-full overflow-visible"
-        style={{ fontFamily: 'monospace' }}
+        className="w-full overflow-visible rounded-xl"
+        style={{ fontFamily: 'monospace', background: 'var(--as-bg-tertiary)' }}
       >
         {/* Y-axis grid lines + labels */}
         {yTickValues.map((val) => {
@@ -231,20 +231,20 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
             />
             {/* Pulsing outer ring */}
             <circle
-              cx={currentX} cy={currentY} r={10}
+              cx={currentX} cy={currentY} r={12}
               fill="none"
               stroke={config?.color ?? '#10b981'}
-              strokeWidth={1} opacity={0.3}
+              strokeWidth={1.5} opacity={0.3}
             >
-              <animate attributeName="r" values="8;14;8" dur="2s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.3;0.1;0.3" dur="2s" repeatCount="indefinite" />
+              <animate attributeName="r" values="12;20;12" dur="2s" repeatCount="indefinite" />
+              <animate attributeName="opacity" values="0.4;0.1;0.4" dur="2s" repeatCount="indefinite" />
             </circle>
             {/* Core dot */}
             <circle
-              cx={currentX} cy={currentY} r={6}
+              cx={currentX} cy={currentY} r={8}
               fill={config?.color ?? '#10b981'}
-              stroke="#000" strokeWidth={1.5}
-              style={{ filter: `drop-shadow(0 0 6px ${config?.color ?? '#10b981'})` }}
+              stroke="var(--as-bg-primary)" strokeWidth={2}
+              style={{ filter: `drop-shadow(0 0 8px ${config?.color ?? '#10b981'})` }}
             />
             {/* Label */}
             <text
