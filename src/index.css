@@ -4,13 +4,123 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@layer base {
-  body {
-    @apply bg-slate-50 text-slate-900 transition-colors duration-300;
-  }
-  .dark body {
-    @apply bg-black text-neutral-100;
-  }
+/* ═══════════════════════════════════════════════════════════════
+   ALPHASHIELD DESIGN SYSTEM — CSS CUSTOM PROPERTIES
+   Single source of truth for all colors in both themes.
+   Components reference var(--as-X) instead of hardcoded values.
+   Toggle: document.documentElement.setAttribute('data-theme','light')
+═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── BASE SURFACES ── */
+  --as-bg-page:        #000000;
+  --as-bg-primary:     rgba(5,   5,   5,   0.90);
+  --as-bg-secondary:   rgba(10,  10,  10,  0.75);
+  --as-bg-tertiary:    rgba(20,  20,  20,  0.60);
+  --as-bg-hover:       rgba(255, 255, 255, 0.018);
+  --as-bg-card:        var(--as-bg-secondary);
+
+  /* ── BORDERS ── */
+  --as-border-primary:   var(--as-border-primary);
+  --as-border-secondary: var(--as-border-secondary);
+  --as-border-divider:   rgba(38,  38,  38,  1.00);
+
+  /* ── TEXT ── */
+  --as-text-primary:   var(--as-text-primary);
+  --as-text-secondary: var(--as-text-secondary);
+  --as-text-tertiary:  var(--as-text-tertiary);
+  --as-text-dim:       var(--as-text-dim);
+
+  /* ── TICKER / NAVBAR ── */
+  --as-ticker-bg:      rgba(0, 0, 0, 0.96);
+  --as-navbar-bg:      var(--as-navbar-bg);
+  --as-navbar-border:  rgba(38, 38, 38, 0.70);
+
+  /* ── STATUS PANEL ── */
+  --as-status-ok:      #10b981;
+  --as-status-warn:    #f59e0b;
+  --as-status-danger:  #ef4444;
+  --as-status-idle:    var(--as-text-tertiary);
+
+  /* ── SHADOWS ── */
+  --as-shadow-card:    0 4px 24px var(--as-bg-tertiary);
+  --as-shadow-panel:   0 0 0 1px var(--as-border-secondary), 0 24px 48px var(--as-bg-tertiary);
+
+  /* ── SCENARIO ACCENTS (invariant across themes) ── */
+  --as-emerald:        #10b981;
+  --as-emerald-dim:    rgba(16, 185, 129, 0.10);
+  --as-emerald-border: rgba(16, 185, 129, 0.30);
+  --as-amber:          #f59e0b;
+  --as-amber-dim:      rgba(245, 158, 11, 0.10);
+  --as-amber-border:   rgba(245, 158, 11, 0.30);
+  --as-red:            #ef4444;
+  --as-red-dim:        rgba(239, 68,  68,  0.10);
+  --as-red-border:     rgba(239, 68,  68,  0.30);
+
+  /* ── CHART COLORS (invariant) ── */
+  --as-chart-stocks:   #3b82f6;
+  --as-chart-bonds:    #a78bfa;
+  --as-chart-gold:     #fbbf24;
+  --as-chart-cash:     #34d399;
+
+  color-scheme: dark;
+}
+
+/* ── LIGHT THEME OVERRIDES ── */
+[data-theme="light"] {
+  /* ── BASE SURFACES ── */
+  --as-bg-page:        #f4f5f7;
+  --as-bg-primary:     rgba(255, 255, 255, 0.95);
+  --as-bg-secondary:   rgba(245, 246, 248, 0.98);
+  --as-bg-tertiary:    rgba(235, 237, 242, 0.90);
+  --as-bg-hover:       rgba(0,   0,   0,   0.025);
+  --as-bg-card:        rgba(255, 255, 255, 0.92);
+
+  /* ── BORDERS ── */
+  --as-border-primary:   rgba(0,   0,   0,   0.08);
+  --as-border-secondary: rgba(0,   0,   0,   0.05);
+  --as-border-divider:   rgba(200, 205, 215, 1.00);
+
+  /* ── TEXT ── */
+  --as-text-primary:   #111827;
+  --as-text-secondary: #374151;
+  --as-text-tertiary:  #6b7280;
+  --as-text-dim:       #9ca3af;
+
+  /* ── TICKER / NAVBAR ── */
+  --as-ticker-bg:      rgba(17, 24, 39, 0.97);
+  --as-navbar-bg:      rgba(255, 255, 255, 0.97);
+  --as-navbar-border:  rgba(200, 205, 215, 0.80);
+
+  /* ── SHADOWS ── */
+  --as-shadow-card:    0 2px 12px rgba(0, 0, 0, 0.08);
+  --as-shadow-panel:   0 0 0 1px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.08);
+
+  color-scheme: light;
+}
+
+/* ── APPLY PAGE BACKGROUND ── */
+body,
+#root {
+  background-color: var(--as-bg-page);
+  color:            var(--as-text-primary);
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+/* ── GLOBAL TRANSITION FOR SMOOTH SWITCHING ── */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 250ms;
+  transition-timing-function: ease;
+}
+
+/* ── EXCEPTION: do not transition transforms or opacity
+   (breaks animations) ── */
+.no-theme-transition,
+.no-theme-transition * {
+  transition: none !important;
 }
 
 :root {
@@ -19,7 +129,7 @@
   --t3-size: 0.6875rem; /* 11px */
   
   --b-panel-color: #171717;  /* desaturated neutral-900 border */
-  --b-inner-color: #262626;  /* desaturated neutral-800 border */
+  --b-inner-color: var(--as-border-divider);  /* desaturated neutral-800 border */
   --b-accent-color: #10ffaa; /* neon emerald accent border */
   --b-ledger-color: #ff3c3c;  /* caution/danger ledger line border */
 }
@@ -52,7 +162,7 @@ html, body, #root {
   font-size: var(--t3-size);
   font-weight: 400;
   line-height: 1.6;
-  color: #a3a3a3;
+  color: var(--as-text-secondary);
 }
 
 /* Desaturated background stroke border tokens */
@@ -96,8 +206,8 @@ html, body, #root {
 .glass-card {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-  background: rgba(10, 10, 10, 0.60);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--as-bg-secondary);
+  border: 1px solid var(--as-border-primary);
 }
 
 /* SVG segment transform fix */
@@ -175,7 +285,7 @@ html, body, #root {
 /* Scrollbar custom */
 ::-webkit-scrollbar       { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #262626; border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: var(--as-border-divider); border-radius: 2px; }
 
 /* ── ALPHASHIELD v3.1 ADDITIONS ── */
 
@@ -193,8 +303,8 @@ html, body, #root {
 .glass {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-  background: rgba(10, 10, 10, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--as-bg-secondary);
+  border: 1px solid var(--as-border-primary);
 }
 
 /* Ping animation for status dots */
@@ -243,7 +353,7 @@ html, body, #root {
   html, body {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    background-color: #050505 !important; /* Force true black on PDF */
+    background-color: var(--as-bg-primary) !important; /* Force true black on PDF */
     color: #ffffff !important;
   }
 

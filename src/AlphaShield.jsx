@@ -149,7 +149,7 @@ function DonutChart({ accentColor, hovered, setHovered, animPct, analytics }) {
             </g>
           ) : null
         )}
-        <circle cx={cx} cy={cy} r={r - 4} fill="#050505" stroke={acc.neon} strokeWidth="1" strokeOpacity="0.3" />
+        <circle cx={cx} cy={cy} r={r - 4} fill="var(--as-bg-primary)" stroke={acc.neon} strokeWidth="1" strokeOpacity="0.3" />
 
         {/* ── Center Overlay: Sharpe + Beta from store / Asset detail on hover ── */}
         {hovered ? (

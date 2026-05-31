@@ -50,7 +50,7 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center"
       style={{
-        background: 'rgba(0,0,0,0.80)',
+        background: 'var(--as-bg-primary)',
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
         animation: 'overlay-appear 200ms ease-out forwards',
@@ -60,7 +60,7 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
       <div
         className="relative max-w-lg w-full mx-4 rounded-2xl overflow-hidden"
         style={{
-          background: 'rgba(5,5,5,0.95)',
+          background: 'var(--as-bg-primary)',
           border: `1px solid ${config.colorBorder}`,
           boxShadow: `0 0 60px ${config.colorGlow}, 0 0 120px ${config.colorDim}`,
           animation: 'card-rise 300ms ease-out forwards',
@@ -68,7 +68,7 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Progress bar — auto countdown */}
-        <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
+        <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: 'var(--as-border-primary)' }}>
           <div
             className="h-full transition-none"
             style={{

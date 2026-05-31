@@ -16,10 +16,10 @@ const DriftMonitor = React.memo(function DriftMonitor() {
   const assets = ["stocks", "bonds", "gold", "cash"];
 
   return (
-    <div className="border border-slate-200 dark:border-neutral-800 bg-white dark:bg-[#121212] rounded-xl p-5 space-y-4 transition-colors duration-300">
+    <div className="border border-[var(--as-border-secondary)] bg-[var(--as-bg-card)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 rounded-xl p-5 space-y-4 transition-colors duration-300">
       <div>
-        <h3 className="flex flex-row items-center gap-2 text-sm font-bold text-slate-900 dark:text-white font-mono"><LineChart size={16} className="text-blue-400" /> DRIFT_MONITOR_CORE</h3>
-        <p className="text-[10px] text-slate-500 dark:text-neutral-500 mt-1 uppercase tracking-wider">Comparing actual weights vs target baseline weights</p>
+        <div className="flex items-center gap-2 text-[var(--as-text-primary)]"><LineChart size={18} className="text-blue-400" /><span className="font-bold tracking-wide text-sm uppercase">Drift Monitor Core</span></div>
+        <p className="text-[10px] font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">Comparing actual weights vs target baseline weights</p>
       </div>
 
       <div className="space-y-4">
@@ -49,11 +49,11 @@ const DriftMonitor = React.memo(function DriftMonitor() {
           const scaledPercent = Math.max(-100, Math.min(100, (drift / scaleLimit) * 50)); // -50% to +50% range relative to center (50%)
           
           return (
-            <div key={asset} className="border border-slate-200 dark:border-neutral-900/60 bg-slate-50 dark:bg-black/40 rounded-xl p-4 space-y-3 font-mono transition-colors duration-300">
+            <div key={asset} className="border border-[var(--as-border-primary)] shadow-sm bg-[var(--as-bg-tertiary)] rounded-xl p-4 space-y-3 font-mono transition-colors duration-300">
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <span>{cfg.icon}</span>
-                  <span className="font-bold text-slate-700 dark:text-neutral-300 text-[11px]">{cfg.label}</span>
+                  <span className="font-semibold text-[var(--as-text-secondary)] text-[11px]">{cfg.label}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className={`text-[7px] font-bold px-1.5 py-0.5 rounded border uppercase ${statusStyle}`}>{statusLabel}</span>
@@ -63,9 +63,9 @@ const DriftMonitor = React.memo(function DriftMonitor() {
 
               {/* Zero-Centered Divergence Velocity Bar */}
               <div className="space-y-1">
-                <div className="relative h-2 w-full bg-slate-200 dark:bg-neutral-950 rounded-full overflow-hidden border border-slate-300 dark:border-neutral-900">
+                <div className="relative h-2 w-full bg-[var(--as-bg-secondary)] rounded-full overflow-hidden border border-[var(--as-border-primary)] shadow-inner">
                   {/* Anchor Center Zero-line */}
-                  <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-slate-400 dark:bg-neutral-800 z-10" />
+                  <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-[var(--as-border-divider)] z-10" />
                   
                   {/* Left or Right Divergence fill */}
                   <div
@@ -78,7 +78,7 @@ const DriftMonitor = React.memo(function DriftMonitor() {
                     }}
                   />
                 </div>
-                <div className="flex justify-between text-[7px] text-slate-400 dark:text-neutral-600 font-bold px-1 uppercase tracking-widest">
+                <div className="flex justify-between text-[7px] text-[var(--as-text-dim)] font-semibold px-1 uppercase tracking-widest">
                   <span>-25% Under</span>
                   <span>Target Alignment</span>
                   <span>+25% Over</span>
@@ -86,9 +86,9 @@ const DriftMonitor = React.memo(function DriftMonitor() {
               </div>
 
               {/* Explicit Numerical Details */}
-              <div className="flex justify-between text-[9px] text-slate-500 dark:text-neutral-500 border-t border-slate-200 dark:border-neutral-900/40 pt-2">
-                <span>ACTUAL: <strong className="text-slate-700 dark:text-neutral-300">{actual.toFixed(1)}%</strong></span>
-                <span>TARGET: <strong className="text-slate-500 dark:text-neutral-400">{target.toFixed(1)}%</strong></span>
+              <div className="flex justify-between text-[9px] font-light text-[var(--as-text-tertiary)] border-t border-[var(--as-border-secondary)] pt-2">
+                <span>ACTUAL: <strong className="text-[var(--as-text-primary)] font-bold">{actual.toFixed(1)}%</strong></span>
+                <span>TARGET: <strong className="text-[var(--as-text-secondary)] font-bold">{target.toFixed(1)}%</strong></span>
               </div>
             </div>
           );

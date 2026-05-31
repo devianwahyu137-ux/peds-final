@@ -2,7 +2,7 @@
 // COMPLETE FILE — narrativo panel with What-If simulator
 
 import { useState, useMemo } from 'react';
-import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Gauge, FlaskConical } from "lucide-react";
 import { useRootStore } from '@/stores/rootStore';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
 import {
@@ -51,7 +51,7 @@ export function PortfolioStoryPanel() {
       narrative: sharpe != null ? narrateSharpRatio(sharpe, scenarioId) : '',
     },
     {
-      id: 'beta', icon: '🧭', label: 'Sensitivitas Pasar',
+      id: 'beta', icon: <Gauge size={16} className="text-blue-400" />, label: 'Sensitivitas Pasar',
       value: beta?.toFixed(2) ?? '—', unit: 'β',
       narrative: beta != null ? narrateBeta(beta) : '',
     },
@@ -85,7 +85,7 @@ export function PortfolioStoryPanel() {
       {STORY_METRICS.map((m) => (
         <div key={m.id}
              className="rounded-xl p-4 border border-slate-300 dark:border-neutral-800/40"
-             style={{ background: 'rgba(10,10,10,0.6)' }}>
+             style={{ background: 'var(--as-bg-secondary)' }}>
           <div className="flex items-baseline gap-2 mb-2">
             <span className="text-lg">{m.icon}</span>
             <span className="text-xl font-black font-mono tabular-nums"
@@ -110,7 +110,7 @@ export function PortfolioStoryPanel() {
         <div className="px-4 py-3 border-b" style={{ borderColor: config.color + '20' }}>
           <div className="text-[9px] font-mono font-bold tracking-widest uppercase"
                style={{ color: config.color }}>
-            🔮 Simulasi What-If — Perubahan BI Rate
+            <div className="flex items-center gap-2"><FlaskConical size={16} className="text-purple-400" /><span>Simulasi What-If — Perubahan BI Rate</span></div>
           </div>
           <div className="text-[9px] font-mono text-slate-400 dark:text-neutral-500 mt-0.5">
             Konteks: BI Rate saat ini 5.25% (naik 50bps Mei 2026)
@@ -123,9 +123,9 @@ export function PortfolioStoryPanel() {
                       className="text-[9px] font-mono px-2.5 py-1.5 rounded-lg border
                                  transition-all duration-150 cursor-pointer"
                       style={{
-                        background:  selectedDelta === p.delta ? config.color + '20' : 'rgba(0,0,0,0.4)',
+                        background:  selectedDelta === p.delta ? config.color + '20' : 'var(--as-bg-tertiary)',
                         borderColor: selectedDelta === p.delta ? config.color : 'rgba(255,255,255,0.08)',
-                        color:       selectedDelta === p.delta ? config.color : '#525252',
+                        color:       selectedDelta === p.delta ? config.color : 'var(--as-text-tertiary)',
                       }}>
                 {p.label}
               </button>

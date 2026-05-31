@@ -49,7 +49,7 @@ const RELEASE_EVENTS = [
 const IMPACT_STYLE = {
   HIGH:   { cls: 'bg-red-500/15 text-red-400 border-red-500/30',       dot: '#ef4444' },
   MEDIUM: { cls: 'bg-amber-500/15 text-amber-400 border-amber-500/30', dot: '#f59e0b' },
-  LOW:    { cls: 'bg-neutral-700/40 text-slate-400 dark:text-neutral-500 border-neutral-700/40', dot: '#525252' },
+  LOW:    { cls: 'bg-neutral-700/40 text-slate-400 dark:text-neutral-500 border-neutral-700/40', dot: 'var(--as-text-tertiary)' },
 };
 
 export function MacroReleaseCalendar() {

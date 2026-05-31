@@ -52,18 +52,18 @@ export default function NewsCard({
     <div
       className="rounded-xl overflow-hidden transition-all duration-200 cursor-pointer group"
       style={{
-        background: "rgba(10, 10, 10, 0.70)",
-        border: "1px solid rgba(255, 255, 255, 0.05)",
+        background: "var(--as-bg-secondary)",
+        border: "1px solid var(--as-border-primary)",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "rgba(255,255,255,0.10)";
+        e.currentTarget.style.borderColor = "var(--as-border-primary)";
         e.currentTarget.style.transform = "translateY(-2px)";
-        e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.4)";
+        e.currentTarget.style.boxShadow = "0 8px 24px var(--as-bg-tertiary)";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)";
+        e.currentTarget.style.borderColor = "var(--as-border-primary)";
         e.currentTarget.style.transform = "translateY(0)";
         e.currentTarget.style.boxShadow = "none";
       }}

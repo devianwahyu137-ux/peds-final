@@ -167,7 +167,7 @@ export function MonteCarloPanel() {
     <div className="glass-card rounded-xl overflow-hidden">
 
       {/* Panel header */}
-      <div className="p-5 pb-3 flex items-start justify-between gap-4">
+      <div className="p-5 pb-3 flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-base"><Dices size={16} className="text-slate-400" /></span>
@@ -190,9 +190,9 @@ export function MonteCarloPanel() {
             disabled={isCalculating}
             className="text-[9px] font-mono px-3 py-1.5 rounded-lg border transition-all duration-150 cursor-pointer"
             style={{
-              background:  isCalculating ? 'rgba(0,0,0,0.4)' : (config?.colorDim ?? 'rgba(16,185,129,0.12)'),
+              background:  isCalculating ? 'var(--as-bg-tertiary)' : (config?.colorDim ?? 'rgba(16,185,129,0.12)'),
               borderColor: isCalculating ? '#333' : (config?.colorBorder ?? 'rgba(16,185,129,0.30)'),
-              color:       isCalculating ? '#404040' : (config?.color ?? '#10b981'),
+              color:       isCalculating ? 'var(--as-text-dim)' : (config?.color ?? '#10b981'),
               opacity:     isCalculating ? 0.5 : 1,
             }}
           >
@@ -230,9 +230,9 @@ export function MonteCarloPanel() {
                   disabled={isCalculating}
                   className="text-[8px] font-mono px-2 py-1 rounded-md border transition-colors duration-100 cursor-pointer disabled:opacity-50"
                   style={{
-                    background:  capital === p.value ? (config?.colorDim ?? 'rgba(16,185,129,0.12)') : 'rgba(0,0,0,0.4)',
+                    background:  capital === p.value ? (config?.colorDim ?? 'rgba(16,185,129,0.12)') : 'var(--as-bg-tertiary)',
                     borderColor: capital === p.value ? (config?.color ?? '#10b981') : '#333',
-                    color:       capital === p.value ? (config?.color ?? '#10b981') : '#525252',
+                    color:       capital === p.value ? (config?.color ?? '#10b981') : 'var(--as-text-tertiary)',
                   }}
                 >
                   {p.label}
@@ -244,7 +244,7 @@ export function MonteCarloPanel() {
 
         {/* Simulation summary stats */}
         {result?.summary && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
               {
                 label: 'Median 1 Tahun',
@@ -276,12 +276,12 @@ export function MonteCarloPanel() {
               <div
                 key={stat.label}
                 className="rounded-xl p-6 flex flex-col gap-2"
-                style={{ background: 'rgba(10,10,10,0.50)', border: '1px solid rgba(255,255,255,0.05)' }}
+                style={{ background: 'var(--as-bg-secondary)', border: '1px solid var(--as-border-primary)' }}
               >
                 <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-sans font-bold">
                   {stat.label}
                 </div>
-                <div className="text-3xl font-mono font-bold tracking-tighter tabular-nums" style={{ color: stat.color }}>
+                <div className="text-xl md:text-3xl font-mono font-bold tracking-tighter tabular-nums" style={{ color: stat.color }}>
                   {stat.value}
                 </div>
                 <div className="text-[9px] font-mono text-slate-400 dark:text-neutral-500">

@@ -39,7 +39,7 @@ export function SessionResumeBanner({
       <div
         className="rounded-2xl border overflow-hidden shadow-2xl"
         style={{
-          background:     'rgba(5,5,5,0.97)',
+          background:     'var(--as-bg-primary)',
           borderColor:    config.colorBorder,
           boxShadow:      `0 0 40px ${config.colorGlow}`,
           backdropFilter: 'blur(20px)',

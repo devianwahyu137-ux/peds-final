@@ -14,6 +14,7 @@ import { usePortfolioPersistence }
   from '@/hooks/usePortfolioPersistence';
 import { useLiveMarketData }
   from '@/hooks/useLiveMarketData';
+import { useTheme } from '@/hooks/useTheme';
 
 // Lazy load all pages
 const HomePage      = lazy(() => import('@/pages/HomePage'));
@@ -86,6 +87,7 @@ function PageSkeleton() {
 }
 
 export default function App() {
+  useTheme();
   const activeTab = useRootStore((s) => s.activeTab);
 
   // Global hooks — run once at root
@@ -117,7 +119,7 @@ export default function App() {
   const CurrentPage = PAGE_MAP[activeTab] ?? <HomePage />;
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-[#0a0a0a] dark:text-neutral-100 overflow-hidden transition-colors duration-300">
+    <div className="h-screen w-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-[var(--as-bg-secondary)] dark:text-neutral-100 overflow-hidden transition-colors duration-300">
 
       {/* Fixed ticker bar — z-50 */}
       <div className="print:hidden shrink-0">

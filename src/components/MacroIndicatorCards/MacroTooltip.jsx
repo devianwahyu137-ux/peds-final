@@ -49,10 +49,10 @@ export default function MacroTooltip({ indicatorId, children }) {
           className="tooltip-animated absolute z-50 bottom-full left-1/2 mb-2"
           style={{
             transform: "translateX(-50%)",
-            background: "rgba(0, 0, 0, 0.92)",
+            background: "var(--as-bg-primary)",
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
-            border: "1px solid rgba(255, 255, 255, 0.10)",
+            border: "1px solid var(--as-border-primary)",
             borderRadius: "12px",
             padding: "12px 16px",
             maxWidth: "240px",
@@ -60,7 +60,7 @@ export default function MacroTooltip({ indicatorId, children }) {
             fontFamily: "monospace",
             fontSize: "11px",
             lineHeight: "1.6",
-            color: "#a3a3a3",
+            color: "var(--as-text-secondary)",
             pointerEvents: "none",
           }}
         >
@@ -74,7 +74,7 @@ export default function MacroTooltip({ indicatorId, children }) {
               height: 0,
               borderLeft: "5px solid transparent",
               borderRight: "5px solid transparent",
-              borderTop: "5px solid rgba(255, 255, 255, 0.10)",
+              borderTop: "5px solid var(--as-border-primary)",
             }}
           />
         </div>

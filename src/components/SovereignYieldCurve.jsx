@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Globe } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
 
 const tenures = ["1Y", "3Y", "5Y", "10Y"];
@@ -110,7 +110,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
       <div className="glass-card rounded-xl p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white font-mono">[🌎] SOVEREIGN_YIELD_CURVE_DETECTOR</h3>
+            <div className="flex items-center gap-2 text-[var(--as-text-primary)]"><Globe size={18} className="text-blue-400" /><span className="font-bold tracking-wide text-sm uppercase">Sovereign Yield Curve Detector</span></div>
             <p className="text-[10px] text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">Dynamic SBN vs UST Tenure Bezier Plot</p>
           </div>
           <div className="text-[10px] font-mono text-slate-400 dark:text-neutral-500">
@@ -214,14 +214,14 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
                   <div
                     className="tooltip-animated"
                     style={{
-                      background: "rgba(0,0,0,0.92)",
-                      border: "1px solid rgba(255,255,255,0.10)",
+                      background: "var(--as-bg-primary)",
+                      border: "1px solid var(--as-border-primary)",
                       borderRadius: "10px",
                       padding: "10px 12px",
                       fontFamily: "monospace",
                     }}
                   >
-                    <div style={{ fontSize: "9px", color: "#525252", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                    <div style={{ fontSize: "9px", color: "var(--as-text-tertiary)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
                       {hoveredTenor} TENOR
                     </div>
                     <div style={{ fontSize: "13px", fontWeight: "900", color: accentColor, marginTop: "2px" }}>
@@ -233,7 +233,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
                     <div style={{
                       marginTop: "6px",
                       paddingTop: "6px",
-                      borderTop: "1px solid rgba(255,255,255,0.06)",
+                      borderTop: "1px solid var(--as-border-primary)",
                       fontSize: "10px",
                       color: sd.spread > 200 ? accentColor : "#f59e0b",
                     }}>
@@ -256,7 +256,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
       {/* 4x4 Correlation Matrix */}
       <div className="glass-card rounded-xl p-5 space-y-4">
         <div>
-          <h3 className="flex flex-row items-center gap-2 text-sm font-bold text-slate-900 dark:text-white font-mono"><ActivitySquare size={16} className="text-blue-400" /> MACRO_CORRELATION_MATRIX</h3>
+          <div className="flex items-center gap-2 text-[var(--as-text-primary)]"><ActivitySquare size={16} className="text-blue-400" /><span className="font-bold tracking-wide text-sm uppercase">Macro Correlation Matrix</span></div>
           <p className="text-[10px] text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">Click cell for qualitative macro risk definition analysis</p>
         </div>
 

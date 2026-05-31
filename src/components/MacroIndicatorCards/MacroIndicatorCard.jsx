@@ -153,7 +153,7 @@ export default function MacroIndicatorCard({
     stale: "#f59e0b",
     fallback: "#ef4444",
     failed: "#ef4444",
-  }[status] || "#525252";
+  }[status] || "var(--as-text-tertiary)";
 
   // NEW — reads from dedicated deltaMap slice
   const deltaInfo = useRootStore((s) => s.deltaMap[id]);
@@ -166,14 +166,14 @@ export default function MacroIndicatorCard({
       style={{
         backdropFilter: "blur(16px) saturate(180%)",
         WebkitBackdropFilter: "blur(16px) saturate(180%)",
-        background: "rgba(10, 10, 10, 0.60)",
-        border: "1px solid rgba(255, 255, 255, 0.06)",
+        background: "var(--as-bg-secondary)",
+        border: "1px solid var(--as-border-primary)",
         boxShadow: isActive || isChanging
-          ? `0 8px 32px rgba(0,0,0,0.4), 0 0 20px ${glow.shadow}`
-          : "0 8px 32px rgba(0,0,0,0.4)",
+          ? `0 8px 32px var(--as-bg-tertiary), 0 0 20px ${glow.shadow}`
+          : "0 8px 32px var(--as-bg-tertiary)",
         borderColor: isActive || isChanging
           ? `${glow.color}33`
-          : "rgba(255, 255, 255, 0.06)",
+          : "var(--as-border-primary)",
       }}
     >
       {/* Glow aura pseudo-element replacement */}
@@ -192,7 +192,7 @@ export default function MacroIndicatorCard({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-base">{icon}</span>
-            <span className="text-[10px] uppercase tracking-widest text-slate-500 dark:text-neutral-500 font-sans font-bold">
+            <span className="text-[10px] uppercase tracking-widest text-[var(--as-text-dim)] font-sans font-semibold">
               {label}
             </span>
             <MacroTooltip indicatorId={id}>?</MacroTooltip>
@@ -215,7 +215,7 @@ export default function MacroIndicatorCard({
         </div>
 
         {/* Unit label */}
-        <div className="text-[9px] font-mono text-neutral-600 mt-0.5">{unit}</div>
+        <div className="text-[9px] font-mono font-light text-[var(--as-text-dim)] mt-0.5">{unit}</div>
 
         {/* Sparkline */}
         <div className="mt-3 mb-2">
@@ -236,7 +236,7 @@ export default function MacroIndicatorCard({
               style={{
                 color: direction === 'up'   ? '#10b981'
                      : direction === 'down' ? '#ef4444'
-                     : '#525252',
+                     : 'var(--as-text-tertiary)',
               }}
             >
               {direction === 'up'   ? '▲' : direction === 'down' ? '▼' : '—'}
@@ -246,11 +246,11 @@ export default function MacroIndicatorCard({
                 : 'tidak berubah'
               }
             </span>
-            <span className="text-[8px] font-mono text-neutral-700">
+            <span className="text-[8px] font-mono font-light text-[var(--as-text-tertiary)]">
               vs periode lalu
             </span>
           </div>
-          <span className="text-[9px] font-mono text-neutral-600 mt-2">
+          <span className="text-[9px] font-mono font-light text-[var(--as-text-tertiary)] mt-2">
             {formatTimeAgo(timestamp)}
           </span>
         </div>

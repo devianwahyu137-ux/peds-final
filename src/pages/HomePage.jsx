@@ -121,36 +121,36 @@ export default function HomePage() {
 
       {/* ── ZONA 1: SITUASI HARI INI ── */}
       <div
-        className="rounded-md p-6 border border-slate-200 dark:border-neutral-800/60 bg-white dark:bg-[#121212]"
+        className="rounded-xl p-6 border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 bg-[var(--as-bg-card)] transition-colors duration-300"
       >
         <div className="flex items-start justify-between gap-8 flex-wrap">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-4 mb-5">
               <span
-                className="inline-block px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest"
+                className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-widest"
                 style={{ background: `${accent}15`, color: accent, border: `1px solid ${accent}30` }}
               >
                 {narrative.riskLabel}
               </span>
               <span
-                className="inline-block px-2.5 py-1 rounded-sm text-[10px] font-bold uppercase tracking-widest"
+                className="inline-block px-3 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-widest"
                 style={{ background: sentimentStyle.bg, color: sentimentStyle.color, border: `1px solid ${sentimentStyle.color}40` }}
               >
                 BIAS: {sentimentData.overall}
               </span>
             </div>
-            <h2 className="text-xl font-black font-sans uppercase tracking-tight text-slate-900 dark:text-white mb-4">
+            <h2 className="text-xl md:text-2xl font-black font-sans uppercase tracking-tight text-[var(--as-text-primary)] mb-4">
               {narrative.headline}
             </h2>
-            <p className="text-xs font-sans text-slate-500 dark:text-neutral-500 leading-relaxed max-w-2xl">
+            <p className="text-xs font-sans font-light text-[var(--as-text-tertiary)] leading-relaxed max-w-2xl">
               {narrative.body}
             </p>
           </div>
           <div
-            className="flex-shrink-0 text-right p-5 rounded-md flex flex-col justify-center"
-            style={{ background: `${accent}08`, border: `1px solid ${accent}20` }}
+            className="flex-shrink-0 text-right p-6 rounded-xl flex flex-col justify-center border border-[var(--as-border-primary)] shadow-inner"
+            style={{ background: `${accent}08` }}
           >
-            <div className="text-[10px] font-bold font-sans text-slate-500 dark:text-neutral-400 tracking-widest uppercase mb-2">
+            <div className="text-[10px] font-semibold font-sans text-[var(--as-text-dim)] tracking-widest uppercase mb-2">
               Sharpe Ratio
             </div>
             <div
@@ -159,7 +159,7 @@ export default function HomePage() {
             >
               {sharpeRatio.toFixed(2)}
             </div>
-            <div className="text-[10px] font-sans text-slate-500 dark:text-neutral-500 mt-2">
+            <div className="text-[10px] font-sans font-light text-[var(--as-text-tertiary)] mt-2">
               skor efisiensi portofolio
             </div>
           </div>
@@ -167,21 +167,21 @@ export default function HomePage() {
       </div>
 
       {/* ── ZONA 2: REKOMENDASI UTAMA ── */}
-      <div className="rounded-md border border-slate-200 dark:border-neutral-800/60 bg-white dark:bg-[#121212] p-6">
+      <div className="rounded-xl border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 bg-[var(--as-bg-card)] p-6 transition-colors duration-300">
         <div className="flex items-center justify-between mb-8 flex-wrap gap-5">
           <div className="flex flex-col gap-2">
-            <div className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-neutral-300 flex items-center gap-3">
+            <div className="text-xs font-semibold uppercase tracking-widest text-[var(--as-text-dim)] flex items-center gap-3">
               <Lightbulb size={16} className="text-amber-400" /> REKOMENDASI ALOKASI SAAT INI
             </div>
-            <p className="text-xs font-sans text-slate-500 dark:text-neutral-400">
+            <p className="text-xs font-sans font-light text-[var(--as-text-tertiary)]">
               {narrative.advice}
             </p>
           </div>
           <button
             onClick={() => setTab?.("portfolio")}
-            className="flex-shrink-0 text-[10px] font-bold font-sans uppercase tracking-wider px-5 py-2.5 rounded-md border
-                       border-slate-200 dark:border-neutral-800 text-slate-500 dark:text-neutral-400 hover:border-slate-300 dark:hover:border-neutral-600
-                       hover:text-slate-700 dark:hover:text-neutral-300 transition-colors duration-200 cursor-pointer"
+            className="flex-shrink-0 text-[10px] font-semibold font-sans uppercase tracking-widest px-5 py-2.5 rounded-lg border
+                       border-[var(--as-border-secondary)] text-[var(--as-text-secondary)] hover:border-[var(--as-border-primary)]
+                       hover:text-[var(--as-text-primary)] transition-colors duration-200 cursor-pointer shadow-sm"
           >
             Lihat Detail MPT →
           </button>
@@ -194,14 +194,14 @@ export default function HomePage() {
               <div key={key} className="flex items-center justify-between gap-5">
                 <div className="flex items-center gap-4 w-40 flex-shrink-0">
                   <span className="flex-shrink-0 flex items-center justify-center w-6">{icon}</span>
-                  <span className="text-xs font-semibold text-slate-600 dark:text-neutral-400 truncate">
+                  <span className="text-xs font-semibold text-[var(--as-text-secondary)] truncate">
                     {label}
                   </span>
                 </div>
                 
-                <div className="flex-1 h-3 bg-slate-100 dark:bg-neutral-800/50 rounded-full overflow-hidden">
+                <div className="flex-1 h-2 bg-[var(--as-border-secondary)] rounded-full overflow-hidden">
                   <div
-                    className="h-full rounded-full transition-all duration-700 ease-out"
+                    className="h-full rounded-full transition-all duration-700 ease-out shadow-inner"
                     style={{
                       width: `${pct}%`,
                       background: `linear-gradient(90deg, ${color}88, ${color})`,
@@ -223,7 +223,7 @@ export default function HomePage() {
 
       {/* ── ZONA 3: SINYAL PASAR CEPAT ── */}
       <div className="flex flex-col gap-5">
-        <div className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-neutral-300">
+        <div className="text-xs font-semibold uppercase tracking-widest text-[var(--as-text-dim)]">
           Sinyal Pasar Terkini
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -241,26 +241,26 @@ export default function HomePage() {
             return (
               <div
                 key={key}
-                className="rounded-md border border-slate-200 dark:border-neutral-800/60 bg-white dark:bg-[#121212] p-8 flex flex-col gap-2 justify-between"
+                className="rounded-xl border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 bg-[var(--as-bg-card)] p-8 flex flex-col gap-2 justify-between transition-colors duration-300"
               >
                 <div className="flex items-center justify-between mb-4">
                   <span className="flex items-center justify-center">{icon}</span>
                   <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-widest border ${
+                    className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-widest border ${
                       isLive
-                        ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/50'
-                        : 'bg-slate-50 dark:bg-neutral-900/50 text-slate-500 dark:text-neutral-500 border-slate-200 dark:border-neutral-800/60'
+                        ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                        : 'bg-slate-500/10 text-[var(--as-text-tertiary)] border-[var(--as-border-secondary)]'
                     }`}
                   >
-                    {isLive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse mr-2" />}
+                    {isLive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mr-2" />}
                     {isLive ? 'LIVE' : 'EST'}
                   </span>
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest text-slate-500 dark:text-neutral-500 font-sans font-bold mb-1.5">
+                  <div className="text-[10px] uppercase tracking-widest text-[var(--as-text-dim)] font-sans font-semibold mb-1.5">
                     {label}
                   </div>
-                  <div className="text-4xl font-black font-mono tracking-tighter text-slate-900 dark:text-white tabular-nums">
+                  <div className="text-4xl font-black font-mono tracking-tighter text-[var(--as-text-primary)] tabular-nums drop-shadow-sm">
                     {display}
                   </div>
                 </div>
@@ -271,22 +271,22 @@ export default function HomePage() {
       </div>
 
       {/* ── ZONA 4: ACTION CENTER / DRIFT ALERT ── */}
-      <div className={`rounded-md border p-6 flex items-center justify-between flex-wrap gap-6 transition-colors duration-300 ${
+      <div className={`rounded-xl border p-6 flex items-center justify-between flex-wrap gap-6 transition-colors duration-300 shadow-lg ${
         isDriftWarning 
-          ? 'bg-red-50 dark:bg-red-950/10 border-red-200 dark:border-red-900/40' 
-          : 'bg-emerald-50 dark:bg-emerald-950/5 border-emerald-200 dark:border-emerald-900/20'
+          ? 'bg-red-500/5 border-red-500/20 shadow-red-500/5' 
+          : 'bg-emerald-500/5 border-emerald-500/20 shadow-emerald-500/5'
       }`}>
         <div className="flex items-center gap-6">
           <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 animate-pulse ${
-            isDriftWarning ? 'bg-red-500 shadow-[0_0_10px_#ef4444]' : 'bg-emerald-500 shadow-[0_0_10px_#10b981]'
+            isDriftWarning ? 'bg-red-500 shadow-[0_0_12px_#ef4444]' : 'bg-emerald-500 shadow-[0_0_12px_#10b981]'
           }`} />
           <div className="flex flex-col gap-1.5">
-            <div className={`text-sm font-bold uppercase tracking-wider ${
-              isDriftWarning ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'
+            <div className={`text-xs font-semibold uppercase tracking-widest ${
+              isDriftWarning ? 'text-red-500' : 'text-emerald-500'
             }`}>
               {isDriftWarning ? 'Action Center: Drift Alert' : 'Action Center: Status Aman'}
             </div>
-            <div className="text-xs font-sans text-slate-600 dark:text-neutral-400 leading-relaxed">
+            <div className="text-xs font-sans font-light text-[var(--as-text-secondary)] leading-relaxed">
               {isDriftWarning 
                 ? 'Peringatan: Alokasi portofolio melenceng dari batas toleransi (>5%).'
                 : 'Status Eksekusi: Portofolio selaras dengan target skenario. Tidak ada tindakan mendesak diperlukan.'
@@ -297,9 +297,9 @@ export default function HomePage() {
         {isDriftWarning && (
           <button
             onClick={() => setTab?.("strategy")}
-            className="flex-shrink-0 text-[11px] font-mono font-bold px-5 py-2.5 rounded-md border
-                       bg-red-100 dark:bg-red-500/10 border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-500/20
-                       hover:border-red-300 dark:hover:border-red-500 hover:text-red-700 dark:hover:text-red-300 transition-colors duration-200 cursor-pointer uppercase tracking-widest"
+            className="flex-shrink-0 text-[11px] font-mono font-bold px-5 py-2.5 rounded-lg border
+                       bg-red-500/10 border-red-500/30 text-red-500 hover:bg-red-500/20
+                       hover:border-red-500/50 transition-colors duration-200 cursor-pointer uppercase tracking-widest shadow-sm"
           >
             Rebalance Sekarang
           </button>
@@ -307,19 +307,19 @@ export default function HomePage() {
       </div>
 
       {/* ── WHAT THIS MEANS FOR YOU — Contextual Guidance ── */}
-      <div className="rounded-md border border-slate-200 dark:border-neutral-800/60 overflow-hidden bg-white dark:bg-[#121212]">
-        <div className="px-6 py-5 border-b border-slate-100 dark:border-neutral-800/60 flex items-center gap-5 bg-slate-50/50 dark:bg-neutral-900/30">
-          <span className="flex items-center justify-center text-slate-400 dark:text-neutral-400"><Target size={20} /></span>
+      <div className="rounded-xl border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 overflow-hidden bg-[var(--as-bg-card)] transition-colors duration-300">
+        <div className="px-6 py-5 border-b border-[var(--as-border-secondary)] flex items-center gap-5 bg-[var(--as-bg-secondary)]">
+          <span className="flex items-center justify-center text-[var(--as-text-dim)]"><Target size={20} /></span>
           <div className="flex flex-col gap-1">
-            <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-neutral-400">
+            <div className="text-[10px] font-semibold uppercase tracking-widest text-[var(--as-text-dim)]">
               Panduan Kontekstual
             </div>
-            <div className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-neutral-300">
+            <div className="text-xs font-semibold uppercase tracking-widest text-[var(--as-text-primary)]">
               Apa Yang Harus Dilakukan Sekarang?
             </div>
           </div>
           <span
-            className="ml-auto px-3 py-1 rounded-sm text-[10px] font-bold font-mono uppercase tracking-widest border"
+            className="ml-auto px-4 py-1.5 rounded-lg text-[10px] font-bold font-mono uppercase tracking-widest border"
             style={{
               color:       accent,
               borderColor: `${accent}30`,
@@ -362,26 +362,26 @@ export default function HomePage() {
 
       {/* ── ZONA 5: GLOBAL PULSE TICKER ── */}
       <div 
-        className="w-full bg-white dark:bg-[#121212] border border-slate-200 dark:border-neutral-800/60 overflow-x-auto py-3 px-6 rounded-md flex items-center"
+        className="w-full bg-[var(--as-bg-card)] border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 overflow-x-auto py-3 px-6 rounded-xl flex items-center transition-colors duration-300"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <div className="flex items-center gap-6 md:gap-10 whitespace-nowrap min-w-max mx-auto">
-          <div className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-neutral-300 flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <div className="text-xs font-semibold uppercase tracking-widest text-[var(--as-text-dim)] flex items-center gap-3">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse drop-shadow-md"></span>
             Global Pulse
           </div>
-          <div className="h-4 w-px bg-slate-200 dark:bg-neutral-800/60"></div>
+          <div className="h-4 w-px bg-[var(--as-border-secondary)]"></div>
           {GLOBAL_PULSE_DATA.map((item, i) => (
             <div key={item.label} className="flex items-center gap-4">
               <div className="text-[11px] font-semibold uppercase flex items-baseline">
-                <span className="text-slate-500 dark:text-neutral-500 font-bold mr-2.5">{item.label}</span>
-                <span className="text-sm font-black text-slate-900 dark:text-white tabular-nums font-mono">{item.value} {item.unit}</span>
-                <span className={`ml-2.5 text-xs font-bold tabular-nums font-mono ${item.dir > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                <span className="text-[var(--as-text-dim)] font-semibold mr-2.5">{item.label}</span>
+                <span className="text-sm font-black text-[var(--as-text-primary)] tabular-nums font-mono">{item.value} {item.unit}</span>
+                <span className={`ml-2.5 text-xs font-bold tabular-nums font-mono ${item.dir > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
                   ({item.delta})
                 </span>
               </div>
               {i < GLOBAL_PULSE_DATA.length - 1 && (
-                <div className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-neutral-800/60 ml-5 md:ml-8"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-[var(--as-border-secondary)] ml-5 md:ml-8"></div>
               )}
             </div>
           ))}
@@ -389,7 +389,7 @@ export default function HomePage() {
       </div>
 
       {/* ── DISCLAIMER ── */}
-      <div className="text-[9px] font-sans text-slate-500/70 dark:text-neutral-500/70 text-center leading-relaxed pb-8 pt-4">
+      <div className="text-[9px] font-sans font-light text-[var(--as-text-dim)] text-center leading-relaxed pb-8 pt-4">
         Platform ini adalah simulasi edukasi berbasis MPT. Bukan rekomendasi investasi resmi.
         Selalu konsultasikan keputusan investasi dengan advisor keuangan terdaftar OJK.
       </div>
@@ -399,12 +399,12 @@ export default function HomePage() {
 
 function ActionGuidanceCard({ icon, title, body, color }) {
   return (
-    <div className="rounded-md p-5 border border-slate-100 dark:border-neutral-800/40 bg-slate-50/30 dark:bg-neutral-900/30 flex flex-col justify-start">
+    <div className="rounded-xl p-5 border border-[var(--as-border-secondary)] bg-[var(--as-bg-tertiary)] flex flex-col justify-start transition-colors duration-300">
       <div className="mb-4 flex items-center">{icon}</div>
-      <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color }}>
+      <div className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{ color }}>
         {title}
       </div>
-      <p className="text-xs font-sans text-slate-500 dark:text-neutral-500 leading-relaxed">
+      <p className="text-xs font-sans font-light text-[var(--as-text-tertiary)] leading-relaxed">
         {body}
       </p>
     </div>

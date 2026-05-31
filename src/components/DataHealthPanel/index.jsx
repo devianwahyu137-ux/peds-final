@@ -61,7 +61,7 @@ const STATUS_CONFIG = {
   ok:       { dot: '#10b981', label: 'LIVE',     labelColor: '#10b981', bg: 'rgba(16,185,129,0.08)'  },
   stale:    { dot: '#f59e0b', label: 'ESTIMASI', labelColor: '#f59e0b', bg: 'rgba(245,158,11,0.08)'  },
   fallback: { dot: '#f59e0b', label: 'ESTIMASI', labelColor: '#f59e0b', bg: 'rgba(245,158,11,0.06)'  },
-  idle:     { dot: '#404040', label: 'MEMUAT',   labelColor: '#525252', bg: 'rgba(64,64,64,0.06)'    },
+  idle:     { dot: 'var(--as-text-dim)', label: 'MEMUAT',   labelColor: 'var(--as-text-tertiary)', bg: 'rgba(64,64,64,0.06)'    },
   loading:  { dot: '#3b82f6', label: 'MEMUAT',   labelColor: '#3b82f6', bg: 'rgba(59,130,246,0.08)'  },
 };
 

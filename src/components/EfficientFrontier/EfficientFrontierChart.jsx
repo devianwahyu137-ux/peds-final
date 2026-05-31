@@ -70,7 +70,7 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
   const currentY = currentPortfolio ? toY(currentPortfolio.returnPct) : null;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 min-h-[300px]">
       {/* Legend */}
       <div className="flex flex-wrap items-center gap-4 text-[8px] font-mono text-slate-400 dark:text-neutral-500 px-1">
         <span className="flex items-center gap-1.5">
@@ -112,12 +112,12 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
               <line
                 x1={CHART_PAD.left} y1={y}
                 x2={CHART_PAD.left + plotW} y2={y}
-                stroke="#1a1a1a" strokeWidth={0.5}
+                stroke="var(--as-border-divider)" strokeWidth={0.5}
               />
               <text
                 x={CHART_PAD.left - 6} y={y + 3}
                 textAnchor="end" fontSize={8}
-                fill="#404040"
+                fill="var(--as-text-dim)"
               >
                 {val}%
               </text>
@@ -133,12 +133,12 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
               <line
                 x1={x} y1={CHART_PAD.top}
                 x2={x} y2={CHART_PAD.top + plotH}
-                stroke="#1a1a1a" strokeWidth={0.5}
+                stroke="var(--as-border-divider)" strokeWidth={0.5}
               />
               <text
                 x={x} y={CHART_PAD.top + plotH + 14}
                 textAnchor="middle" fontSize={8}
-                fill="#404040"
+                fill="var(--as-text-dim)"
               >
                 {val}%
               </text>
@@ -151,7 +151,7 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
           x={CHART_PAD.left + plotW / 2}
           y={CHART_H - 2}
           textAnchor="middle" fontSize={9}
-          fontFamily="monospace" fill="#525252" letterSpacing="2"
+          fontFamily="monospace" fill="var(--as-text-tertiary)" letterSpacing="2"
         >
           VOLATILITAS (RISIKO) %
         </text>
@@ -159,7 +159,7 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
           x={12}
           y={CHART_PAD.top + plotH / 2}
           textAnchor="middle" fontSize={9}
-          fontFamily="monospace" fill="#525252" letterSpacing="2"
+          fontFamily="monospace" fill="var(--as-text-tertiary)" letterSpacing="2"
           transform={`rotate(-90, 12, ${CHART_PAD.top + plotH / 2})`}
         >
           RETURN %
@@ -174,7 +174,7 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
             <circle
               key={i}
               cx={x} cy={y}
-              r={isHov ? 5 : 2.5}
+              r={isHov ? 6 : 3}
               fill={sharpeToColor(pt.sharpe)}
               fillOpacity={isHov ? 1 : 0.55}
               style={{ cursor: 'pointer', transition: 'r 100ms ease' }}
@@ -197,7 +197,7 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
                 x={tx} y={ty}
                 width={120} height={58}
                 rx={6}
-                fill="rgba(0,0,0,0.92)"
+                fill="var(--as-bg-primary)"
                 stroke="#333" strokeWidth={0.5}
               />
               <text x={tx + 8} y={ty + 14} fontSize={8} fill="#666" letterSpacing="1">
@@ -241,7 +241,7 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
             </circle>
             {/* Core dot */}
             <circle
-              cx={currentX} cy={currentY} r={5}
+              cx={currentX} cy={currentY} r={6}
               fill={config?.color ?? '#10b981'}
               stroke="#000" strokeWidth={1.5}
               style={{ filter: `drop-shadow(0 0 6px ${config?.color ?? '#10b981'})` }}

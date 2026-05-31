@@ -132,17 +132,17 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
   ];
 
   return (
-    <div className="border border-slate-200 dark:border-neutral-800 bg-white dark:bg-[#121212] rounded-xl p-5 space-y-4 transition-colors duration-300">
+    <div className="border border-[var(--as-border-secondary)] bg-[var(--as-bg-card)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 rounded-xl p-5 space-y-4 transition-colors duration-300">
       <div>
-        <h3 className="flex flex-row items-center gap-2 text-sm font-bold text-slate-900 dark:text-white font-mono"><ActivitySquare size={16} className="text-blue-400" /> ROTATION_TACTICS_PLAYBOOK</h3>
-        <p className="text-[10px] text-slate-500 dark:text-neutral-500 mt-1 uppercase tracking-wider">Contextual sector and asset class rotation matrix</p>
+        <div className="flex items-center gap-2 text-[var(--as-text-primary)]"><ActivitySquare size={18} className="text-blue-400" /><span className="font-bold tracking-wide text-sm uppercase">Rotation Tactics Playbook</span></div>
+        <p className="text-[10px] font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">Contextual sector and asset class rotation matrix</p>
       </div>
 
       <div className="space-y-3">
         {sectorCards.map((card) => {
           const isOpen = expandedId === card.id;
           return (
-            <div key={card.id} className="border border-slate-200 dark:border-neutral-900 rounded-xl bg-slate-50 dark:bg-black/40 overflow-hidden transition-all duration-200">
+            <div key={card.id} className="border border-[var(--as-border-primary)] shadow-sm bg-[var(--as-bg-tertiary)] rounded-xl overflow-hidden transition-all duration-200">
               <button
                 onClick={() => setExpandedId(isOpen ? null : card.id)}
                 className="w-full text-left p-4 flex items-center justify-between cursor-pointer hover:bg-slate-100 dark:hover:bg-white dark:bg-neutral-900/10 transition-colors"
@@ -150,8 +150,8 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
                 <div className="flex items-center gap-3">
                   <span className="text-lg">{card.icon}</span>
                   <div>
-                    <div className="text-xs font-bold text-slate-800 dark:text-white font-mono tracking-tight">{card.title}</div>
-                    <div className="text-[10px] text-slate-500 dark:text-neutral-500 mt-0.5 font-mono">
+                    <div className="text-xs font-semibold uppercase tracking-widest text-[var(--as-text-primary)] font-mono">{card.title}</div>
+                    <div className="text-[10px] text-[var(--as-text-dim)] font-light mt-0.5 font-mono">
                       Target Allocation: <span style={{ color: card.color }} className="font-bold">{card.weight}%</span>
                     </div>
                   </div>
@@ -169,7 +169,7 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
               </button>
 
               {isOpen && (
-                <div className="px-4 pb-4 pt-3 border-t border-slate-200 dark:border-neutral-900/60 space-y-3 font-mono text-[11px]">
+                <div className="px-4 pb-4 pt-3 border-t border-[var(--as-border-secondary)] space-y-3 font-mono text-[11px]">
                   <div className="flex flex-wrap gap-1">
                     {card.tickers.map((t) => (
                       <span key={t} className="text-[9px] px-2 py-0.5 rounded bg-white dark:bg-neutral-900 border border-slate-300 dark:border-neutral-800 font-bold" style={{ color: card.color }}>{t}</span>
@@ -187,9 +187,9 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
                       <div className="text-slate-700 dark:text-neutral-300 leading-relaxed">{card.underweight}</div>
                     </div>
 
-                    <div className="p-2.5 rounded border border-slate-300 dark:border-neutral-900 bg-white dark:bg-neutral-950/80">
-                      <div className="text-[8px] text-slate-500 dark:text-neutral-400 uppercase tracking-widest font-bold mb-0.5">Institutional Rationale</div>
-                      <div className="text-slate-600 dark:text-neutral-400 leading-relaxed text-[10px]">{card.rationale}</div>
+                    <div className="p-2.5 rounded border border-[var(--as-border-primary)] bg-[var(--as-bg-secondary)] shadow-inner">
+                      <div className="text-[8px] text-[var(--as-text-dim)] uppercase tracking-widest font-semibold mb-0.5">Institutional Rationale</div>
+                      <div className="text-[10px] text-[var(--as-text-tertiary)] font-light leading-relaxed">{card.rationale}</div>
                     </div>
                   </div>
                 </div>

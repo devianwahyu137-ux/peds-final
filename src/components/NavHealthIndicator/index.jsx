@@ -40,16 +40,16 @@ export function NavHealthIndicator() {
   const dashArr = `${arcLen} ${CIRCUM}`;
 
   return (
-    <div className="flex items-center gap-2 px-3 py-1 rounded-lg
+    <div className="flex items-center gap-1 md:gap-3 px-1 md:px-3 py-1 rounded-lg
                     border border-slate-300 dark:border-neutral-800/50 cursor-default"
-         style={{ background: 'rgba(10,10,10,0.8)' }}
+         style={{ background: 'var(--as-bg-secondary)' }}
          title={`Kesehatan Data: ${health.score}/100 — ${counts.live}/${counts.total} sumber aktif`}
     >
       {/* Mini arc gauge */}
-      <div className="relative w-8 h-8 flex items-center justify-center">
+      <div className="relative w-6 h-6 md:w-10 md:h-10 flex items-center justify-center">
         <svg className="absolute inset-0 w-full h-full transform -rotate-135" viewBox="0 0 32 32">
           {/* Background track */}
-          <circle cx="16" cy="16" r={RADIUS} fill="none" stroke="#262626" strokeWidth="3"
+          <circle cx="16" cy="16" r={RADIUS} fill="none" stroke="var(--as-border-divider)" strokeWidth="3"
                   strokeDasharray={`${CIRCUM * 0.75} ${CIRCUM}`} />
           {/* Score arc */}
           <circle cx="16" cy="16" r={RADIUS} fill="none" stroke={health.color} strokeWidth="3"
@@ -64,15 +64,15 @@ export function NavHealthIndicator() {
       {/* Score text */}
       <div className="flex flex-col">
         <div className="flex items-baseline gap-1.5">
-          <span className="text-xs font-bold font-mono tracking-tight" style={{ color: health.color }}>
+          <span className="text-[8px] md:text-xs font-bold font-mono tracking-tight" style={{ color: health.color }}>
             {health.score}
           </span>
           <span className="text-[9px] font-mono text-slate-400 dark:text-neutral-500">/100</span>
-          <span className="text-[8px] font-mono font-bold tracking-widest ml-1" style={{ color: health.color }}>
+          <span className="text-[6px] md:text-[8px] font-mono font-bold tracking-widest ml-1 md:ml-2" style={{ color: health.color }}>
             {health.label}
           </span>
         </div>
-        <div className="text-[8px] font-mono text-slate-400 dark:text-neutral-500 mt-0.5">
+        <div className="text-[6px] md:text-[8px] font-mono text-slate-400 dark:text-neutral-500 mt-0.5 whitespace-nowrap">
           {counts.live}/{counts.total} live · {syncLabel} ago
         </div>
       </div>

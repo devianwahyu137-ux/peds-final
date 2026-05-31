@@ -82,7 +82,7 @@ export function MacroSentimentSummary() {
           {[
             { label: 'BULLISH',  pct: data.bullPct, color: '#10b981' },
             { label: 'BEARISH',  pct: data.bearPct, color: '#ef4444' },
-            { label: 'NEUTRAL',  pct: data.neutPct, color: '#525252' },
+            { label: 'NEUTRAL',  pct: data.neutPct, color: '#94a3b8' },
           ].map(({ label, pct, color }) => (
             <div key={label} className="flex items-center gap-3">
               <span className="text-[8px] font-mono text-slate-400 dark:text-neutral-500 w-14 text-right uppercase tracking-wider">
