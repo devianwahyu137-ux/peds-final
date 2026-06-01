@@ -11,6 +11,7 @@ import {
   getVolInterpretation,
 } from "../components/SharedComponents";
 import { PortfolioStoryPanel } from "../components/PortfolioStoryPanel";
+import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
 
 /**
  * PortfolioPage — "PORTOFOLIOMU" tab.
@@ -39,7 +40,8 @@ export default function PortfolioPage() {
   }, [targetWeights]);
 
   return (
-    <div className="space-y-6 w-full page-enter mt-2">
+    <div className="space-y-6 w-full page-enter">
+      <ScenarioIntelligence />
       {/* Header */}
       <div className="border-b border-[var(--as-border-secondary)] pb-4">
         <h1 className="text-lg font-black font-mono uppercase tracking-tight">

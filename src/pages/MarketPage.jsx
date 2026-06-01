@@ -5,6 +5,7 @@ import { ACCENT, ScenarioButton } from "../components/SharedComponents";
 import { DataHealthPanel } from "../components/DataHealthPanel";
 import { MacroInterpretationPanel } from "../components/MacroInterpretationPanel";
 import { MacroReleaseCalendar } from "../components/MacroReleaseCalendar";
+import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
 
 /**
  * MarketPage — "KONDISI PASAR" tab.
@@ -22,6 +23,7 @@ export default function MarketPage() {
 
   return (
     <div className="space-y-6 w-full page-enter">
+      <ScenarioIntelligence />
       {/* Data Health Panel — per-endpoint status */}
       <DataHealthPanel />
 

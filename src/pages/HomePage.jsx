@@ -1,6 +1,7 @@
 import { useRootStore } from "@/stores/rootStore";
 import { SENTIMENT_AGGREGATE, OVERALL_STYLE } from "../components/MacroSentimentSummary";
 import { Landmark, BarChart2, ArrowRightLeft, DollarSign, TrendingUp, Gem, Wallet, AlertTriangle, Lock, AlertOctagon, Lightbulb, Target } from "lucide-react";
+import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
 
 // ── Narasi Bahasa Indonesia per skenario ────────────────────────────────────────
 
@@ -118,6 +119,7 @@ export default function HomePage() {
 
   return (
     <div className="w-full page-enter" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-xl)' }}>
+      <ScenarioIntelligence />
 
       {/* ── ZONA 1: SITUASI HARI INI ── */}
       <div className="card-tier-1" style={{

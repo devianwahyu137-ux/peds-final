@@ -2,6 +2,7 @@ import SovereignYieldCurve from "../components/SovereignYieldCurve";
 import MacroNewsCards from "../components/MacroNewsCards";
 import { MonteCarloPanel } from "../components/EfficientFrontier/MonteCarloPanel";
 import { MacroSentimentSummary } from "../components/MacroSentimentSummary";
+import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
 
 /**
  * AnalysisPage — "ANALISIS" tab.
@@ -10,6 +11,7 @@ import { MacroSentimentSummary } from "../components/MacroSentimentSummary";
 export default function AnalysisPage() {
   return (
     <div className="space-y-6 w-full page-enter">
+      <ScenarioIntelligence />
       {/* Header */}
       <div className="border-b border-slate-200 dark:border-neutral-900 pb-4">
         <h1 className="text-lg font-black font-mono uppercase tracking-tight">
