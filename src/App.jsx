@@ -1,5 +1,5 @@
 // src/App.jsx — complete file
-import { lazy, Suspense, Component } from 'react';
+import { lazy, Suspense, Component, useState } from 'react';
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore } from '@/stores/rootStore';
 import { TickerBar }    from '@/components/Navigation/TickerBar';
@@ -15,6 +15,9 @@ import { usePortfolioPersistence }
 import { useLiveMarketData }
   from '@/hooks/useLiveMarketData';
 import { useTheme } from '@/hooks/useTheme';
+
+import FloatingCopilotTrigger from '@/components/FloatingCopilotTrigger';
+import CopilotDrawer from '@/components/CopilotDrawer';
 
 // Lazy load all pages
 const HomePage      = lazy(() => import('@/pages/HomePage'));
@@ -88,7 +91,15 @@ function PageSkeleton() {
 
 export default function App() {
   useTheme();
+  
+  // Copilot State
+  const [isCopilotOpen, setIsCopilotOpen] = useState(false);
+  const [copilotInput, setCopilotInput] = useState("");
+
   const activeTab = useRootStore((s) => s.activeTab);
+  const scenarioIdGlobal = useRootStore((s) => s.scenarioId);
+  const macroInputs = useRootStore((s) => s.macroInputs);
+  const targetAnalytics = useRootStore((s) => s.targetAnalytics || s.analytics || {});
 
   // Global hooks — run once at root
   useLiveMarketData();
@@ -118,6 +129,19 @@ export default function App() {
 
   const CurrentPage = PAGE_MAP[activeTab] ?? <HomePage />;
 
+  // STEALTH CONTEXT FUNCTION
+  // This will be prepended to user's prompt before sending to AI API later
+  const generateStealthContext = () => {
+    const sr = targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0;
+    const rate = macroInputs?.biRate ?? 5.25;
+    return `[SYSTEM CONTEXT - DO NOT SHOW USER] Current Portfolio Status: ${scenarioIdGlobal}, BI Rate: ${rate.toFixed(2)}%, Sharpe Ratio: ${sr.toFixed(2)}`;
+  };
+
+  const handleSuggestionClick = (text) => {
+    setCopilotInput(text);
+    setIsCopilotOpen(true);
+  };
+
   return (
     <div className="h-screen w-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-[var(--as-bg-secondary)] dark:text-neutral-100 overflow-hidden transition-colors duration-300">
 
@@ -134,7 +158,7 @@ export default function App() {
       <main
         className="flex-1 overflow-y-auto overflow-x-hidden
                    pt-8 px-6 md:px-10 lg:px-12
-                   pb-16 w-full mx-auto
+                   pb-32 w-full mx-auto
                    print:overflow-visible print:pt-0 print:px-0 print:pb-0 print:w-full print:block"
         style={{ maxWidth: 'var(--content-max)' }}
       >
@@ -144,6 +168,24 @@ export default function App() {
           </Suspense>
         </PageErrorBoundary>
       </main>
+
+      {/* AlphaShield Copilot Trigger */}
+      <div className="print:hidden">
+        <FloatingCopilotTrigger 
+          onOpen={() => setIsCopilotOpen(true)}
+          onSuggestionClick={handleSuggestionClick}
+          inputValue={copilotInput}
+          setInputValue={setCopilotInput}
+        />
+      </div>
+
+      {/* AlphaShield Copilot Drawer */}
+      <div className="print:hidden">
+        <CopilotDrawer 
+          isOpen={isCopilotOpen} 
+          onClose={() => setIsCopilotOpen(false)} 
+        />
+      </div>
 
       {/* Scenario briefing overlay */}
       <ScenarioBriefingOverlay
