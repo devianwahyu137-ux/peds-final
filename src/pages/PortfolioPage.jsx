@@ -12,6 +12,42 @@ import {
 } from "../components/SharedComponents";
 import { PortfolioStoryPanel } from "../components/PortfolioStoryPanel";
 import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
+import { AlertTriangle, Landmark, TrendingUp, Briefcase, Shield, DollarSign } from "lucide-react";
+
+function LedgerRow({ line }) {
+  const match = line.match(/^\[(.*?)\]\s+([A-Z_]+)\s+:\s+(.*)$/);
+  if (!match) {
+    return (
+      <div className="border-l-2 border-[var(--as-border-secondary)] pl-3 text-slate-500 dark:text-neutral-400 font-light">
+        {line}
+      </div>
+    );
+  }
+
+  const [_, emoji, key, text] = match;
+  
+  let Icon = AlertTriangle;
+  let iconClass = "text-amber-500 mt-0.5 shrink-0";
+  
+  if (key === 'DEBT_EXPOSURE') { Icon = AlertTriangle; iconClass = "text-amber-500 mt-0.5 shrink-0"; }
+  else if (key === 'FIXED_INCOME') { Icon = Landmark; iconClass = "text-indigo-400 mt-0.5 shrink-0"; }
+  else if (key === 'RISK_EQUITIES') { Icon = TrendingUp; iconClass = "text-blue-400 mt-0.5 shrink-0"; }
+  else if (key === 'SOVEREIGN_BONDS') { Icon = Briefcase; iconClass = "text-purple-400 mt-0.5 shrink-0"; }
+  else if (key === 'WEALTH_PRESERVATION') { Icon = Shield; iconClass = "text-red-500 mt-0.5 shrink-0"; }
+  else if (key === 'FOREIGN_RESERVES') { Icon = DollarSign; iconClass = "text-emerald-500 mt-0.5 shrink-0"; }
+  else { Icon = AlertTriangle; iconClass = "text-neutral-400 mt-0.5 shrink-0"; }
+
+  const formattedKey = key.split('_').map(word => word.charAt(0) + word.slice(1).toLowerCase()).join(' ');
+
+  return (
+    <div className="flex items-start gap-3 border-l-2 border-[var(--as-border-secondary)] pl-3">
+      <Icon size={16} className={iconClass} />
+      <p className="text-sm text-neutral-400 font-light">
+        <span className="font-semibold text-neutral-200">{formattedKey}</span> : {text}
+      </p>
+    </div>
+  );
+}
 
 /**
  * PortfolioPage — "PORTOFOLIOMU" tab.
@@ -82,9 +118,7 @@ export default function PortfolioPage() {
               Technical Execution Ledger
             </div>
             {baseScenario.ledger.map((ledgerLine, ledgerIndex) => (
-              <div key={ledgerIndex} className="border-l-2 border-[var(--as-border-secondary)] pl-3 text-slate-500 dark:text-neutral-400 font-light">
-                {ledgerLine}
-              </div>
+              <LedgerRow key={ledgerIndex} line={ledgerLine} />
             ))}
           </div>
         </div>
