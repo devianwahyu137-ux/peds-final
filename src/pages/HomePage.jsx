@@ -2,6 +2,7 @@ import { useRootStore } from "@/stores/rootStore";
 import { SENTIMENT_AGGREGATE, OVERALL_STYLE } from "../components/MacroSentimentSummary";
 import { Landmark, BarChart2, ArrowRightLeft, DollarSign, TrendingUp, Gem, Wallet, AlertTriangle, Lock, AlertOctagon, Lightbulb, Target } from "lucide-react";
 import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
+import { useMarketData } from '@/contexts/MacroDataContext';
 
 // ── Narasi Bahasa Indonesia per skenario ────────────────────────────────────────
 
@@ -82,6 +83,7 @@ export default function HomePage() {
   const macroInputs     = useRootStore((s) => s.macroInputs);
   const liveData        = useRootStore((s) => s.liveData || {});
   const setTab          = useRootStore((s) => s.setActiveTab);
+  const { marketData, isLive } = useMarketData();
 
   const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : scenarioId;
   const narrative = SCENARIO_NARRATIVE[effectiveScenario] || SCENARIO_NARRATIVE.EQUILIBRIUM;
@@ -107,13 +109,13 @@ export default function HomePage() {
   // ── GLOBAL PULSE TICKER ──
   // Updated Global Pulse Ticker data — May 2026 verified
   const GLOBAL_PULSE_DATA = [
-    { label: 'IHSG',      value: '6.170',   delta: '-11.8%', dir: -1, unit: 'pts' },
-    { label: 'SBN 10Y',   value: '6.71%',   delta: '+0.32%', dir: 1,  unit: ''    },
-    { label: 'USD/IDR',   value: '17.700',  delta: '+9.2%',  dir: -1, unit: ''    },
-    { label: 'GOLD',      value: '2.342',   delta: '+1.15%', dir: 1,  unit: 'USD' },
-    { label: 'BI RATE',   value: '5.25%',   delta: '+50bps', dir: -1, unit: ''    },
-    { label: 'DXY',       value: '104.50',  delta: '+0.3%',  dir: -1, unit: 'pts' },
-    { label: 'US 10Y',    value: '4.40%',   delta: '-0.02%', dir: -1, unit: ''    },
+    { label: 'IHSG',      value: marketData.equities.ihsg.toLocaleString('id-ID'),   delta: '-11.8%', dir: -1, unit: 'pts' },
+    { label: 'SBN 10Y',   value: marketData.macro.us10y.toFixed(2),   delta: '+0.32%', dir: 1,  unit: '%'    },
+    { label: 'USD/IDR',   value: marketData.macro.usdIdr.toLocaleString('id-ID'),  delta: '+9.2%',  dir: -1, unit: ''    },
+    { label: 'GOLD',      value: marketData.commodities.gold.toLocaleString('id-ID'),   delta: '+1.15%', dir: 1,  unit: 'USD' },
+    { label: 'BI RATE',   value: marketData.macro.biRate.toFixed(2),   delta: '+50bps', dir: -1, unit: '%'    },
+    { label: 'DXY',       value: marketData.macro.dxy.toFixed(2),  delta: '+0.3%',  dir: -1, unit: 'pts' },
+    { label: 'US 10Y',    value: marketData.macro.us10y.toFixed(2),   delta: '-0.02%', dir: -1, unit: '%'    },
     { label: 'XAU/IDR',   value: '41.3M',   delta: '+12.1%', dir: 1,  unit: 'IDR/gr'},
   ];
 
@@ -288,40 +290,64 @@ export default function HomePage() {
       </div>
 
       {/* ── ZONA 4: ACTION CENTER / DRIFT ALERT ── */}
-      <div className={`rounded-xl border p-6 flex items-center justify-between flex-wrap gap-6 transition-colors duration-300 shadow-lg ${
-        isDriftWarning 
-          ? 'bg-red-500/5 border-red-500/20 shadow-red-500/5' 
-          : 'bg-emerald-500/5 border-emerald-500/20 shadow-emerald-500/5'
-      }`}>
-        <div className="flex items-center gap-6">
-          <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 animate-pulse ${
-            isDriftWarning ? 'bg-red-500 shadow-[0_0_12px_#ef4444]' : 'bg-emerald-500 shadow-[0_0_12px_#10b981]'
-          }`} />
-          <div className="flex flex-col gap-1.5">
-            <div className={`text-xs font-semibold uppercase tracking-widest ${
-              isDriftWarning ? 'text-red-500' : 'text-emerald-500'
-            }`}>
-              {isDriftWarning ? 'Action Center: Drift Alert' : 'Action Center: Status Aman'}
+      {(() => {
+        const weights = actualWeights;
+        // Execution status: based on portfolio drift
+        const maxDrift = Math.max(
+          ...Object.keys(weights).map(asset =>
+            Math.abs((weights[asset] ?? 0) - (targetWeights[asset] ?? 0))
+          )
+        );
+        const execStatus = maxDrift > 10
+          ? { label: 'REBALANCING DIPERLUKAN', color: '#ef4444', icon: '⚠' }
+          : maxDrift > 5
+            ? { label: 'DRIFT MINOR TERDETEKSI', color: '#f59e0b', icon: '〜' }
+            : { label: 'EKSEKUSI SELARAS',       color: '#10b981', icon: '✓' };
+
+        // Macro status: from active scenario
+        const macroStatus = {
+          EQUILIBRIUM:     { label: 'LINGKUNGAN EKSPANSI NORMAL', color: '#10b981' },
+          TIGHTENING:      { label: 'LINGKUNGAN PENGETATAN MONETER', color: '#f59e0b' },
+          CURRENCY_STRESS: { label: 'LINGKUNGAN KRISIS NILAI TUKAR', color: '#ef4444' },
+        }[scenarioId] ?? { label: 'TIDAK DIKETAHUI', color: '#525252' };
+
+        return (
+          <div className="rounded-xl border p-6 flex items-center justify-between flex-wrap gap-6 transition-colors duration-300 shadow-lg bg-[var(--as-bg-secondary)] border-[var(--as-border-primary)]">
+            <div className="flex items-center gap-6">
+              {/* Execution Status */}
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm"
+                     style={{ backgroundColor: `${execStatus.color}20`, color: execStatus.color, border: `1px solid ${execStatus.color}40` }}>
+                  {execStatus.icon}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <div className="text-xs font-mono font-bold tracking-widest uppercase" style={{ color: execStatus.color }}>
+                    {execStatus.label}
+                  </div>
+                  <div className="text-[10px] text-[var(--as-text-tertiary)] max-w-sm">
+                    {maxDrift > 10
+                      ? `Drift ${maxDrift.toFixed(1)}% terdeteksi — rebalancing segera disarankan.`
+                      : maxDrift > 5
+                        ? `Drift minor ${maxDrift.toFixed(1)}% — pantau dalam 1-2 minggu.`
+                        : 'Portofolio selaras dengan target skenario aktif.'
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="text-xs font-sans font-light text-[var(--as-text-secondary)] leading-relaxed">
-              {isDriftWarning 
-                ? 'Peringatan: Alokasi portofolio melenceng dari batas toleransi (>5%).'
-                : 'Status Eksekusi: Portofolio selaras dengan target skenario. Tidak ada tindakan mendesak diperlukan.'
-              }
+            {/* Macro Environment — RIGHT side */}
+            <div className="flex flex-col gap-1 items-end">
+              <div className="text-[9px] font-mono text-[var(--as-text-tertiary)] uppercase tracking-widest">
+                LINGKUNGAN MAKRO
+              </div>
+              <div className="text-[11px] font-mono font-bold tracking-widest px-3 py-1 rounded-md"
+                   style={{ backgroundColor: `${macroStatus.color}10`, color: macroStatus.color, border: `1px solid ${macroStatus.color}30` }}>
+                {macroStatus.label}
+              </div>
             </div>
           </div>
-        </div>
-        {isDriftWarning && (
-          <button
-            onClick={() => setTab?.("strategy")}
-            className="flex-shrink-0 text-[11px] font-mono font-bold px-5 py-2.5 rounded-lg border
-                       bg-red-500/10 border-red-500/30 text-red-500 hover:bg-red-500/20
-                       hover:border-red-500/50 transition-colors duration-200 cursor-pointer uppercase tracking-widest shadow-sm"
-          >
-            Rebalance Sekarang
-          </button>
-        )}
-      </div>
+        );
+      })()}
 
       {/* ── WHAT THIS MEANS FOR YOU — Contextual Guidance ── */}
       <div className="card-tier-2 overflow-hidden">

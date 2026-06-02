@@ -13,13 +13,11 @@ import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
  */
 export default function MarketPage() {
   const scenarioId = useRootStore((s) => s.scenarioId);
-  const crisisMode = useRootStore((s) => s.crisisMode);
   const setScenario = useRootStore((s) => s.setScenario);
-  const setCrisisMode = useRootStore((s) => s.setCrisisMode);
 
   const baseScenario = SCENARIOS[scenarioId] || SCENARIOS.EQUILIBRIUM;
-  const currentAccent = crisisMode ? "red" : baseScenario.accent;
-  const acc = ACCENT[currentAccent];
+  const currentAccent = baseScenario.accent;
+  const acc = ACCENT[currentAccent] || ACCENT.emerald;
 
   return (
     <div className="space-y-6 w-full page-enter">
@@ -45,11 +43,13 @@ export default function MarketPage() {
               Skenario Ekonomi
             </div>
             <div className="space-y-2">
-              {Object.values(SCENARIOS).map((sc) => (
+              {Object.values(SCENARIOS)
+                .filter(sc => sc.theme !== 'Stress Test')
+                .map((sc) => (
                 <ScenarioButton
                   key={sc.id}
                   scenario={sc}
-                  isActive={scenarioId === sc.id && !crisisMode}
+                  isActive={scenarioId === sc.id}
                   onClick={() => setScenario(sc.id)}
                 />
               ))}
@@ -63,24 +63,24 @@ export default function MarketPage() {
             </div>
             <div className="grid grid-cols-2 gap-2">
               <button
-                onClick={() => setCrisisMode(crisisMode === "HYPERINFLATION" ? null : "HYPERINFLATION")}
-                className={`p-2 rounded border text-[10px] font-bold cursor-pointer transition-all font-mono ${
-                  crisisMode === "HYPERINFLATION"
-                    ? "bg-red-500/20 border-red-500 text-slate-900 dark:text-white"
-                    : "border-slate-200 dark:border-neutral-900 text-slate-400 dark:text-neutral-500"
+                onClick={() => setScenario('HIPERINFLASI')}
+                className={`p-2 rounded border text-[10px] flex items-center justify-center gap-2 font-bold cursor-pointer transition-colors font-mono ${
+                  scenarioId === "HIPERINFLASI"
+                    ? "bg-red-900/40 border-red-500 text-white"
+                    : "border-slate-200 dark:border-neutral-900 text-slate-400 dark:text-neutral-500 hover:bg-red-950/40 hover:border-red-500/50"
                 }`}
               >
-                <Flame size={16} className="text-red-500" /> HIPERINFLASI
+                <Flame size={16} className="text-red-500 shrink-0" /> HIPERINFLASI
               </button>
               <button
-                onClick={() => setCrisisMode(crisisMode === "RUPIAH_CRASH" ? null : "RUPIAH_CRASH")}
-                className={`p-2 rounded border text-[10px] font-bold cursor-pointer transition-all font-mono ${
-                  crisisMode === "RUPIAH_CRASH"
-                    ? "bg-red-500/20 border-red-500 text-slate-900 dark:text-white"
-                    : "border-slate-200 dark:border-neutral-900 text-slate-400 dark:text-neutral-500"
+                onClick={() => setScenario('RUPIAH_CRASH')}
+                className={`p-2 rounded border text-[10px] flex items-center justify-center gap-2 font-bold cursor-pointer transition-colors font-mono ${
+                  scenarioId === "RUPIAH_CRASH"
+                    ? "bg-amber-900/40 border-amber-500 text-white"
+                    : "border-slate-200 dark:border-neutral-900 text-slate-400 dark:text-neutral-500 hover:bg-amber-950/40 hover:border-amber-500/50"
                 }`}
               >
-                <AlertTriangle size={16} className="text-amber-500" /> RUPIAH CRASH
+                <AlertTriangle size={16} className="text-amber-500 shrink-0" /> RUPIAH CRASH
               </button>
             </div>
           </div>

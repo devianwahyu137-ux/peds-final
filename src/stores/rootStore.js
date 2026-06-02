@@ -47,6 +47,30 @@ export const SCENARIOS = {
       "[💵] FOREIGN_RESERVES : Convert remaining Rupiah cash into USD/hard currency to survive devaluation."
     ]
   },
+  HIPERINFLASI: {
+    id: "HIPERINFLASI",
+    label: "Extreme Inflation Shock",
+    theme: "Stress Test",
+    accent: "red",
+    biRate: 8.50, inflation: 15.00, usdIdr: 18500, sbn10y: 9.20, dxy: 108.00,
+    weights: { stocks: 5, bonds: 10, gold: 60, cash: 25 },
+    ledger: [
+      "[🔥] INFLATION_SHOCK : Purchasing power collapsing. Shift 60% to Gold immediately.",
+      "[⚠️] CASH_DRAG : Avoid holding IDR. High inflation erodes nominal yields."
+    ]
+  },
+  RUPIAH_CRASH: {
+    id: "RUPIAH_CRASH",
+    label: "Currency Collapse",
+    theme: "Stress Test",
+    accent: "amber",
+    biRate: 7.00, inflation: 8.50, usdIdr: 20000, sbn10y: 8.50, dxy: 110.00,
+    weights: { stocks: 10, bonds: 15, gold: 40, cash: 35 },
+    ledger: [
+      "[💵] USD_HEDGE : Rupiah touching 20,000. Maintain high liquidity in foreign currencies.",
+      "[📉] EQUITY_FLIGHT : Equities at high risk due to imported inflation squeezing margins."
+    ]
+  }
 };
 const SCENARIO_DEFAULTS = SCENARIOS;
 

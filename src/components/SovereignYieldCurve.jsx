@@ -79,11 +79,15 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
   );
 
   // SVG Chart Setup
-  const W = 520, H = 240, pL = 50, pR = 25, pT = 25, pB = 40;
+  const W = 760, H = 340, pL = 56, pR = 24, pT = 24, pB = 48;
   const cW = W - pL - pR, cH = H - pT - pB;
   const allYields = [...ustYields, ...sbnYields];
-  const mn = Math.floor(Math.min(...allYields) - 0.5);
-  const mx = Math.ceil(Math.max(...allYields) + 0.5);
+  
+  const yMin = Math.min(...allYields);
+  const yMax = Math.max(...allYields);
+  const yPad = (yMax - yMin) * 0.15;
+  const mn = yMin - yPad;
+  const mx = yMax + yPad;
   
   const xP = tenures.map((_, i) => pL + (i / 3) * cW);
   const tY = (v) => pT + ((mx - v) / (mx - mn)) * cH;
@@ -107,34 +111,34 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
   return (
     <div className="space-y-6">
       {/* Dynamic SBN vs UST Plot */}
-      <div className="card-tier-2 space-y-4">
+      <div className="card-tier-1 space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 text-[var(--as-text-primary)]"><Globe size={18} className="text-blue-400" /><span className="font-bold tracking-wide text-sm uppercase">Sovereign Yield Curve Detector</span></div>
-            <p className="text-[10px] text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">Dynamic SBN vs UST Tenure Bezier Plot</p>
+            <p className="text-[10px] text-[var(--as-text-tertiary)] mt-1 uppercase tracking-wider">Dynamic SBN vs UST Tenure Bezier Plot</p>
           </div>
-          <div className="text-[10px] font-mono text-slate-400 dark:text-neutral-500">
+          <div className="text-[10px] font-mono text-[var(--as-text-tertiary)]">
             SPREAD 10Y: <span className="font-bold text-amber-400">+{(spread ?? 0).toFixed(2)}%</span>
           </div>
         </div>
 
-        <div className="border border-slate-300 dark:border-neutral-800/50 rounded-lg bg-slate-50 dark:bg-black/40 p-4 overflow-x-auto">
-          <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 240 }}>
+        <div className="w-full bg-[#121212] rounded-xl border border-white/5 p-4 overflow-hidden" style={{ minHeight: '340px' }}>
+          <svg width="100%" height={340} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" className="block overflow-visible">
             {/* Grid Lines */}
             {[mn, mn + (mx - mn) * 0.25, mn + (mx - mn) * 0.5, mn + (mx - mn) * 0.75, mx].map((v, i) => (
               <g key={i}>
-                <line x1={pL} y1={tY(v)} x2={W - pR} y2={tY(v)} stroke="#171717" strokeWidth="0.75" />
-                <text x={pL - 8} y={tY(v) + 3} textAnchor="end" fontSize="8" fill="#555" fontFamily="monospace">{v.toFixed(2)}%</text>
+                <line x1={pL} y1={tY(v)} x2={W - pR} y2={tY(v)} stroke="var(--as-border-secondary)" strokeWidth="0.75" />
+                <text x={pL - 8} y={tY(v) + 3} textAnchor="end" fontSize="8" fill="var(--as-text-dim)" fontFamily="monospace">{v.toFixed(2)}%</text>
               </g>
             ))}
             
             {/* Tenure Labels */}
             {tenures.map((t, i) => (
-              <text key={t} x={xP[i]} y={H - 12} textAnchor="middle" fontSize="9" fill="#666" fontFamily="monospace">{t}</text>
+              <text key={t} x={xP[i]} y={H - 12} textAnchor="middle" fontSize="9" fill="var(--as-text-dim)" fontFamily="monospace">{t}</text>
             ))}
 
             {/* Bezier Curves */}
-            <path d={ustBezier} fill="none" stroke="#6b7280" strokeWidth="1.5" strokeDasharray="5 3" />
+            <path d={ustBezier} fill="none" stroke="var(--as-text-tertiary)" strokeWidth="1.5" strokeDasharray="5 3" />
             <path d={sbnBezier} fill="none" stroke={accentColor} strokeWidth="2.5" style={{ filter: `drop-shadow(0 0 8px ${accentColor}66)` }} />
 
             {/* ── SBN Glowing Nodes ── */}
@@ -261,7 +265,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="font-mono text-[11px] border-collapse mx-auto">
+          <table className="font-mono text-[11px] border-separate border-spacing-1 mx-auto">
             <thead>
               <tr>
                 <th className="p-2 w-20" />
@@ -282,11 +286,11 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
                       <td
                         key={ci}
                         onClick={() => !isDiag && setSelectedCell(isSelected ? null : ck)}
-                        className={`p-3 text-center font-bold cursor-pointer transition-all border border-slate-200 dark:border-neutral-900/40 rounded ${
-                          isDiag ? "text-neutral-700 bg-transparent" : "hover:scale-[1.05]"
-                        } ${isSelected ? "ring-2 ring-white/60 bg-white/5" : ""}`}
+                        className={`p-3 text-center font-bold cursor-pointer transition-all rounded-md ${
+                          isDiag ? "text-neutral-700 bg-transparent" : "hover:bg-[#1a1a1a]/80"
+                        } ${isSelected ? "ring-1 ring-white/20 bg-white/5" : ""}`}
                         style={{
-                          color: isDiag ? "#444" : getCellColor(val),
+                          color: isDiag ? "var(--as-text-dim)" : getCellColor(val),
                           backgroundColor: isDiag ? "transparent" : `${getCellColor(val)}11`
                         }}
                       >

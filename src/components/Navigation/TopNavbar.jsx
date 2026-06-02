@@ -76,47 +76,53 @@ export const TopNavbar = memo(function TopNavbar() {
   }, [scenarioId, weights, analytics, macroInputs]);
 
   return (
+    <>
     <nav
       className="shrink-0 w-full z-40 border-b border-slate-200 dark:border-neutral-800/60 transition-colors duration-300"
       style={{ backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", background: "var(--as-navbar-bg)" }}
     >
-      {/* Risk Status Bar */}
-      <div className="w-full flex flex-row items-center justify-between px-2 md:px-4 gap-1 md:gap-4
-                      py-1 border-b border-slate-200 dark:border-neutral-800/40 transition-colors duration-300"
-           style={{ background: theme.bg, minHeight: '26px' }}>
+      {/* Top Branding & Controls Bar */}
+      <div className="flex items-center justify-between w-full px-4 py-3 border-b" style={{ background: 'var(--as-bg-page)', borderColor: 'var(--as-border-primary)' }}>
 
-        {/* Left: portfolio status */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="relative flex h-1.5 w-1.5">
-            <span
-              className="animate-ping absolute inline-flex h-full w-full
-                         rounded-full opacity-50"
-              style={{ backgroundColor: theme.color }}
-            />
-            <span
-              className="relative inline-flex rounded-full h-1.5 w-1.5"
-              style={{ backgroundColor: theme.color }}
-            />
-          </span>
-          <span
-            className="text-[8px] md:text-[10px] font-mono font-bold tracking-tighter md:tracking-widest whitespace-nowrap"
-            style={{ color: theme.color }}
-          >
-            STATUS PORTOFOLIO: {theme.label}
+        {/* Left Section (Branding) */}
+        <div className="flex items-center gap-3">
+          <div className="p-1.5 bg-indigo-500/10 rounded-md border border-indigo-500/20">
+            <Shield className="text-indigo-400" size={24} />
+          </div>
+          <span className="font-bold tracking-wider text-sm uppercase hidden md:block" style={{ color: 'var(--as-text-primary)' }}>
+            AlphaShield PEDS Core System v3.8
           </span>
         </div>
 
-        {/* Right: health + system label + theme toggle + export button */}
-        <div className="flex items-center gap-3 ml-auto flex-shrink-0">
+        {/* Right Section (Controls & Status) */}
+        <div className="flex items-center gap-6">
+          {/* Status Portfolio */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="relative flex h-2 w-2">
+              <span
+                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50"
+                style={{ backgroundColor: theme.color }}
+              />
+              <span
+                className="relative inline-flex rounded-full h-2 w-2"
+                style={{ backgroundColor: theme.color }}
+              />
+            </span>
+            <span
+              className="text-[10px] font-mono font-bold tracking-widest whitespace-nowrap"
+              style={{ color: theme.color }}
+            >
+              STATUS PORTOFOLIO: {theme.label}
+            </span>
+          </div>
+
           <ThemeToggle />
 
           <div className="flex items-center gap-2">
             <button
               onClick={handleExport}
               disabled={isExporting}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border
-                         text-[9px] font-mono font-bold tracking-widest uppercase
-                         transition-all duration-200 cursor-pointer flex-shrink-0"
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[9px] font-mono font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer flex-shrink-0"
               style={{
                 background:  isExporting ? 'var(--as-bg-tertiary)' : 'rgba(16,185,129,0.10)',
                 borderColor: isExporting ? '#333' : 'rgba(16,185,129,0.40)',
@@ -127,23 +133,18 @@ export const TopNavbar = memo(function TopNavbar() {
               <span>{isExporting ? 'GENERATING...' : 'DOWNLOAD TEAR SHEET'}</span>
             </button>
             {exportMsg && (
-              <span className="text-[9px] font-mono hidden md:block"
-                    style={{ color: exportMsg.startsWith('✓') ? '#10b981' : '#ef4444' }}>
+              <span className="text-[9px] font-mono hidden md:block" style={{ color: exportMsg.startsWith('✓') ? '#10b981' : '#ef4444' }}>
                 {exportMsg}
               </span>
             )}
           </div>
           
           <NavHealthIndicator />
-          <span className="text-[8px] font-mono tracking-widest hidden xl:block whitespace-nowrap transition-colors duration-300"
-                style={{ color: 'var(--as-text-dim)' }}>
-            AlphaShield PEDS Core System v3.8
-          </span>
         </div>
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex items-stretch overflow-x-auto scrollbar-hide px-2 whitespace-nowrap md:whitespace-normal">
+      <div className="hidden md:flex items-stretch overflow-x-auto scrollbar-hide px-2 whitespace-nowrap md:whitespace-normal">
         {NAV_ITEMS.map((item) => {
           const isActive = activeTab === item.id;
           return (
@@ -181,5 +182,52 @@ export const TopNavbar = memo(function TopNavbar() {
         })}
       </div>
     </nav>
+    
+    {/* ── MOBILE BOTTOM TAB BAR — md:hidden ── */}
+    <nav
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50
+                 flex items-stretch border-t safe-area-pb"
+      style={{
+        background:   'var(--as-navbar-bg)',
+        borderColor:  'var(--as-navbar-border)',
+        backdropFilter: 'blur(12px)',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+      }}
+    >
+      {NAV_ITEMS.map((item) => {
+        const isActive = activeTab === item.id;
+        return (
+          <button
+            key={item.id}
+            onClick={() => setTab(item.id)}
+            className="flex-1 flex flex-col items-center justify-center
+                       py-2.5 cursor-pointer transition-all duration-150
+                       relative"
+            style={{ minHeight: '56px' }}
+          >
+            {/* Active indicator dot */}
+            {isActive && (
+              <div
+                className="absolute top-0 left-1/2 -translate-x-1/2
+                           w-12 h-0.5 rounded-full"
+                style={{ background: theme.color }}
+              />
+            )}
+
+            {/* Icon */}
+            <span className="text-lg mb-0.5">{item.icon}</span>
+
+            {/* Label */}
+            <span
+              className="text-[9px] font-mono font-bold tracking-wider"
+              style={{ color: isActive ? theme.color : 'var(--as-text-dim)' }}
+            >
+              {item.label.split(' ')[0]}
+            </span>
+          </button>
+        );
+      })}
+    </nav>
+    </>
   );
 });

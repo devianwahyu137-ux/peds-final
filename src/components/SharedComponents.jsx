@@ -108,7 +108,7 @@ export function AllocationRow({ assetKey, pct }) {
 export function ScenarioButton({ scenario, isActive, onClick }) {
   const acc = ACCENT[scenario.accent];
   return (
-    <button onClick={onClick} className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 cursor-pointer ${isActive ? `${acc.bg} ${acc.border} ring-1 ring-${scenario.accent}-500/20` : "bg-white dark:bg-neutral-900/40 border-neutral-850 hover:border-neutral-700/60"}`}>
+    <button onClick={onClick} className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 cursor-pointer ${isActive ? `${acc.bg} ${acc.border} ring-1 ring-${scenario.accent}-500/20` : "border-white/5 bg-neutral-900/20 hover:bg-neutral-900/40 text-neutral-400"}`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: isActive ? acc.neon : "#444" }} />

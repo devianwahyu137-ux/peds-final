@@ -98,7 +98,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
             type="text"
             value={capitalRaw ? parseInt(capitalRaw.replace(/\./g, "") || "0").toLocaleString("id-ID") : ""}
             onChange={(e) => setCapitalRaw(e.target.value.replace(/[^0-9]/g, ""))}
-            className="w-full bg-slate-50 dark:bg-black border border-slate-300 dark:border-neutral-800 rounded-lg px-4 py-4 text-slate-900 dark:text-white text-3xl font-mono font-bold tracking-tighter tabular-nums focus:outline-none focus:border-slate-400 dark:focus:border-neutral-700 transition-colors"
+            className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-3 text-2xl font-mono text-white font-bold tracking-tighter tabular-nums focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all shadow-inner"
           />
         </div>
 
@@ -110,9 +110,14 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
             type="range"
             min="0"
             max="100"
+            step="1"
             value={Math.round(currentActualWeights.stocks || 0)}
             onChange={(e) => setActualWeight("stocks", parseFloat(e.target.value) || 0)}
-            className="w-full h-1.5 bg-slate-200 dark:bg-neutral-900 rounded-lg appearance-none cursor-pointer accent-emerald-500 dark:accent-emerald-400"
+            className="w-full cursor-pointer bg-slate-200 dark:bg-neutral-900 rounded-lg appearance-none accent-emerald-500 dark:accent-emerald-400"
+            style={{
+              height: '4px',
+              padding: '12px 0',
+            }}
           />
         </div>
       </div>

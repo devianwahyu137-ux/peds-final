@@ -1,7 +1,6 @@
-
 import { Sparkles, Bot } from "lucide-react";
 
-export default function FloatingCopilotTrigger({ onOpen, onSuggestionClick, inputValue, setInputValue }) {
+export default function FloatingCopilotTrigger({ onOpen, onSuggestionClick, inputValue, setInputValue, onSubmit, isVisible }) {
   const suggestions = [
     "Evaluasi Efisiensi Portofolio",
     "Dampak Suku Bunga",
@@ -9,7 +8,11 @@ export default function FloatingCopilotTrigger({ onOpen, onSuggestionClick, inpu
   ];
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-full px-4 py-3 w-[90%] md:w-[600px] flex flex-col gap-3 shadow-2xl bg-[#121212]/80 backdrop-blur-md border border-white/10">
+    <div 
+      className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-full px-4 py-3 w-[90%] md:w-[600px] flex flex-col gap-3 shadow-2xl bg-[#121212]/80 backdrop-blur-md border border-white/10 transition-opacity duration-300 ${
+        isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+      }`}
+    >
       
       {/* Suggestion Chips */}
       <div className="overflow-x-auto scrollbar-hide flex items-center gap-2">
@@ -34,6 +37,13 @@ export default function FloatingCopilotTrigger({ onOpen, onSuggestionClick, inpu
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onFocus={onOpen}
+          onKeyDown={(e) => { 
+            if (e.key === 'Enter' && e.target.value.trim() !== '') { 
+              onSubmit(e.target.value); 
+              setInputValue(''); 
+              e.target.value = ''; 
+            } 
+          }}
         />
       </div>
       

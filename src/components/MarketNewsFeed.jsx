@@ -97,7 +97,12 @@ export default function MarketNewsFeed() {
           {news.slice(0, 5).map((item, idx) => {
             const sentiment = getSentimentStyle(item.overall_sentiment_label);
             return (
-              <div key={idx} className="b-panel bg-slate-50 dark:bg-black/20 rounded-xl p-4 transition-all duration-200 hover:border-slate-300 dark:border-neutral-800">
+              <div key={idx} className="flex flex-col bg-[#121212] rounded-lg border border-white/5 p-4 hover:bg-[#161616] transition-colors relative overflow-hidden">
+                <div className={`absolute left-0 top-0 bottom-0 w-[2px] ${
+                  (item.overall_sentiment_label || "").toUpperCase().includes("BULLISH") ? "bg-emerald-500" :
+                  (item.overall_sentiment_label || "").toUpperCase().includes("BEARISH") ? "bg-rose-500" :
+                  "bg-neutral-500"
+                }`} />
                 <div className="flex flex-wrap items-center gap-2.5 mb-2">
                   <span className={`text-[10px] tracking-wider ${sentiment.class}`}>
                     {sentiment.badge}

@@ -95,6 +95,11 @@ export default function App() {
   // Copilot State
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
   const [copilotInput, setCopilotInput] = useState("");
+  
+  // Initialize mock chat history
+  const [chatMessages, setChatMessages] = useState([
+    { role: 'ai', content: 'Halo! Saya AlphaShield Quant Copilot. Ada yang bisa saya bantu terkait analisis portofolio atau simulasi makro saat ini?' }
+  ]);
 
   const activeTab = useRootStore((s) => s.activeTab);
   const scenarioIdGlobal = useRootStore((s) => s.scenarioId);
@@ -130,11 +135,21 @@ export default function App() {
   const CurrentPage = PAGE_MAP[activeTab] ?? <HomePage />;
 
   // STEALTH CONTEXT FUNCTION
-  // This will be prepended to user's prompt before sending to AI API later
+  // This string will be prepended to user's prompt before sending to the future AI API
   const generateStealthContext = () => {
     const sr = targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0;
     const rate = macroInputs?.biRate ?? 5.25;
     return `[SYSTEM CONTEXT - DO NOT SHOW USER] Current Portfolio Status: ${scenarioIdGlobal}, BI Rate: ${rate.toFixed(2)}%, Sharpe Ratio: ${sr.toFixed(2)}`;
+  };
+
+  const handleCopilotSubmit = (text) => {
+    // Append user message to chat history
+    setChatMessages((prev) => [...prev, { role: 'user', content: text }]);
+    
+    // Auto-open drawer if submitting from trigger capsule
+    if (!isCopilotOpen) {
+      setIsCopilotOpen(true);
+    }
   };
 
   const handleSuggestionClick = (text) => {
@@ -156,11 +171,9 @@ export default function App() {
       </div>
 
       <main
-        className="flex-1 overflow-y-auto overflow-x-hidden
-                   pt-8 px-6 md:px-10 lg:px-12
-                   pb-32 w-full mx-auto
+        className="flex-1 overflow-y-auto pb-24 pt-8 w-full max-w-[1600px] mx-auto
+                   overflow-x-hidden px-4 md:px-6 lg:px-8
                    print:overflow-visible print:pt-0 print:px-0 print:pb-0 print:w-full print:block"
-        style={{ maxWidth: 'var(--content-max)' }}
       >
         <PageErrorBoundary key={activeTab}>
           <Suspense fallback={<PageSkeleton />}>
@@ -169,21 +182,25 @@ export default function App() {
         </PageErrorBoundary>
       </main>
 
-      {/* AlphaShield Copilot Trigger */}
+      {/* AlphaShield Copilot Trigger Capsule */}
       <div className="print:hidden">
         <FloatingCopilotTrigger 
+          isVisible={!isCopilotOpen}
           onOpen={() => setIsCopilotOpen(true)}
           onSuggestionClick={handleSuggestionClick}
           inputValue={copilotInput}
           setInputValue={setCopilotInput}
+          onSubmit={handleCopilotSubmit}
         />
       </div>
 
-      {/* AlphaShield Copilot Drawer */}
+      {/* AlphaShield Copilot Right Drawer */}
       <div className="print:hidden">
         <CopilotDrawer 
           isOpen={isCopilotOpen} 
-          onClose={() => setIsCopilotOpen(false)} 
+          onClose={() => setIsCopilotOpen(false)}
+          messages={chatMessages}
+          setMessages={setChatMessages}
         />
       </div>
 

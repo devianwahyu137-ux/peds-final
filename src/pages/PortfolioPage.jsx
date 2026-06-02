@@ -10,8 +10,9 @@ import {
   getMddInterpretation,
   getVolInterpretation,
 } from "../components/SharedComponents";
-import { PortfolioStoryPanel } from "../components/PortfolioStoryPanel";
+import { PortfolioStoryPanel, PortfolioWhatIfSimulator } from "../components/PortfolioStoryPanel";
 import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
+import { PortfolioComparison } from '@/components/PortfolioComparison';
 import { AlertTriangle, Landmark, TrendingUp, Briefcase, Shield, DollarSign } from "lucide-react";
 
 function LedgerRow({ line }) {
@@ -88,10 +89,11 @@ export default function PortfolioPage() {
         </p>
       </div>
 
+      {/* ROW 1 (TOP SECTION) */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         {/* Left: Donut + Asset Bars */}
         <div className="xl:col-span-7 space-y-4">
-          <div className="card-tier-2 overflow-visible">
+          <div className="card-tier-2 overflow-visible h-full">
             <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-4 font-mono">
               Asset Allocation Matrix
             </div>
@@ -111,21 +113,11 @@ export default function PortfolioPage() {
               </div>
             </div>
           </div>
-
-          {/* Technical Execution Ledger */}
-          <div className="card-tier-3 font-mono text-[11px] space-y-2">
-            <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-1">
-              Technical Execution Ledger
-            </div>
-            {baseScenario.ledger.map((ledgerLine, ledgerIndex) => (
-              <LedgerRow key={ledgerIndex} line={ledgerLine} />
-            ))}
-          </div>
         </div>
 
         {/* Right: MPT Analytics with interpretations */}
         <div className="xl:col-span-5 space-y-4">
-          <div className="card-tier-2">
+          <div className="card-tier-2 h-full">
             <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-3 font-mono">
               Analisis MPT — dengan Interpretasi
             </div>
@@ -160,7 +152,29 @@ export default function PortfolioPage() {
               />
             </div>
           </div>
+        </div>
+      </div>
 
+      {/* ROW 2 (BOTTOM SECTION - THE ALIGNMENT FIX) */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        {/* Left Side: Ledger + What If */}
+        <div className="xl:col-span-7 flex flex-col gap-6">
+          {/* Technical Execution Ledger */}
+          <div className="card-tier-3 font-mono text-[11px] space-y-2">
+            <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-1">
+              Technical Execution Ledger
+            </div>
+            {baseScenario.ledger.map((ledgerLine, ledgerIndex) => (
+              <LedgerRow key={ledgerIndex} line={ledgerLine} />
+            ))}
+          </div>
+          
+          {/* Simulasi What-If (Relocated here) */}
+          <PortfolioWhatIfSimulator />
+        </div>
+
+        {/* Right Side: Tema Risiko + Narasi */}
+        <div className="xl:col-span-5 flex flex-col gap-6">
           {/* Risk Theme badge */}
           <div className="card-tier-3 flex flex-col items-center text-center">
             <span className="text-[8px] text-[var(--as-text-dim)] font-semibold uppercase font-mono tracking-widest">
@@ -181,6 +195,8 @@ export default function PortfolioPage() {
           <PortfolioStoryPanel />
         </div>
       </div>
+
+      <PortfolioComparison />
     </div>
   );
 }

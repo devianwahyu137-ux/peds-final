@@ -1,6 +1,7 @@
 import SovereignYieldCurve from "../components/SovereignYieldCurve";
 import MacroNewsCards from "../components/MacroNewsCards";
 import { MonteCarloPanel } from "../components/EfficientFrontier/MonteCarloPanel";
+import { HistoricalBacktest } from '@/components/HistoricalBacktest';
 import { MacroSentimentSummary } from "../components/MacroSentimentSummary";
 import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
 
@@ -27,6 +28,9 @@ export default function AnalysisPage() {
 
       <SovereignYieldCurve />
       <MacroNewsCards />
+
+      {/* Historical Backtesting Snapshot */}
+      <HistoricalBacktest />
 
       {/* Monte Carlo Simulation Engine */}
       <MonteCarloPanel />

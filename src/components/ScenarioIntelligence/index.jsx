@@ -30,8 +30,8 @@ export function ScenarioIntelligence() {
     [scenarioId, macroData]
   );
 
-  const activeConfig      = SCENARIO_CONFIG[scenarioId];
-  const recommendedConfig = SCENARIO_CONFIG[mismatch.recommended];
+  const activeConfig      = SCENARIO_CONFIG[scenarioId] || SCENARIO_CONFIG['EQUILIBRIUM'];
+  const recommendedConfig = SCENARIO_CONFIG[mismatch.recommended] || SCENARIO_CONFIG['EQUILIBRIUM'];
 
   // Don't show if dismissed
   if (isDismissed) return null;

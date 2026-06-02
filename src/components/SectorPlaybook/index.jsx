@@ -21,14 +21,16 @@ export function SectorPlaybook() {
     <div className="card-tier-2 space-y-4 transition-colors duration-300">
       {/* Panel header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 text-[var(--as-text-primary)]">
-            <ActivitySquare size={18} className="text-blue-400" />
-            <span className="font-bold tracking-wide text-sm uppercase">ROTATION TACTICS PLAYBOOK</span>
+        {/* Panel header — prevent text wrap */}
+        <div className="flex flex-col gap-1 min-w-0">
+          <div className="flex items-center gap-2 text-[var(--as-text-primary)] min-w-0">
+            <ActivitySquare size={18} className="text-blue-400 shrink-0" />
+            <span className="font-bold tracking-wide text-sm uppercase truncate">ROTATION TACTICS PLAYBOOK</span>
           </div>
-          <p className="text-[10px] font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">
-            Strategi Rotasi Sektoral • Klik kartu untuk expand ticker & analisis detail
-          </p>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[10px] font-bold text-[var(--as-text-secondary)] uppercase tracking-widest truncate">Strategi Rotasi Sektoral</span>
+            <span className="text-[9px] font-light text-[var(--as-text-tertiary)] uppercase tracking-widest truncate">Klik kartu untuk expand detail</span>
+          </div>
         </div>
 
         {/* Stance summary pills */}

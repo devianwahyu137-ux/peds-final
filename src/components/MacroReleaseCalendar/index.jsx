@@ -69,13 +69,13 @@ export function MacroReleaseCalendar() {
         </span>
       </div>
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         {RELEASE_EVENTS.map((ev, i) => {
           const imp = IMPACT_STYLE[ev.impact] ?? IMPACT_STYLE.LOW;
           return (
             <div
               key={i}
-              className="flex items-start gap-3 p-3 rounded-lg border border-slate-300 dark:border-neutral-800/40 bg-white dark:bg-neutral-900/30"
+              className="flex items-start gap-3 p-2.5 -mx-2 rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-white/[0.02]"
             >
               {/* Impact dot */}
               <div
@@ -93,17 +93,17 @@ export function MacroReleaseCalendar() {
                     {ev.impact}
                   </span>
                 </div>
-                <div className="text-[9px] font-mono text-slate-400 dark:text-neutral-500 mt-0.5">
+                <div className="text-[9px] font-mono text-[var(--as-text-secondary)] mt-0.5">
                   {ev.note}
                 </div>
               </div>
 
               {/* Right: date + indicator */}
               <div className="text-right flex-shrink-0">
-                <div className="text-[9px] font-mono font-bold text-slate-500 dark:text-neutral-400">
+                <div className="text-[9px] font-mono font-bold text-[var(--as-text-primary)]">
                   {ev.indicator}
                 </div>
-                <div className="text-[8px] font-mono text-neutral-600 mt-0.5">
+                <div className="text-[8px] font-mono text-[var(--as-text-dim)] mt-0.5">
                   {ev.date}
                 </div>
               </div>

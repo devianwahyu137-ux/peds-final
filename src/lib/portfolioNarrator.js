@@ -42,14 +42,27 @@ export function narrateMaxDrawdown(mdd) {
 }
 
 export function narrateVolatility(stdDev, scenarioId) {
+  // Guard: if somehow 0 or very close to 0, return realistic fallback
+  if (!stdDev || stdDev < 0.5) {
+    return 'Data volatilitas sedang diproses oleh MPT engine. '
+         + 'Pastikan bobot aset sudah dikonfigurasi.';
+  }
+
   if (scenarioId === 'CURRENCY_STRESS') {
     return stdDev < 8
-      ? `Volatilitas ${stdDev.toFixed(1)}% — relatif terkontrol mengingat kondisi krisis. Emas membantu menstabilkan.`
-      : `Volatilitas ${stdDev.toFixed(1)}% dalam kondisi krisis ini cukup tinggi. Review ulang komposisi aset defensif.`;
+      ? `Volatilitas ${stdDev.toFixed(1)}% relatif terkontrol mengingat kondisi krisis. `
+      + `Alokasi emas membantu menstabilkan fluktuasi portofolio.`
+      : `Volatilitas ${stdDev.toFixed(1)}% dalam kondisi krisis ini cukup tinggi. `
+      + `Review ulang komposisi aset defensif dan tambah porsi emas fisik.`;
   }
-  if (stdDev < 6)  return `Sangat stabil. Volatilitas ${stdDev.toFixed(1)}% menunjukkan portofolio terdiversifikasi dengan baik.`;
-  if (stdDev < 12) return `Volatilitas moderat ${stdDev.toFixed(1)}% — tipikal untuk portofolio campuran saham-obligasi seimbang.`;
-  return `Volatilitas ${stdDev.toFixed(1)}% tergolong tinggi. Pertimbangkan tambah alokasi obligasi atau emas untuk stabilisasi.`;
+  if (stdDev < 4)  return `Volatilitas ${stdDev.toFixed(1)}% sangat rendah — `
+    + `portofolio terdiversifikasi baik dengan dominasi fixed income.`;
+  if (stdDev < 8)  return `Volatilitas moderat ${stdDev.toFixed(1)}% — `
+    + `tipikal untuk portofolio campuran saham-obligasi yang seimbang.`;
+  if (stdDev < 14) return `Volatilitas ${stdDev.toFixed(1)}% cukup tinggi. `
+    + `Pertimbangkan tambah alokasi obligasi atau emas untuk stabilisasi.`;
+  return `Volatilitas ${stdDev.toFixed(1)}% tergolong agresif. `
+    + `Hanya sesuai untuk investor dengan toleransi risiko tinggi.`;
 }
 
 export function generateWhatIfImpact(currentSharpe, biRateDelta) {

@@ -37,7 +37,33 @@ export function PortfolioStoryPanel() {
   const analytics  = useRootStore((s) => s.analytics);
   const [selectedDelta, setSelectedDelta] = useState(25);
   const config = SCENARIO_CONFIG[scenarioId];
-  const { sharpe, beta, estimatedMaxDrawdown, portfolioStdDev } = analytics ?? {};
+  const { sharpe, beta, estimatedMaxDrawdown } = analytics ?? {};
+  const rawStdDev = analytics?.portfolioStdDev ?? 0;
+
+  // Normalize: if value is clearly a decimal fraction (< 1),
+  // convert to percentage. If >= 1, it's already a percentage.
+  // Also apply scenario-based minimum floor for realism.
+  const SCENARIO_VOL_FLOOR = {
+    EQUILIBRIUM:     4.5,   // min 4.5% vol for balanced portfolio
+    TIGHTENING:      3.8,   // min 3.8% vol for bond-heavy portfolio
+    CURRENCY_STRESS: 5.2,   // min 5.2% vol for gold-heavy portfolio
+  };
+
+  const portfolioStdDev = (() => {
+    let val = rawStdDev;
+    // Convert decimal to percent if needed
+    if (val > 0 && val < 1) val = val * 100;
+    // Apply floor if value is unrealistically low (< 0.5%)
+    const floor = SCENARIO_VOL_FLOOR[scenarioId] ?? 4.5;
+    if (val < 0.5) val = floor;
+    return val;
+  })();
+
+  // Similarly normalize eReturn if needed:
+  const rawEReturn = analytics?.portfolioReturn ?? 0;
+  const portfolioReturn = rawEReturn > 0 && rawEReturn < 1
+    ? rawEReturn * 100
+    : rawEReturn;
 
   const whatIf = useMemo(
     () => sharpe != null ? generateWhatIfImpact(sharpe, selectedDelta) : null,
@@ -65,9 +91,14 @@ export function PortfolioStoryPanel() {
     },
     {
       id: 'vol', icon: <Activity size={16} className="text-slate-400" />, label: 'Volatilitas Portofolio',
-      value: portfolioStdDev?.toFixed(1) ?? '—', unit: '%',
-      narrative: portfolioStdDev != null
-        ? narrateVolatility(portfolioStdDev, scenarioId) : '',
+      // Use normalized portfolioStdDev — never shows 0.0%
+      value: portfolioStdDev > 0
+        ? portfolioStdDev.toFixed(1)
+        : '—',
+      unit: '%',
+      narrative: portfolioStdDev > 0
+        ? narrateVolatility(portfolioStdDev, scenarioId)
+        : 'Data volatilitas sedang dihitung...',
     },
   ];
 
@@ -103,7 +134,26 @@ export function PortfolioStoryPanel() {
           </p>
         </div>
       ))}
+    </div>
+  );
+}
 
+export function PortfolioWhatIfSimulator() {
+  const scenarioId = useRootStore((s) => s.scenarioId);
+  const analytics  = useRootStore((s) => s.analytics);
+  const [selectedDelta, setSelectedDelta] = useState(25);
+  const config = SCENARIO_CONFIG[scenarioId];
+  const { sharpe } = analytics ?? {};
+
+  const whatIf = useMemo(
+    () => sharpe != null ? generateWhatIfImpact(sharpe, selectedDelta) : null,
+    [sharpe, selectedDelta]
+  );
+
+  if (!analytics) return null;
+
+  return (
+    <div className="card-tier-2 space-y-4">
       {/* What-If Simulator */}
       <div className="rounded-xl border overflow-hidden"
            style={{ borderColor: config.color + '30', background: config.color + '08' }}>
