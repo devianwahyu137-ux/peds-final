@@ -1,19 +1,29 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { buildPortfolioContext } from './portfolioContextBuilder';
 
-// Initialize the Gemini client
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+// Initialize the Gemini client using Vite environment variable
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-export async function getAlphaShieldAnalysis(userMessage, marketData, chatHistory = []) {
+export async function getAlphaShieldAnalysis(userMessage, portfolioState, chatHistory = []) {
+  if (!apiKey) {
+    throw new Error('API Key Gemini (VITE_GEMINI_API_KEY) tidak ditemukan di environment.');
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
   try {
-    const systemInstruction = `Anda adalah analis kuantitatif utama di AlphaShield. Jawablah dengan gaya profesional, ringkas, dan berbasis metrik (Dark Finance aesthetic).
-KONTEKS DATA PASAR REAL-TIME:
-- BI Rate: ${marketData?.macro?.biRate || 'N/A'}%
-- Inflasi: ${marketData?.macro?.inflation || 'N/A'}%
-- USD/IDR: ${marketData?.macro?.usdIdr || 'N/A'}
-- DXY Index: ${marketData?.macro?.dxy || 'N/A'}
-- IHSG: ${marketData?.equities?.ihsg || 'N/A'}
+    const portfolioContext = buildPortfolioContext(portfolioState);
+    
+    const systemInstruction = `Anda adalah AlphaShield Quant Copilot — asisten analisis portofolio berbasis data makro Indonesia. Berikan jawaban:
+- Dalam Bahasa Indonesia yang jelas dan natural
+- Sertakan angka spesifik dari konteks portofolio
+- Referensikan kondisi makro aktual
+- Jawab pertanyaan umum keuangan dengan konteks Indonesia
+- Selalu tambahkan disclaimer singkat jika memberi rekomendasi investasi
+- Format jawaban dengan paragraf bersih, gunakan bullet points jika perlu
 
-Gunakan data di atas sebagai landasan absolut untuk merespons pertanyaan pengguna. Jangan berasumsi, gunakan angka aktual.`;
+KONTEKS PORTOFOLIO SAAT INI:
+${portfolioContext}`;
 
     // Instantiate the model using gemini-1.5-flash
     const model = genAI.getGenerativeModel({
@@ -21,23 +31,31 @@ Gunakan data di atas sebagai landasan absolut untuk merespons pertanyaan penggun
       systemInstruction: systemInstruction,
     });
 
-    // Format chat history for Gemini API
-    let formattedHistory = chatHistory.map((msg) => ({
-      role: msg.role === 'model' || msg.role === 'assistant' || msg.role === 'ai' ? 'model' : 'user',
-      parts: [{ text: msg.content || msg.text || '' }],
-    }));
-
-    // Strict Sanitization: Gemini requires history to either be empty or start with 'user'
-    const firstUserIndex = formattedHistory.findIndex(msg => msg.role === 'user');
-    if (firstUserIndex === -1) {
-      formattedHistory = [];
-    } else {
-      formattedHistory = formattedHistory.slice(firstUserIndex);
+    const cleanHistory = [];
+    let expectedRole = 'user';
+    
+    // Build perfectly alternating history
+    chatHistory.forEach(msg => {
+      if (msg.role === 'system') return; // Ignore system messages
+      
+      const mappedRole = (msg.role === 'model' || msg.role === 'assistant' || msg.role === 'ai') ? 'model' : 'user';
+      if (mappedRole === expectedRole) {
+        cleanHistory.push({ role: mappedRole, parts: [{ text: msg.text || msg.content || '' }] });
+        expectedRole = expectedRole === 'user' ? 'model' : 'user';
+      }
+    });
+    
+    // Gemini crashes if the history array ends with 'user' because the incoming prompt is also 'user'.
+    if (cleanHistory.length > 0 && cleanHistory[cleanHistory.length - 1].role === 'user') {
+      cleanHistory.pop(); 
     }
+    
+    // Add debugging log
+    console.log("[AlphaShield] Sanitized History for Gemini:", cleanHistory);
 
     // Start a chat session with strictly formatted history
     const chat = model.startChat({
-      history: formattedHistory,
+      history: cleanHistory,
     });
 
     // Send the new message
@@ -45,7 +63,7 @@ Gunakan data di atas sebagai landasan absolut untuk merespons pertanyaan penggun
     
     return result.response.text();
   } catch (error) {
-    console.error('Gemini API Error:', error);
-    return "Koneksi ke jaringan AlphaShield terputus. Silakan coba beberapa saat lagi.";
+    console.error('[AlphaShield] Gemini API Error:', error);
+    throw new Error("Koneksi ke jaringan AlphaShield terputus. Silakan coba beberapa saat lagi.");
   }
 }

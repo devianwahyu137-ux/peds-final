@@ -4,6 +4,7 @@ import { useRootStore } from "@/stores/rootStore";
 import { exportTearSheetPDF } from "@/lib/tearSheetExporter";
 import { NavHealthIndicator } from "../NavHealthIndicator";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { AlertSettings } from "@/components/AlertSystem/AlertSettings";
 import { useTheme } from "@/hooks/useTheme";
 
 const NAV_ITEMS = [
@@ -56,6 +57,7 @@ export const TopNavbar = memo(function TopNavbar() {
 
   const [isExporting, setIsExporting] = useState(false);
   const [exportMsg,   setExportMsg]   = useState('');
+  const [alertSettingsOpen, setAlertSettingsOpen] = useState(false);
 
   // Grab isDark from the global theme hook we just built
   const { isDark: isDarkMode, toggleTheme } = useTheme();
@@ -138,10 +140,25 @@ export const TopNavbar = memo(function TopNavbar() {
               </span>
             )}
           </div>
-          
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setAlertSettingsOpen(true)}
+              className="relative p-1.5 rounded-lg cursor-pointer transition-colors"
+              style={{ color: 'var(--as-text-dim)' }}
+              title="Pengaturan Alert"
+            >
+              🔔
+            </button>
+          </div>
+
           <NavHealthIndicator />
         </div>
       </div>
+
+      <AlertSettings
+        isOpen={alertSettingsOpen}
+        onClose={() => setAlertSettingsOpen(false)}
+      />
 
       {/* Tab Navigation */}
       <div className="hidden md:flex items-stretch overflow-x-auto scrollbar-hide px-2 whitespace-nowrap md:whitespace-normal">

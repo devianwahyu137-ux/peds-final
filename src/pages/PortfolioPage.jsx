@@ -14,6 +14,8 @@ import { PortfolioStoryPanel, PortfolioWhatIfSimulator } from "../components/Por
 import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
 import { PortfolioComparison } from '@/components/PortfolioComparison';
 import { PortfolioHealthScore } from '@/components/PortfolioHealthScore';
+import { GlossaryTerm } from '@/components/GlossaryTerm';
+import { ExportMenu } from '@/components/ExportMenu';
 import { AlertTriangle, Landmark, TrendingUp, Briefcase, Shield, DollarSign } from "lucide-react";
 
 function LedgerRow({ line }) {
@@ -81,13 +83,16 @@ export default function PortfolioPage() {
     <div className="space-y-6 w-full page-enter">
       <ScenarioIntelligence />
       {/* Header */}
-      <div className="border-b border-[var(--as-border-secondary)] pb-4">
-        <h1 className="text-lg font-black font-mono uppercase tracking-tight">
-          Portofoliomu <span style={{ color: acc.neon }}>// Alokasi Aset</span>
-        </h1>
-        <p className="text-[10px] font-mono font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">
-          Distribusi optimal berdasarkan skenario {scenarioId}
-        </p>
+      <div className="border-b border-[var(--as-border-secondary)] pb-4 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-lg font-black font-mono uppercase tracking-tight">
+            Portofoliomu <span style={{ color: acc.neon }}>// Alokasi Aset</span>
+          </h1>
+          <p className="text-[10px] font-mono font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">
+            Distribusi optimal berdasarkan skenario {scenarioId}
+          </p>
+        </div>
+        <ExportMenu />
       </div>
 
       {/* ROW 1 (TOP SECTION) */}
@@ -120,7 +125,7 @@ export default function PortfolioPage() {
         <div className="xl:col-span-5 space-y-4">
           <div className="card-tier-2 h-full">
             <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-3 font-mono">
-              Analisis MPT — dengan Interpretasi
+              Analisis <GlossaryTerm termId="mpt">MPT</GlossaryTerm> — dengan Interpretasi
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 [&>*]:stat-hover">
               <MetricWithContext

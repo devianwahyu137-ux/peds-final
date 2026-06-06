@@ -1,12 +1,20 @@
 // src/components/ScenarioBriefingOverlay/index.jsx
-// Full-screen overlay that appears on scenario change
-// Stays open indefinitely until manually closed
+// Full-screen rich briefing shown when scenario changes.
+// Shows macro snapshot, key actions, risks, and new allocation preview.
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
+import {
+  SCENARIO_BRIEFINGS,
+  ASSET_LABELS,
+  ASSET_COLORS,
+} from '@/lib/scenarioBriefingData';
+
+const TREND_ICON  = { up: '↑', down: '↓', stable: '→' };
 
 export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
-  const config = SCENARIO_CONFIG[scenarioId];
+  const config   = SCENARIO_CONFIG[scenarioId];
+  const briefing = SCENARIO_BRIEFINGS[scenarioId];
 
   // Handle ESC key to dismiss
   useEffect(() => {
@@ -18,108 +26,258 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isVisible, onDismiss]);
 
-  if (!isVisible || !config) return null;
+  // Auto-dismiss after 15 seconds
+  useEffect(() => {
+    if (!isVisible) return;
+    const timer = setTimeout(onDismiss, 15000);
+    return () => clearTimeout(timer);
+  }, [isVisible, onDismiss]);
+
+  if (!isVisible || !config || !briefing) return null;
+
+  const trendColor = (trend) => {
+    if (trend === 'up')   return scenarioId === 'EQUILIBRIUM' ? '#10b981' : '#f59e0b';
+    if (trend === 'down') return '#ef4444';
+    return '#525252';
+  };
+
+  const assets = Object.entries(briefing.portfolioChange);
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center"
+      className="fixed inset-0 z-[9999] flex items-center justify-center
+                 overflow-y-auto py-8"
       style={{
-        background: 'var(--as-bg-primary)',
-        backdropFilter: 'blur(8px)',
+        background:       'rgba(0,0,0,0.80)',
+        backdropFilter:   'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
-        animation: 'overlay-appear 200ms ease-out forwards',
+        animation:        'overlay-appear 200ms ease-out forwards',
       }}
       onClick={onDismiss}
     >
       <div
-        className="relative max-w-lg w-full mx-4 rounded-2xl overflow-hidden p-6 space-y-4"
+        className="relative w-full max-w-2xl mx-4 rounded-3xl overflow-hidden
+                   shadow-2xl"
         style={{
           background: 'var(--as-bg-primary)',
-          border: `1px solid ${config.colorBorder}`,
-          boxShadow: `0 0 60px ${config.colorGlow}, 0 0 120px ${config.colorDim}`,
-          animation: 'card-rise 300ms ease-out forwards',
+          border:     `1px solid ${config.color}40`,
+          boxShadow:  `0 0 80px ${config.color}20`,
+          animation:  'card-rise 300ms ease-out forwards',
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
-        {/* Scenario badge */}
-        <div className="flex items-center justify-between">
-          <span
-            className="text-[9px] font-mono font-bold tracking-widest uppercase px-2.5 py-1 rounded-full"
-            style={{
-              background: config.colorDim,
-              color: config.color,
-              border: `1px solid ${config.colorBorder}`,
-            }}
-          >
-            SKENARIO AKTIF: {config.riskBadge}
-          </span>
-          <button
-            onClick={onDismiss}
-            className="text-[10px] font-mono text-neutral-500 hover:text-white transition-colors cursor-pointer tracking-widest"
-          >
-            [ESC]
-          </button>
-        </div>
-
-        {/* Title */}
-        <h2
-          className="text-lg font-black font-mono tracking-tight"
-          style={{ color: config.color }}
-        >
-          {config.briefing.title}
-        </h2>
-
-        {/* Divider */}
-        <div className="h-px w-full" style={{ background: config.colorBorder }} />
-
-        {/* Summary */}
-        <p className="text-[11px] font-mono text-slate-500 dark:text-neutral-400 leading-relaxed">
-          {config.briefing.summary}
-        </p>
-
-        {/* Recommended action */}
+        {/* Color accent top bar */}
         <div
-          className="rounded-xl p-4 space-y-2"
-          style={{
-            background: config.colorDim,
-            border: `1px solid ${config.colorBorder}`,
-          }}
-        >
-          <div
-            className="text-[9px] font-mono font-bold tracking-widest uppercase"
-            style={{ color: config.color }}
-          >
-            💡 Tindakan yang Disarankan
-          </div>
-          <p className="text-[11px] font-mono text-slate-700 dark:text-neutral-300 leading-relaxed">
-            {config.briefing.action}
-          </p>
-        </div>
+          className="h-1 w-full"
+          style={{ background: `linear-gradient(90deg, ${config.color}, transparent)` }}
+        />
 
-        {/* Signal */}
-        <div className="flex items-center gap-3 pt-1">
-          <div className="relative flex-shrink-0">
-            <div
-              className="w-3 h-3 rounded-full"
+        <div className="p-6 space-y-5">
+          {/* Headline row */}
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span
+                  className="text-[9px] font-mono font-bold px-2.5 py-1
+                             rounded-full tracking-widest"
+                  style={{
+                    background: config.colorDim,
+                    color:      config.color,
+                    border:     `1px solid ${config.colorBorder}`,
+                  }}
+                >
+                  {briefing.badge}
+                </span>
+                <span
+                  className="text-[8px] font-mono tracking-widest uppercase"
+                  style={{ color: 'var(--as-text-dim)' }}
+                >
+                  SKENARIO DIAKTIFKAN
+                </span>
+              </div>
+              <h2
+                className="text-xl font-black font-mono tracking-tight"
+                style={{ color: config.color }}
+              >
+                {briefing.headline}
+              </h2>
+              <p
+                className="text-[11px] font-mono mt-1"
+                style={{ color: 'var(--as-text-secondary)' }}
+              >
+                {briefing.subheadline}
+              </p>
+            </div>
+
+            <button
+              onClick={onDismiss}
+              className="text-[10px] font-mono font-bold px-3 py-1.5
+                         rounded-lg cursor-pointer transition-colors
+                         flex-shrink-0"
               style={{
-                backgroundColor: config.briefing.signalColor,
-                boxShadow: `0 0 8px ${config.briefing.signalColor}`,
+                background: config.colorDim,
+                color:      config.color,
+                border:     `1px solid ${config.colorBorder}`,
               }}
-            />
-            <div
-              className="absolute inset-0 w-3 h-3 rounded-full"
-              style={{
-                backgroundColor: config.briefing.signalColor,
-                animation: 'scenario-pulse-glow 2s ease-in-out infinite',
-              }}
-            />
+            >
+              LANJUT →
+            </button>
           </div>
-          <span
-            className="text-[10px] font-mono font-bold tracking-wide"
-            style={{ color: config.briefing.signalColor }}
+
+          {/* Summary */}
+          <p
+            className="text-[11px] font-mono leading-relaxed"
+            style={{ color: 'var(--as-text-secondary)' }}
           >
-            {config.briefing.signal}
-          </span>
+            {briefing.summary}
+          </p>
+
+          {/* Macro snapshot grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {briefing.macroSnapshot.map(item => (
+              <div
+                key={item.label}
+                className="rounded-xl p-3 text-center"
+                style={{
+                  background: 'var(--as-bg-tertiary)',
+                  border:     '1px solid var(--as-border-secondary)',
+                }}
+              >
+                <div
+                  className="text-[8px] font-mono tracking-widest uppercase mb-1"
+                  style={{ color: 'var(--as-text-dim)' }}
+                >
+                  {item.label}
+                </div>
+                <div
+                  className="text-[14px] font-black font-mono tabular-nums"
+                  style={{ color: trendColor(item.trend) }}
+                >
+                  {TREND_ICON[item.trend]} {item.value}
+                </div>
+                <div
+                  className="text-[7px] font-mono mt-1"
+                  style={{ color: 'var(--as-text-dim)' }}
+                >
+                  {item.note}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 2 column: Actions + Risks */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {/* Key actions */}
+            <div
+              className="rounded-xl p-4"
+              style={{
+                background: config.colorDim,
+                border:     `1px solid ${config.colorBorder}`,
+              }}
+            >
+              <div
+                className="text-[9px] font-mono font-bold tracking-widest
+                           uppercase mb-3"
+                style={{ color: config.color }}
+              >
+                ▲ TINDAKAN KUNCI
+              </div>
+              <div className="space-y-2.5">
+                {briefing.keyActions.map((a, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className="text-sm flex-shrink-0">{a.icon}</span>
+                    <span
+                      className="text-[10px] font-mono leading-relaxed"
+                      style={{ color: 'var(--as-text-secondary)' }}
+                    >
+                      {a.action}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Key risks */}
+            <div
+              className="rounded-xl p-4"
+              style={{
+                background: 'rgba(239,68,68,0.05)',
+                border:     '1px solid rgba(239,68,68,0.15)',
+              }}
+            >
+              <div
+                className="text-[9px] font-mono font-bold tracking-widest
+                           uppercase mb-3"
+                style={{ color: '#ef4444' }}
+              >
+                ▼ RISIKO UTAMA
+              </div>
+              <div className="space-y-2.5">
+                {briefing.keyRisks.map((r, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span
+                      className="text-[10px] font-mono flex-shrink-0 mt-0.5"
+                      style={{ color: '#ef4444' }}
+                    >
+                      ›
+                    </span>
+                    <span
+                      className="text-[10px] font-mono leading-relaxed"
+                      style={{ color: 'var(--as-text-secondary)' }}
+                    >
+                      {r}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* New allocation preview */}
+          <div>
+            <div
+              className="text-[8px] font-mono tracking-widest uppercase mb-2"
+              style={{ color: 'var(--as-text-dim)' }}
+            >
+              ALOKASI BARU YANG DIREKOMENDASIKAN
+            </div>
+            <div className="flex gap-1.5">
+              {assets.map(([asset, pct]) => (
+                <div
+                  key={asset}
+                  className="flex-1 rounded-lg py-2 px-1 text-center"
+                  style={{
+                    background: ASSET_COLORS[asset] + '15',
+                    border:     `1px solid ${ASSET_COLORS[asset]}30`,
+                  }}
+                >
+                  <div
+                    className="text-[8px] font-mono"
+                    style={{ color: ASSET_COLORS[asset] }}
+                  >
+                    {ASSET_LABELS[asset]}
+                  </div>
+                  <div
+                    className="text-[16px] font-black font-mono tabular-nums"
+                    style={{ color: ASSET_COLORS[asset] }}
+                  >
+                    {pct}%
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Auto-dismiss hint */}
+          <div className="text-center pt-1">
+            <span
+              className="text-[7px] font-mono tracking-wider"
+              style={{ color: 'var(--as-text-dim)' }}
+            >
+              Klik mana saja atau tekan LANJUT → untuk menutup · [ESC]
+              · Auto-dismiss dalam 15 detik
+            </span>
+          </div>
         </div>
       </div>
     </div>

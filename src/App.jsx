@@ -18,6 +18,7 @@ import { useTheme } from '@/hooks/useTheme';
 
 import FloatingCopilotTrigger from '@/components/FloatingCopilotTrigger';
 import CopilotDrawer from '@/components/CopilotDrawer';
+import { AlertBanner } from '@/components/AlertSystem/AlertBanner';
 
 // Lazy load all pages
 const HomePage      = lazy(() => import('@/pages/HomePage'));
@@ -175,6 +176,7 @@ export default function App() {
                    overflow-x-hidden px-4 md:px-6 lg:px-8
                    print:overflow-visible print:pt-0 print:px-0 print:pb-0 print:w-full print:block"
       >
+        <AlertBanner />
         <PageErrorBoundary key={activeTab}>
           <Suspense fallback={<PageSkeleton />}>
             <div

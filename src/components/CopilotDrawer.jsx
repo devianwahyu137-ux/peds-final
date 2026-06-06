@@ -1,17 +1,15 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { X, Sparkles, Send } from "lucide-react";
-import { buildPortfolioContext, buildSuggestedQuestions } from '@/lib/portfolioContextBuilder';
-import { sendChatMessage, hasStreamingKey } from '@/lib/aiChatService';
+import { buildSuggestedQuestions } from '@/lib/portfolioContextBuilder';
 import { getAlphaShieldAnalysis } from '@/lib/gemini';
 import { useRootStore } from '@/stores/rootStore';
-import { useMarketData } from '@/contexts/MacroDataContext';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
 
 export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }) {
-  const [inputValue, setInputValue]   = useState("");
-  const [isStreaming, setIsStreaming]  = useState(false);
-  const [streamText, setStreamText]   = useState("");
-  const [error, setError]             = useState(null);
+  const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading]   = useState(false);
+  const [error, setError]           = useState(null);
+  
   const endOfMessagesRef = useRef(null);
   const inputRef         = useRef(null);
 
@@ -20,7 +18,6 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
   const analytics   = useRootStore((s) => s.analytics);
   const macroInputs = useRootStore((s) => s.macroInputs);
   const liveData    = useRootStore((s) => s.liveData);
-  const { marketData } = useMarketData();
 
   const config = SCENARIO_CONFIG[scenarioId] ?? SCENARIO_CONFIG.EQUILIBRIUM;
 
@@ -30,21 +27,16 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
     [scenarioId, weights, analytics, macroInputs, liveData]
   );
 
-  const portfolioContext = useMemo(
-    () => buildPortfolioContext(portfolioState),
-    [portfolioState]
-  );
-
   // Build dynamic suggested questions:
   const suggestedQuestions = useMemo(
     () => buildSuggestedQuestions(scenarioId, analytics),
     [scenarioId, analytics]
   );
 
-  // Auto-scroll to bottom when messages change, streaming, or drawer opens
+  // Auto-scroll to bottom when messages change or drawer opens
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, streamText, isStreaming, isOpen]);
+  }, [messages, isLoading, isOpen]);
 
   // Focus input when drawer opens
   useEffect(() => {
@@ -56,21 +48,20 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
   // Sync external submissions (from FloatingCopilotTrigger)
   useEffect(() => {
     const lastMsg = messages[messages.length - 1];
-    if (lastMsg && lastMsg.role === 'user' && !isStreaming && !lastMsg.fetched) {
+    if (lastMsg && lastMsg.role === 'user' && !isLoading && !lastMsg.fetched) {
       const updatedMessages = [...messages];
       updatedMessages[updatedMessages.length - 1].fetched = true;
       setMessages(updatedMessages);
-      handleSend(lastMsg.content, true);
+      handleSendMessage(lastMsg.content, true);
     }
-  }, [messages, isStreaming]);
+  }, [messages, isLoading]);
 
   /**
-   * handleSend — sends message via streaming API (Anthropic/OpenAI)
-   * or falls back to Gemini if no streaming key is configured.
+   * handleSendMessage — executes real LLM call to Gemini API
    */
-  const handleSend = useCallback(async (text, isExternal = false) => {
+  const handleSendMessage = useCallback(async (text, isExternal = false) => {
     const msg = (text ?? inputValue).trim();
-    if (!msg || isStreaming) return;
+    if (!msg || isLoading) return;
 
     setInputValue("");
     setError(null);
@@ -81,96 +72,34 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
       setMessages(prev => [...prev, userMsg]);
     }
 
-    setIsStreaming(true);
-    setStreamText("");
-
-    // Build history for API (exclude system messages)
-    const historyForApi = messages
-      .filter(m => m.role !== 'system')
-      .map(m => ({
-        role: m.role === 'ai' ? 'assistant' : m.role,
-        content: m.content,
-      }));
+    setIsLoading(true);
 
     try {
-      if (hasStreamingKey()) {
-        // ── STREAMING PATH (Anthropic / OpenAI) ──────────────
-        let accumulated = '';
-        await sendChatMessage(
-          historyForApi,
-          msg,
-          portfolioState,
-          (chunk) => {
-            accumulated += chunk;
-            setStreamText(accumulated);
-          }
-        );
+      // Execute the real API call waiting for the promise to resolve
+      const aiResponseText = await getAlphaShieldAnalysis(
+        msg,
+        portfolioState,
+        messages
+      );
 
-        setMessages(prev => [
-          ...prev,
-          { role: 'ai', content: accumulated },
-        ]);
-        setStreamText("");
-      } else {
-        // ── GEMINI FALLBACK (non-streaming) ───────────────────
-        const messagesWithContext = [
-          { role: 'system', content: portfolioContext },
-          ...messages,
-        ];
-
-        const aiResponseText = await getAlphaShieldAnalysis(
-          msg,
-          marketData,
-          messagesWithContext
-        );
-
-        setMessages(prev => [
-          ...prev,
-          { role: 'ai', content: aiResponseText },
-        ]);
-      }
+      setMessages(prev => [
+        ...prev,
+        { role: 'ai', content: aiResponseText },
+      ]);
     } catch (err) {
-      if (err.message === 'NO_STREAMING_KEY') {
-        // Transparent fallback to Gemini
-        try {
-          const messagesWithContext = [
-            { role: 'system', content: portfolioContext },
-            ...messages,
-          ];
-          const aiResponseText = await getAlphaShieldAnalysis(
-            msg,
-            marketData,
-            messagesWithContext
-          );
-          setMessages(prev => [
-            ...prev,
-            { role: 'ai', content: aiResponseText },
-          ]);
-        } catch (geminiErr) {
-          console.error('[AlphaShield] Gemini fallback error:', geminiErr);
-          setError("Koneksi ke jaringan AlphaShield terputus. Silakan coba beberapa saat lagi.");
-        }
-      } else {
-        console.error('[AlphaShield] AI API error:', err);
-        setError(err.message || "Terjadi kesalahan saat menghubungi layanan AI.");
-      }
+      console.error('[AlphaShield] AI API error:', err);
+      setError(err.message || "Terjadi kesalahan saat menghubungi layanan AI.");
     } finally {
-      setIsStreaming(false);
+      setIsLoading(false);
     }
-  }, [inputValue, isStreaming, messages, portfolioState, portfolioContext, marketData, setMessages]);
+  }, [inputValue, isLoading, messages, portfolioState, setMessages]);
 
   const handleLocalSubmit = useCallback((text) => {
     if (text.trim() === '') return;
-    handleSend(text);
-  }, [handleSend]);
+    handleSendMessage(text);
+  }, [handleSendMessage]);
 
-  // Detect which AI provider is active for the status badge
-  const providerLabel = useMemo(() => {
-    if (import.meta.env.VITE_ANTHROPIC_API_KEY) return 'Claude';
-    if (import.meta.env.VITE_OPENAI_API_KEY) return 'GPT-4o';
-    if (import.meta.env.VITE_GEMINI_API_KEY) return 'Gemini';
-    return 'Offline';
-  }, []);
+  const providerLabel = import.meta.env.VITE_GEMINI_API_KEY ? 'Gemini 1.5' : 'Offline';
 
   return (
     <>
@@ -234,7 +163,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
         <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
 
           {/* Suggested questions — show when no user messages yet */}
-          {messages.filter(m => m.role === 'user').length === 0 && !isStreaming && (
+          {messages.filter(m => m.role === 'user').length === 0 && !isLoading && (
             <div className="space-y-2 mb-4">
               <div
                 className="text-[9px] font-mono tracking-widest uppercase mb-2"
@@ -309,46 +238,27 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
             );
           })}
 
-          {/* Streaming response — live text */}
-          {isStreaming && streamText && (
-            <div className="flex justify-start">
-              <div
-                className="border rounded-r-xl rounded-tl-xl p-3 text-sm
-                           font-sans leading-relaxed max-w-[90%] shadow-sm"
-                style={{
-                  background: 'var(--as-bg-primary)',
-                  borderColor: 'var(--as-border-primary)',
-                  color: 'var(--as-text-primary)',
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
-                {streamText}
-                <span
-                  className="animate-pulse ml-0.5 inline-block w-0.5 h-3.5
-                             align-middle rounded-full"
-                  style={{ background: config.color }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Loading indicator — waiting for first chunk */}
-          {isStreaming && !streamText && (
+          {/* Loading indicator — wait for AI response */}
+          {isLoading && (
             <div className="flex justify-start">
               <div
                 className="border rounded-r-xl rounded-tl-xl p-4 text-sm
-                           font-sans leading-relaxed shadow-sm"
+                           font-sans leading-relaxed shadow-sm flex items-center gap-2"
                 style={{
                   background: 'var(--as-bg-primary)',
                   borderColor: 'var(--as-border-primary)',
                   color: 'var(--as-text-secondary)',
                 }}
               >
-                <div className="flex gap-1.5 items-center">
+                <Sparkles size={14} className="text-indigo-400 animate-pulse" />
+                <span className="text-[11px] font-mono animate-pulse">
+                  AI is thinking...
+                </span>
+                <div className="flex gap-1.5 items-center ml-2">
                   {[0, 1, 2].map(i => (
                     <span
                       key={i}
-                      className="animate-bounce inline-block w-1.5 h-1.5 rounded-full"
+                      className="animate-bounce inline-block w-1 h-1 rounded-full"
                       style={{
                         background: config.color,
                         animationDelay: `${i * 150}ms`,
@@ -412,12 +322,12 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
             <input
               ref={inputRef}
               type="text"
-              placeholder={isStreaming ? "Menunggu respons..." : "Ketik pesan..."}
+              placeholder={isLoading ? "Menunggu respons..." : "Ketik pesan..."}
               className="bg-transparent border-none outline-none text-sm font-sans
                          w-full flex-1"
               style={{ color: 'var(--as-text-primary)' }}
               value={inputValue}
-              disabled={isStreaming}
+              disabled={isLoading}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && e.target.value.trim() !== '') {
@@ -428,18 +338,18 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
             />
             <button
               onClick={() => {
-                if (inputValue.trim() !== '' && !isStreaming) {
+                if (inputValue.trim() !== '' && !isLoading) {
                   handleLocalSubmit(inputValue);
                   setInputValue('');
                 }
               }}
               className="transition-colors cursor-pointer"
               style={{
-                color: isStreaming
+                color: isLoading
                   ? 'var(--as-text-dim)'
                   : 'var(--as-text-secondary)',
               }}
-              disabled={isStreaming}
+              disabled={isLoading}
             >
               <Send size={16} />
             </button>

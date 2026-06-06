@@ -8,6 +8,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
+import { GlossaryTerm } from '@/components/GlossaryTerm';
 
 // ── ACCENT CONFIGURATION ────────────────────────────────────────────────────────
 
@@ -215,10 +216,25 @@ export function DonutChart({ accentColor, hovered, setHovered, animPct, analytic
 /**
  * Human-readable metric card with Indonesian interpretation text.
  */
+// Map MetricWithContext label strings to glossary term IDs
+const LABEL_TO_GLOSSARY = {
+  'Sharpe Ratio':  'sharpeRatio',
+  'Portfolio Beta': 'portfolioBeta',
+  'Max Drawdown':  'maxDrawdown',
+  'Volatilitas':   'volatilitas',
+};
+
 export function MetricWithContext({ label, value, unit, interpretation, color }) {
+  const glossaryId = LABEL_TO_GLOSSARY[label];
+
   return (
     <div className="border border-slate-200 dark:border-neutral-900 p-3 rounded-lg bg-slate-50 dark:bg-black/20 font-mono space-y-1">
-      <div className="text-[8px] text-neutral-600 uppercase tracking-widest">{label}</div>
+      <div className="text-[8px] text-neutral-600 uppercase tracking-widest">
+        {glossaryId
+          ? <GlossaryTerm termId={glossaryId}>{label}</GlossaryTerm>
+          : label
+        }
+      </div>
       <div className="text-xl font-black tabular-nums" style={{ color }}>
         {value}{unit}
       </div>

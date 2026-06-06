@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
 import { EfficientFrontierChart } from './EfficientFrontierChart';
+import { GlossaryTerm } from '@/components/GlossaryTerm';
 import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
 
 const CAPITAL_PRESETS = [
@@ -172,7 +173,7 @@ export function MonteCarloPanel() {
           <div className="flex items-center gap-2 mb-1">
             <span className="text-base"><Dices size={16} className="text-slate-400" /></span>
             <span className="text-[10px] font-bold tracking-widest text-slate-500 dark:text-neutral-400 uppercase font-mono">
-              Monte Carlo Simulation Engine
+              <GlossaryTerm termId="monteCarlo">Monte Carlo</GlossaryTerm> Simulation Engine
             </span>
           </div>
           <div className="text-[9px] font-mono text-neutral-600">
@@ -295,7 +296,7 @@ export function MonteCarloPanel() {
         {/* Efficient Frontier Chart */}
         <div className="space-y-2">
           <div className="text-[9px] font-mono text-slate-400 dark:text-neutral-500 uppercase tracking-widest">
-            Peta Efisiensi Portofolio — Efficient Frontier
+            Peta Efisiensi Portofolio — <GlossaryTerm termId="efficientFrontier">Efficient Frontier</GlossaryTerm>
           </div>
           <div className="text-[9px] font-mono text-neutral-600 leading-relaxed">
             Setiap titik = satu kombinasi alokasi aset acak.
