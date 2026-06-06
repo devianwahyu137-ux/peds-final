@@ -89,46 +89,33 @@ export function HistoricalBacktest() {
         {HISTORICAL_CRISES.map((crisis) => {
           const isActive    = activeTab === crisis.id;
           const myPerf      = crisis.portfolioOutcomes[scenarioId];
-          const perfColor   = myPerf?.returnPct > 0 ? '#10b981'
-                           : myPerf?.returnPct > -10 ? '#f59e0b'
+          const perfColor   = !myPerf ? '#525252'
+                           : myPerf.returnPct > 0 ? '#10b981'
+                           : myPerf.returnPct > -10 ? '#f59e0b'
                            : '#ef4444';
           return (
             <button
               key={crisis.id}
               onClick={() => setActiveTab(crisis.id)}
-              className="flex-1 min-w-[140px] px-4 py-3.5 text-left
-                         cursor-pointer transition-all duration-150"
+              className="flex-1 min-w-[130px] text-left cursor-pointer
+                         transition-all duration-200 px-4 py-4"
               style={{
-                background:   isActive ? 'var(--as-bg-tertiary)' : 'transparent',
-                borderBottom: isActive
-                  ? `2px solid ${config.color}`
-                  : '2px solid transparent',
+                background:   isActive ? crisis.severityColor + '10' : 'transparent',
+                borderBottom: `3px solid ${isActive ? crisis.severityColor : 'transparent'}`,
               }}
             >
-              <div className="flex items-center gap-1.5 mb-1">
-                <span className="text-sm">{crisis.icon}</span>
-                <span
-                  className="text-[8px] font-mono font-bold px-1.5 py-0.5
-                             rounded-md tracking-widest"
-                  style={{
-                    background: crisis.severityColor + '18',
-                    color:      crisis.severityColor,
-                  }}
-                >
-                  {crisis.severity}
-                </span>
+              <div className="text-xl mb-2">{crisis.icon}</div>
+              <div className="text-[9px] font-mono font-bold uppercase tracking-widest mb-1"
+                   style={{ color: isActive ? crisis.severityColor : 'var(--as-text-dim)' }}>
+                {crisis.severity}
               </div>
-              <div
-                className="text-[9px] font-mono font-bold leading-snug mb-0.5"
-                style={{ color: isActive ? 'var(--as-text-primary)' : 'var(--as-text-tertiary)' }}
-              >
+              <div className="text-[10px] font-mono mb-2"
+                   style={{ color: 'var(--as-text-secondary)' }}>
                 {crisis.period}
               </div>
               {myPerf && (
-                <div
-                  className="text-[11px] font-black font-mono tabular-nums"
-                  style={{ color: perfColor }}
-                >
+                <div className="text-[18px] font-black font-mono tabular-nums"
+                     style={{ color: perfColor }}>
                   {myPerf.returnPct > 0 ? '+' : ''}{myPerf.returnPct}%
                 </div>
               )}
@@ -187,45 +174,59 @@ export function HistoricalBacktest() {
           >
             PERFORMA PER KELAS ASET
           </div>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {Object.entries(activeCrisis.assetPerformance).map(([asset, perf]) => {
               const isPositive = perf.returnPct > 0;
               const barColor   = isPositive ? '#10b981' : '#ef4444';
-              const barWidth   = Math.min(100, Math.abs(perf.returnPct) / 5);
+              const maxAbs     = 420;
+              const pct        = Math.min(100, (Math.abs(perf.returnPct) / maxAbs) * 100);
+              const barWidth   = `${Math.max(2, pct * 0.5)}%`;
 
               return (
-                <div key={asset} className="flex items-center gap-4">
-                  <span
-                    className="text-[10px] font-mono w-28 flex-shrink-0"
-                    style={{ color: 'var(--as-text-secondary)' }}
-                  >
-                    {ASSET_LABELS[asset]}
-                  </span>
-
-                  {/* Centered bar */}
-                  <div className="flex-1 flex items-center gap-2 relative">
-                    <div className="w-full h-2 bg-neutral-800/50 rounded-full overflow-hidden relative">
-                      <div
-                        className="absolute h-full w-[2px] bg-neutral-500 z-10 -translate-x-1/2"
-                        style={{ left: '50%' }}
-                      />
-                      <div
-                        className={`absolute top-0 bottom-0 transition-all duration-500 ${isPositive ? 'bg-emerald-500/80' : 'bg-red-500/80'}`}
-                        style={{
-                          width: `${barWidth}%`,
-                          left: isPositive ? '50%' : `${50 - barWidth}%`,
-                        }}
-                      />
+                <div key={asset}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full flex-shrink-0"
+                           style={{ backgroundColor: ASSET_COLORS[asset] }} />
+                      <span className="text-[10px] font-mono"
+                            style={{ color: 'var(--as-text-secondary)' }}>
+                        {ASSET_LABELS[asset]}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono"
+                            style={{ color: 'var(--as-text-dim)' }}>
+                        {perf.note}
+                      </span>
+                      <span
+                        className="text-[14px] font-black font-mono tabular-nums min-w-[60px] text-right"
+                        style={{ color: barColor }}
+                      >
+                        {isPositive ? '+' : ''}{perf.returnPct}%
+                      </span>
                     </div>
                   </div>
 
-                  <span
-                    className="text-[13px] font-black font-mono tabular-nums
-                               w-16 text-right flex-shrink-0"
-                    style={{ color: isPositive ? '#10b981' : '#ef4444' }}
+                  {/* Bidirectional bar */}
+                  <div
+                    className="relative h-3 rounded-full overflow-hidden"
+                    style={{ background: 'var(--as-bg-tertiary)' }}
                   >
-                    {isPositive ? '+' : ''}{perf.returnPct}%
-                  </span>
+                    {/* Center divider */}
+                    <div className="absolute inset-y-0 left-1/2 w-px z-10"
+                         style={{ background: 'rgba(255,255,255,0.15)' }} />
+
+                    {/* Bar — starts from center */}
+                    <div
+                      className="absolute inset-y-0 rounded-full transition-all duration-1000"
+                      style={{
+                        width:     barWidth,
+                        left:      isPositive ? '50%' : `calc(50% - ${barWidth})`,
+                        background: `linear-gradient(${isPositive ? '90deg' : '270deg'}, ${barColor}cc, ${barColor})`,
+                        boxShadow: `0 0 10px ${barColor}60`,
+                      }}
+                    />
+                  </div>
                 </div>
               );
             })}

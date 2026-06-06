@@ -24,9 +24,11 @@ export default function StrategyPage() {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 w-full overflow-x-hidden">
 
         {/* LEFT: Rotation Tactics Playbook — col-span-4 */}
-        <div className="col-span-1 xl:col-span-4 min-w-0">
+        <div className="col-span-1 xl:col-span-4 min-w-0 overflow-hidden">
           <ScenarioIntelligence />
-          <SectorPlaybook />
+          <div className="overflow-hidden">
+            <SectorPlaybook />
+          </div>
         </div>
 
         {/* MIDDLE: Drift Monitor Core — col-span-5 */}

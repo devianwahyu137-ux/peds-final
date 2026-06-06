@@ -50,29 +50,19 @@ export default function NewsCard({
 
   return (
     <div
-      className="rounded-xl overflow-hidden transition-all duration-200 cursor-pointer group"
+      className="card-hover rounded-xl overflow-hidden transition-all duration-200 cursor-pointer group"
       style={{
         background: "var(--as-bg-secondary)",
         border: "1px solid var(--as-border-primary)",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
       }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "var(--as-border-primary)";
-        e.currentTarget.style.transform = "translateY(-2px)";
-        e.currentTarget.style.boxShadow = "0 8px 24px var(--as-bg-tertiary)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "var(--as-border-primary)";
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "none";
-      }}
     >
       {/* Sentiment Bar — full width at top */}
       <SentimentBar score={sentimentScore} sentiment={sentiment} />
 
       {/* Card Content */}
-      <div className="p-4">
+      <div className="p-5">
         {/* Source + Time */}
         <div className="flex items-center justify-between mb-2">
           <span className="text-[9px] font-mono text-slate-400 dark:text-neutral-500 uppercase tracking-wider">
@@ -84,7 +74,8 @@ export default function NewsCard({
         </div>
 
         {/* Title */}
-        <h4 className="text-xs font-bold leading-snug text-slate-900 dark:text-white mb-1.5 line-clamp-2 font-mono">
+        <h4 className="text-[13px] font-bold leading-snug text-slate-900 dark:text-white mb-2 line-clamp-2 font-mono"
+            style={{ lineHeight: '1.5' }}>
           <a
             href={url}
             target="_blank"
@@ -96,7 +87,7 @@ export default function NewsCard({
         </h4>
 
         {/* Summary */}
-        <p className="text-[10px] text-slate-400 dark:text-neutral-500 leading-relaxed font-mono line-clamp-2 mb-3">
+        <p className="text-[10px] text-slate-400 dark:text-neutral-500 leading-relaxed font-mono line-clamp-2 mb-4">
           {summary}
         </p>
 
@@ -106,14 +97,18 @@ export default function NewsCard({
             {tags?.map((tag) => (
               <span
                 key={tag}
-                className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-neutral-800/60 text-slate-400 dark:text-neutral-500 border border-slate-300 dark:border-neutral-800"
+                className="text-[8px] font-mono px-1.5 py-0.5 rounded-md"
+                style={{
+                  background: 'var(--as-bg-tertiary)',
+                  color: 'var(--as-text-dim)',
+                }}
               >
                 {tag}
               </span>
             ))}
           </div>
-          <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded ${badge.cls}`}>
-            {badge.emoji} {sentiment}
+          <span className={`text-[9px] font-mono font-bold px-2.5 py-1 rounded-lg tracking-widest flex-shrink-0 ${badge.cls}`}>
+            {sentiment === 'BULLISH' ? '▲' : sentiment === 'BEARISH' ? '▼' : '→'} {sentiment}
           </span>
         </div>
       </div>

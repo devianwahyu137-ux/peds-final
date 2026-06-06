@@ -88,19 +88,6 @@ function formatTimeAgo(timestamp) {
 /**
  * MacroIndicatorCard — Individual glassmorphic card with
  * animated counter, sparkline, status dot, and tooltip.
- *
- * @param {{
- *   id: string,
- *   label: string,
- *   unit: string,
- *   icon: string,
- *   value: number|string,
- *   timestamp: number,
- *   status: string,
- *   scenarioId: string,
- *   sparklineData: number[],
- *   crisisMode: string|null,
- * }} props
  */
 export default function MacroIndicatorCard({
   id,
@@ -109,14 +96,14 @@ export default function MacroIndicatorCard({
   icon,
   value,
   timestamp,
-  status,
+  isLive,
   scenarioId,
   sparklineData,
   crisisMode,
 }) {
   const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : (scenarioId || "EQUILIBRIUM");
   const glow = GLOW_MAP[effectiveScenario] || GLOW_MAP.EQUILIBRIUM;
-  const isActive = status === "ok" || status === "fetching";
+  const isActive = isLive;
   const [isChanging, setIsChanging] = useState(false);
   const prevValueRef = useRef(value);
 
@@ -130,30 +117,7 @@ export default function MacroIndicatorCard({
     }
   }, [value]);
 
-  // Format display value based on unit type
-  let displayValue;
-  if (typeof value === "number" && !isNaN(value)) {
-    if (unit === "IDR") {
-      displayValue = value.toLocaleString("id-ID");
-    } else if (unit === "pts") {
-      displayValue = value.toFixed(2);
-    } else {
-      displayValue = value.toFixed(2) + "%";
-    }
-  } else {
-    displayValue = String(value || "—");
-  }
-
-  const animatedValue = useCountUp(displayValue, 800);
-
-  // Status dot color
-  const statusColor = {
-    ok: "#10b981",
-    fetching: "#f59e0b",
-    stale: "#f59e0b",
-    fallback: "#ef4444",
-    failed: "#ef4444",
-  }[status] || "var(--as-text-tertiary)";
+  const animatedValue = useCountUp(String(value), 800);
 
   // NEW — reads from dedicated deltaMap slice
   const deltaInfo = useRootStore((s) => s.deltaMap[id]);
@@ -190,16 +154,18 @@ export default function MacroIndicatorCard({
             <MacroTooltip indicatorId={id}>?</MacroTooltip>
           </div>
         </div>
-        {/* Status badge */}
-        <span className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5"
-              style={{ background: 'var(--as-bg-tertiary)',
-                       color: 'var(--as-text-dim)' }}>
-          <div
-            className="w-1.5 h-1.5 rounded-full"
-            style={{ backgroundColor: statusColor, boxShadow: `0 0 4px ${statusColor}` }}
-          />
-          {status || "idle"}
-        </span>
+        {/* Status badge - Only show if LIVE */}
+        {isLive && (
+          <span className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5"
+                style={{ background: 'var(--as-bg-tertiary)',
+                         color: '#10b981' }}>
+            <div
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: '#10b981', boxShadow: `0 0 4px #10b981` }}
+            />
+            LIVE
+          </span>
+        )}
       </div>
 
       {/* Main Value — Animated */}
@@ -221,7 +187,7 @@ export default function MacroIndicatorCard({
           data={sparklineData}
           color={glow.color}
           width={undefined}
-          height={56}
+          height={64}
           showArea={true}
         />
       </div>

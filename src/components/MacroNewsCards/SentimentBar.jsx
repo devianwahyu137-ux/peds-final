@@ -29,7 +29,7 @@ export default function SentimentBar({ score, sentiment, animated = true }) {
   }, [score, animated]);
 
   return (
-    <div className="w-full relative" style={{ height: "3px" }}>
+    <div className="w-full relative" style={{ height: "5px" }}>
       {/* Background track */}
       <div
         className="absolute inset-0 rounded-t-xl"

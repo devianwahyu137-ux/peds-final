@@ -2,49 +2,8 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { X, Sparkles, Send } from "lucide-react";
 import { buildPortfolioContext, buildSuggestedQuestions } from '@/lib/portfolioContextBuilder';
 import { useRootStore } from '@/stores/rootStore';
-
-// ── MOCK QUANT ENGINE ─────────────────────────────────────────
-function generateMockResponse(input) {
-  const lowerInput = input.toLowerCase();
-
-  // Scenario A (Macro/Interest Rates)
-  if (
-    lowerInput.includes("makro") ||
-    lowerInput.includes("suku bunga") ||
-    lowerInput.includes("bi rate") ||
-    lowerInput.includes("yield") ||
-    lowerInput.includes("dampak")
-  ) {
-    return `<div class="space-y-3"><p><strong>Analisis Makroekonomi Terkini:</strong></p><p>Suku bunga acuan saat ini tertahan di 5.25%. Kami mendeteksi adanya inversi pada <em>Sovereign Yield Curve</em> yang mengindikasikan likuiditas ketat. Capital outflow ke instrumen DXY memberikan tekanan pada nilai tukar.</p><p><strong>Rekomendasi:</strong> Pertahankan durasi portofolio obligasi di bawah 3 tahun untuk memitigasi risiko suku bunga.</p></div>`;
-  }
-  
-  // Scenario B (Portfolio/Evaluation)
-  if (
-    lowerInput.includes("evaluasi") ||
-    lowerInput.includes("portofolio") ||
-    lowerInput.includes("risiko") ||
-    lowerInput.includes("status") ||
-    lowerInput.includes("sharpe") ||
-    lowerInput.includes("alokasi")
-  ) {
-    return `<div class="space-y-3"><p><strong>Evaluasi Portofolio:</strong></p><p>Berdasarkan MPT Engine, Sharpe Ratio Anda mencerminkan tingkat efisiensi alokasi saat ini. Volatilitas dan Beta menunjukkan eksposur terhadap pasar.</p><p>Saran strategis: Selaraskan komposisi SBN dan Emas Fisik sesuai <em>target weights</em> dari skenario aktif untuk menjaga resiliensi.</p></div>`;
-  }
-
-  // Scenario C (Rotation/Rebalancing)
-  if (
-    lowerInput.includes("rotasi") ||
-    lowerInput.includes("rebalancing") ||
-    lowerInput.includes("sektor") ||
-    lowerInput.includes("saham") ||
-    lowerInput.includes("bbca") ||
-    lowerInput.includes("emas")
-  ) {
-    return `<div class="space-y-3"><p><strong>Simulasi Rotasi Sektor:</strong></p><p>Mengingat fase pengetatan dan tekanan <em>cost of funds</em>, rotasi sektoral direkomendasikan.</p><ul><li class="ml-4 list-disc"><strong>Kurangi:</strong> Ekuitas siklikal dan perusahaan dengan <em>leverage</em> tinggi.</li><li class="ml-4 list-disc"><strong>Tambah:</strong> Sektor defensif, kas USD, dan instrumen SBN tenor pendek.</li></ul></div>`;
-  }
-
-  // Default Scenario
-  return `<div class="space-y-3"><p>Sistem menerima instruksi Anda.</p><p>Berdasarkan data <em>Modern Portfolio Theory (MPT)</em>, alokasi Anda telah dievaluasi terhadap volatilitas makro terkini. Pastikan bobot portofolio tetap disiplin sesuai batas toleransi <em>drift</em>.</p></div>`;
-}
+import { getAlphaShieldAnalysis } from '@/lib/gemini';
+import { useMarketData } from '@/contexts/MacroDataContext';
 
 export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }) {
   const [inputValue, setInputValue] = useState("");
@@ -56,6 +15,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
   const analytics   = useRootStore((s) => s.analytics);
   const macroInputs = useRootStore((s) => s.macroInputs);
   const liveData    = useRootStore((s) => s.liveData);
+  const { marketData } = useMarketData();
 
   // Build context (memoized — only rebuilds when state changes):
   const portfolioContext = useMemo(
@@ -86,26 +46,30 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
     }
   }, [messages, isTyping]);
 
-  const handleSimulation = (userText) => {
+  const handleSimulation = async (userText) => {
     setIsTyping(true);
     
     // In a real API call, inject as system message:
     const messagesWithContext = [
       { role: 'system', content: portfolioContext },
       ...messages,
-      { role: 'user', content: userText },
     ];
-    // console.log("Payload to AI:", messagesWithContext);
-
-    // Simulate network delay for high-fidelity realism (2000ms)
-    setTimeout(() => {
-      const mockHtml = generateMockResponse(userText);
+    
+    try {
+      const aiResponseText = await getAlphaShieldAnalysis(userText, marketData, messagesWithContext);
       setMessages((prev) => [
         ...prev,
-        { role: 'ai', content: mockHtml }
+        { role: 'ai', content: aiResponseText }
       ]);
+    } catch (error) {
+      console.error(error);
+      setMessages((prev) => [
+        ...prev,
+        { role: 'ai', content: "Maaf, terjadi kesalahan saat menghubungi layanan AlphaShield." }
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 2000);
+    }
   };
 
   const handleLocalSubmit = (text) => {
@@ -156,28 +120,32 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
         {/* Chat History Area */}
         <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
           
-          {messages.map((msg, idx) => (
-            <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div 
-                className={
-                  msg.role === 'user'
-                    ? "rounded-l-xl rounded-tr-xl p-3 text-sm font-sans leading-relaxed max-w-[85%] shadow-sm"
-                    : "border rounded-r-xl rounded-tl-xl p-3 text-sm font-sans leading-relaxed max-w-[90%] shadow-sm"
-                }
-                style={
-                  msg.role === 'user'
-                    ? { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-primary)' }
-                    : { background: 'var(--as-bg-primary)', borderColor: 'var(--as-border-primary)', color: 'var(--as-text-primary)' }
-                }
-              >
-                {msg.role === 'ai' ? (
-                  <div dangerouslySetInnerHTML={{ __html: msg.content }} />
-                ) : (
-                  msg.content
-                )}
+          {messages.map((msg, idx) => {
+            if (msg.role === 'system') return null; // Hide system context from UI
+            
+            return (
+              <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div 
+                  className={
+                    msg.role === 'user'
+                      ? "rounded-l-xl rounded-tr-xl p-3 text-sm font-sans leading-relaxed max-w-[85%] shadow-sm"
+                      : "border rounded-r-xl rounded-tl-xl p-3 text-sm font-sans leading-relaxed max-w-[90%] shadow-sm"
+                  }
+                  style={
+                    msg.role === 'user'
+                      ? { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-primary)' }
+                      : { background: 'var(--as-bg-primary)', borderColor: 'var(--as-border-primary)', color: 'var(--as-text-primary)' }
+                  }
+                >
+                  {msg.role === 'ai' ? (
+                    <div dangerouslySetInnerHTML={{ __html: msg.content }} />
+                  ) : (
+                    msg.content
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Typing Loading State */}
           {isTyping && (

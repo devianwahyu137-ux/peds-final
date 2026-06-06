@@ -20,15 +20,15 @@ export default function MacroIndicatorCards() {
   const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : scenarioId;
   const presets = SPARKLINE_PRESETS[effectiveScenario] || SPARKLINE_PRESETS.EQUILIBRIUM;
 
-  const getMarketValue = (id) => {
+  const getMarketValueFormatted = (id) => {
     switch (id) {
-      case "biRate": return marketData.macro.biRate;
-      case "cpi":    return marketData.macro.inflation;
-      case "usdIdr": return marketData.macro.usdIdr;
-      case "dxy":    return marketData.macro.dxy;
-      case "gs10":   return marketData.macro.us10y;
-      case "ihsg":   return marketData.equities.ihsg;
-      default:       return 0;
+      case "biRate": return marketData.macro.biRate.toFixed(2);
+      case "cpi":    return marketData.macro.inflation.toFixed(2);
+      case "usdIdr": return marketData.macro.usdIdr.toLocaleString('id-ID');
+      case "dxy":    return marketData.macro.dxy.toFixed(2);
+      case "gs10":   return marketData.macro.us10y.toFixed(2);
+      case "ihsg":   return marketData.equities.ihsg.toLocaleString('id-ID');
+      default:       return "0";
     }
   };
 
@@ -39,7 +39,7 @@ export default function MacroIndicatorCards() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {MACRO_INDICATORS.map((indicator) => {
-          const value = getMarketValue(indicator.id);
+          const value = getMarketValueFormatted(indicator.id);
           const sparklineData = presets[indicator.id] || [];
           
           return (
@@ -50,9 +50,9 @@ export default function MacroIndicatorCards() {
               unit={indicator.unit}
               icon={indicator.icon}
               value={value}
-              delta={0} // Fixed delta to 0, no mock data provided
+              delta={0}
               timestamp={null}
-              status={isLive ? "LIVE" : "idle"}
+              isLive={isLive}
               scenarioId={scenarioId}
               sparklineData={sparklineData}
               crisisMode={crisisMode}

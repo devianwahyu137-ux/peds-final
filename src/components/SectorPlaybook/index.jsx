@@ -21,15 +21,15 @@ export function SectorPlaybook() {
     <div className="card-tier-2 space-y-4 transition-colors duration-300">
       {/* Panel header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        {/* Panel header — prevent text wrap */}
-        <div className="flex flex-col gap-1 min-w-0">
+        {/* Panel header — strict no-wrap protection */}
+        <div className="flex flex-col gap-1 min-w-0 overflow-hidden">
           <div className="flex items-center gap-2 text-[var(--as-text-primary)] min-w-0">
             <ActivitySquare size={18} className="text-blue-400 shrink-0" />
-            <span className="font-bold tracking-wide text-sm uppercase truncate">ROTATION TACTICS PLAYBOOK</span>
+            <span className="font-bold tracking-wide text-sm uppercase whitespace-nowrap overflow-hidden text-ellipsis">ROTATION TACTICS PLAYBOOK</span>
           </div>
-          <div className="flex flex-col min-w-0">
-            <span className="text-[10px] font-bold text-[var(--as-text-secondary)] uppercase tracking-widest truncate">Strategi Rotasi Sektoral</span>
-            <span className="text-[9px] font-light text-[var(--as-text-tertiary)] uppercase tracking-widest truncate">Klik kartu untuk expand detail</span>
+          <div className="flex flex-col min-w-0 overflow-hidden">
+            <span className="text-[10px] font-bold text-[var(--as-text-secondary)] uppercase tracking-widest whitespace-nowrap overflow-hidden text-ellipsis">Strategi Rotasi Sektoral</span>
+            <span className="text-[9px] font-light text-[var(--as-text-tertiary)] uppercase tracking-widest whitespace-nowrap overflow-hidden text-ellipsis">Klik kartu untuk expand detail</span>
           </div>
         </div>
 

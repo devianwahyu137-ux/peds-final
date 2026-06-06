@@ -6,9 +6,9 @@ import { useMemo, useState, useRef } from 'react';
 import { useRootStore } from "@/stores/rootStore";
 import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
 
-const CHART_PAD = { top: 20, right: 24, bottom: 40, left: 48 };
+const CHART_PAD = { top: 32, right: 24, bottom: 52, left: 56 };
 const CHART_W   = 660;
-const CHART_H   = 280;
+const CHART_H   = 300;
 
 export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
   const scenarioId          = useRootStore((s) => s.scenarioId);
@@ -112,12 +112,13 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
               <line
                 x1={CHART_PAD.left} y1={y}
                 x2={CHART_PAD.left + plotW} y2={y}
-                stroke="var(--as-border-divider)" strokeWidth={0.5}
+                stroke="rgba(255,255,255,0.05)" strokeWidth={1}
+                strokeDasharray="2 4"
               />
               <text
                 x={CHART_PAD.left - 6} y={y + 3}
-                textAnchor="end" fontSize={8}
-                fill="var(--as-text-dim)"
+                textAnchor="end" fontSize={11}
+                fill="var(--as-text-dim)" fontWeight={600}
               >
                 {val}%
               </text>
@@ -133,12 +134,13 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
               <line
                 x1={x} y1={CHART_PAD.top}
                 x2={x} y2={CHART_PAD.top + plotH}
-                stroke="var(--as-border-divider)" strokeWidth={0.5}
+                stroke="rgba(255,255,255,0.05)" strokeWidth={1}
+                strokeDasharray="2 4"
               />
               <text
-                x={x} y={CHART_PAD.top + plotH + 14}
-                textAnchor="middle" fontSize={8}
-                fill="var(--as-text-dim)"
+                x={x} y={CHART_PAD.top + plotH + 16}
+                textAnchor="middle" fontSize={11}
+                fill="var(--as-text-dim)" fontWeight={600}
               >
                 {val}%
               </text>
@@ -149,17 +151,17 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
         {/* Axis labels */}
         <text
           x={CHART_PAD.left + plotW / 2}
-          y={CHART_H - 2}
-          textAnchor="middle" fontSize={9}
-          fontFamily="monospace" fill="var(--as-text-tertiary)" letterSpacing="2"
+          y={CHART_H - 4}
+          textAnchor="middle" fontSize={10}
+          fontFamily="monospace" fill="var(--as-text-tertiary)" letterSpacing="0.15em"
         >
           VOLATILITAS (RISIKO) %
         </text>
         <text
           x={12}
           y={CHART_PAD.top + plotH / 2}
-          textAnchor="middle" fontSize={9}
-          fontFamily="monospace" fill="var(--as-text-tertiary)" letterSpacing="2"
+          textAnchor="middle" fontSize={10}
+          fontFamily="monospace" fill="var(--as-text-tertiary)" letterSpacing="0.15em"
           transform={`rotate(-90, 12, ${CHART_PAD.top + plotH / 2})`}
         >
           RETURN %
@@ -174,7 +176,7 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
             <circle
               key={i}
               cx={x} cy={y}
-              r={isHov ? 6 : 3}
+              r={isHov ? 6 : 4}
               fill={sharpeToColor(pt.sharpe)}
               fillOpacity={isHov ? 1 : 0.55}
               style={{ cursor: 'pointer', transition: 'r 100ms ease' }}
@@ -248,15 +250,15 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
             />
             {/* Label */}
             <text
-              x={currentX + 10} y={currentY - 12}
-              fontSize={8} fill={config?.color ?? '#10b981'}
-              fontWeight="bold" letterSpacing="1"
+              x={currentX + 10} y={currentY - 14}
+              fontSize={9} fill={config?.color ?? '#10b981'}
+              fontWeight="900" letterSpacing="1.5"
             >
               PORTOFOLIOKU
             </text>
             <text
               x={currentX + 10} y={currentY - 2}
-              fontSize={7} fill="#888"
+              fontSize={8} fill="#888"
             >
               Sharpe: {currentPortfolio.sharpe?.toFixed(2)}
             </text>

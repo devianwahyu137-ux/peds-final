@@ -36,22 +36,38 @@ export function ScenarioIntelligence() {
   // Don't show if dismissed
   if (isDismissed) return null;
 
-  // ── ALIGNED state ─────────────────────────────────────────
+  // ── ALIGNED state — ultra-compact strip ─────────────────────
   if (mismatch.isAligned) {
     return (
-      <div className="card-tier-3 !p-3 mb-6 bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <CheckCircle2 size={16} />
-          <div>
-            <span className="font-bold tracking-widest">SKENARIO SELARAS</span>
-            {' '}— Data makro terkini ({macroData.biRate}% BI Rate,
-            IDR {macroData.usdIdr.toLocaleString('id-ID')}) konsisten
-            dengan skenario <span className="font-bold uppercase text-emerald-500 bg-emerald-500/10 px-1 py-0.5 rounded">{activeConfig.label}</span> yang aktif.
-          </div>
-        </div>
-        <div className="font-bold border border-emerald-500/20 px-2 py-1 rounded-md bg-emerald-500/5">
-          Confidence: {mismatch.confidence}%
-        </div>
+      <div
+        className="flex items-center gap-3 px-4 py-2 rounded-xl mb-4"
+        style={{
+          background: 'rgba(16,185,129,0.06)',
+          border:     '1px solid rgba(16,185,129,0.12)',
+        }}
+      >
+        {/* Animated dot */}
+        <span className="relative flex h-1.5 w-1.5 flex-shrink-0">
+          <span className="animate-ping absolute inline-flex h-full w-full
+                           rounded-full bg-emerald-400 opacity-40" />
+          <span className="relative inline-flex rounded-full h-1.5 w-1.5
+                           bg-emerald-500" />
+        </span>
+
+        <span className="text-[9px] font-mono truncate"
+              style={{ color: 'var(--as-text-tertiary)' }}>
+          <span className="font-bold text-emerald-500">SELARAS</span>
+          {' — '}{macroData.biRate}% BI Rate · IDR{' '}
+          {macroData.usdIdr.toLocaleString('id-ID')} · Skenario{' '}
+          <span style={{ color: activeConfig.color }}>
+            {activeConfig.label}
+          </span>
+        </span>
+
+        <span className="ml-auto flex-shrink-0 text-[8px] font-mono
+                         text-emerald-500/60">
+          {mismatch.confidence}% confidence
+        </span>
       </div>
     );
   }

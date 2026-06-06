@@ -177,7 +177,13 @@ export default function App() {
       >
         <PageErrorBoundary key={activeTab}>
           <Suspense fallback={<PageSkeleton />}>
-            {CurrentPage}
+            <div
+              key={activeTab}
+              className="w-full fade-in-up"
+              style={{ animationDuration: '200ms' }}
+            >
+              {CurrentPage}
+            </div>
           </Suspense>
         </PageErrorBoundary>
       </main>

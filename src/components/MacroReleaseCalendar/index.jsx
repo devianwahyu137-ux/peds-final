@@ -69,41 +69,68 @@ export function MacroReleaseCalendar() {
         </span>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col">
         {RELEASE_EVENTS.map((ev, i) => {
           const imp = IMPACT_STYLE[ev.impact] ?? IMPACT_STYLE.LOW;
+          const isHigh = ev.impact === 'HIGH';
           return (
             <div
               key={i}
-              className="flex items-start gap-3 p-2.5 -mx-2 rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-white/[0.02]"
+              className="row-hover flex items-start gap-4 px-5 py-4 relative"
+              style={{
+                borderBottom: '1px solid var(--as-border-secondary)',
+                background:   isHigh ? `${imp.dot}05` : 'transparent',
+              }}
             >
-              {/* Impact dot */}
-              <div
-                className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
-                style={{ backgroundColor: imp.dot }}
-              />
+              {/* Impact indicator — left border accent for HIGH */}
+              {isHigh && (
+                <div
+                  className="absolute left-0 inset-y-0 w-0.5 rounded-r-full"
+                  style={{ background: imp.dot }}
+                />
+              )}
+
+              {/* Dot with pulse for HIGH */}
+              <div className="flex-shrink-0 mt-1">
+                {isHigh ? (
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full
+                                     rounded-full opacity-40"
+                          style={{ backgroundColor: imp.dot }} />
+                    <span className="relative inline-flex rounded-full h-2 w-2"
+                          style={{ backgroundColor: imp.dot }} />
+                  </span>
+                ) : (
+                  <div className="w-2 h-2 rounded-full"
+                       style={{ backgroundColor: imp.dot, opacity: 0.7 }} />
+                )}
+              </div>
 
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[11px] font-mono font-bold text-slate-900 dark:text-white">
+                  <span className="text-[11px] font-mono font-bold"
+                        style={{ color: 'var(--as-text-primary)' }}>
                     {ev.event}
                   </span>
-                  <span className={`text-[7px] font-mono font-bold px-1.5 py-0.5 rounded border ${imp.cls}`}>
+                  <span className={`text-[7px] font-mono font-bold px-1.5 py-0.5 rounded-md
+                                    tracking-widest border ${imp.cls}`}>
                     {ev.impact}
                   </span>
                 </div>
-                <div className="text-[9px] font-mono text-[var(--as-text-secondary)] mt-0.5">
+                <div className="text-[9px] font-mono mt-0.5" style={{ color: 'var(--as-text-dim)' }}>
                   {ev.note}
                 </div>
               </div>
 
-              {/* Right: date + indicator */}
+              {/* Right: indicator + schedule */}
               <div className="text-right flex-shrink-0">
-                <div className="text-[9px] font-mono font-bold text-[var(--as-text-primary)]">
+                <div className="text-[10px] font-mono font-bold"
+                     style={{ color: imp.dot }}>
                   {ev.indicator}
                 </div>
-                <div className="text-[8px] font-mono text-[var(--as-text-dim)] mt-0.5">
+                <div className="text-[8px] font-mono mt-0.5"
+                     style={{ color: 'var(--as-text-dim)' }}>
                   {ev.date}
                 </div>
               </div>

@@ -121,36 +121,45 @@ export function PortfolioComparison() {
       </div>
 
       <div className="p-6">
-        {/* Scenario headers */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        {/* Scenario headers — stronger contrast */}
+        <div className="grid grid-cols-2 gap-0 rounded-2xl overflow-hidden mb-6"
+             style={{ border: '1px solid var(--as-border-primary)' }}>
           {[
-            { config: leftConfig, data: activeData, label: 'AKTIF SEKARANG', side: 'left' },
-            { config: rightConfig, data: compareData, label: 'PERBANDINGAN', side: 'right' },
-          ].map(({ config, data, label }) => (
+            { config: leftConfig, data: activeData, label: '◉ AKTIF SEKARANG', side: 'left' },
+            { config: rightConfig, data: compareData, label: '◎ PERBANDINGAN', side: 'right' },
+          ].map(({ config, data, label, side }) => (
             <div
               key={config.id}
-              className="bg-neutral-900/40 rounded-lg border border-white/5 p-4 text-center"
+              className="p-6 text-center relative"
+              style={{
+                background: `linear-gradient(135deg, ${config.color}15, transparent)`,
+                borderRight: side === 'left' ? '1px solid var(--as-border-secondary)' : 'none',
+              }}
             >
               <div
-                className="text-[8px] font-mono tracking-widest uppercase mb-1"
-                style={{ color: 'var(--as-text-dim)' }}
+                className="text-[8px] font-mono tracking-[0.25em] uppercase mb-2"
+                style={{ color: config.color, opacity: 0.7 }}
               >
                 {label}
               </div>
               <div
-                className="text-sm font-bold font-mono mb-2"
+                className="text-[11px] font-bold font-mono mb-4"
                 style={{ color: config.color }}
               >
                 {data.title}
               </div>
               <div
-                className="text-[32px] font-black font-mono tabular-nums leading-none"
-                style={{ color: config.color }}
+                className="font-black font-mono tabular-nums leading-none"
+                style={{
+                  fontSize: '48px',
+                  color: config.color,
+                  textShadow: `0 0 32px ${config.color}50`,
+                }}
               >
                 {data.sharpe.toFixed(2)}
               </div>
               <div
-                className="text-[8px] font-mono mt-1"
+                className="text-[9px] font-mono mt-2"
                 style={{ color: 'var(--as-text-dim)' }}
               >
                 Sharpe Ratio
@@ -159,28 +168,36 @@ export function PortfolioComparison() {
           ))}
         </div>
 
-        {/* Sharpe diff indicator */}
+        {/* Sharpe diff — centered bridge */}
         <div
-          className="flex items-center justify-center gap-3 mb-6 py-3 rounded-xl"
+          className="flex items-center justify-center gap-4 py-3 px-5
+                     rounded-xl mb-6"
           style={{ background: 'var(--as-bg-tertiary)' }}
         >
-          <span className="text-[10px] font-mono" style={{ color: 'var(--as-text-secondary)' }}>
-            Perbedaan Sharpe:
-          </span>
-          <span
-            className="text-[16px] font-black font-mono tabular-nums"
-            style={{ color: sharpeDiff > 0 ? '#10b981' : sharpeDiff < 0 ? '#ef4444' : '#525252' }}
-          >
-            {sharpeDiff > 0 ? '+' : ''}{sharpeDiff.toFixed(2)} σ
-          </span>
-          <span className="text-[9px] font-mono" style={{ color: 'var(--as-text-dim)' }}>
-            {sharpeDiff > 0
-              ? `${leftConfig.label} lebih efisien`
-              : sharpeDiff < 0
-                ? `${rightConfig.label} lebih efisien`
-                : 'Efisiensi setara'
-            }
-          </span>
+          <div
+            className="w-8 h-px"
+            style={{
+              background: `linear-gradient(90deg, transparent, ${leftConfig.color})`,
+            }}
+          />
+          <div className="text-center">
+            <div className="text-[8px] font-mono tracking-widest uppercase mb-0.5"
+                 style={{ color: 'var(--as-text-dim)' }}>
+              Perbedaan Sharpe
+            </div>
+            <div
+              className="text-[22px] font-black font-mono tabular-nums"
+              style={{ color: sharpeDiff > 0 ? '#10b981' : sharpeDiff < 0 ? '#ef4444' : '#525252' }}
+            >
+              {sharpeDiff > 0 ? '+' : ''}{sharpeDiff.toFixed(2)} σ
+            </div>
+          </div>
+          <div
+            className="w-8 h-px"
+            style={{
+              background: `linear-gradient(90deg, ${rightConfig.color}, transparent)`,
+            }}
+          />
         </div>
 
         {/* Asset allocation comparison */}

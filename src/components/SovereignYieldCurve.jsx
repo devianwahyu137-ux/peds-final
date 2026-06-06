@@ -122,23 +122,23 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
           </div>
         </div>
 
-        <div className="w-full bg-[#121212] rounded-xl border border-white/5 p-4 overflow-hidden" style={{ minHeight: '340px' }}>
+        <div className="w-full bg-[#121212] rounded-xl border border-white/5 p-4 overflow-hidden" style={{ minHeight: '360px' }}>
           <svg width="100%" height={340} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" className="block overflow-visible">
             {/* Grid Lines */}
             {[mn, mn + (mx - mn) * 0.25, mn + (mx - mn) * 0.5, mn + (mx - mn) * 0.75, mx].map((v, i) => (
               <g key={i}>
                 <line x1={pL} y1={tY(v)} x2={W - pR} y2={tY(v)} stroke="var(--as-border-secondary)" strokeWidth="0.75" />
-                <text x={pL - 8} y={tY(v) + 3} textAnchor="end" fontSize="8" fill="var(--as-text-dim)" fontFamily="monospace">{v.toFixed(2)}%</text>
+                <text x={pL - 8} y={tY(v) + 3} textAnchor="end" fontSize="10" fill="var(--as-text-dim)" fontFamily="monospace">{v.toFixed(2)}%</text>
               </g>
             ))}
             
             {/* Tenure Labels */}
             {tenures.map((t, i) => (
-              <text key={t} x={xP[i]} y={H - 12} textAnchor="middle" fontSize="9" fill="var(--as-text-dim)" fontFamily="monospace">{t}</text>
+              <text key={t} x={xP[i]} y={H - 12} textAnchor="middle" fontSize="10" fill="var(--as-text-dim)" fontFamily="monospace">{t}</text>
             ))}
 
             {/* Bezier Curves */}
-            <path d={ustBezier} fill="none" stroke="var(--as-text-tertiary)" strokeWidth="1.5" strokeDasharray="5 3" />
+            <path d={ustBezier} fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="6 3" strokeOpacity="0.85" />
             <path d={sbnBezier} fill="none" stroke={accentColor} strokeWidth="2.5" style={{ filter: `drop-shadow(0 0 8px ${accentColor}66)` }} />
 
             {/* ── SBN Glowing Nodes ── */}
@@ -195,8 +195,8 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
             {/* UST Nodes (simple) */}
             {ustPoints.map((pt, i) => (
               <g key={`u-${i}`}>
-                <circle cx={pt.x} cy={pt.y} r="3" fill="#6b7280" stroke="#000" strokeWidth="1" />
-                <text x={pt.x} y={pt.y + 12} textAnchor="middle" fontSize="8" fill="#6b7280" fontFamily="monospace">{ustYields[i].toFixed(2)}%</text>
+                <circle cx={pt.x} cy={pt.y} r={4} fill="transparent" stroke="#94a3b8" strokeWidth={2} />
+                <text x={pt.x} y={pt.y + 14} textAnchor="middle" fontSize="10" fill="#94a3b8" fontFamily="monospace">{ustYields[i].toFixed(2)}%</text>
               </g>
             ))}
 
@@ -252,7 +252,10 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
 
         <div className="flex items-center gap-6 text-[10px] font-mono text-slate-400 dark:text-neutral-500">
           <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 rounded" style={{ backgroundColor: accentColor }} /> SBN Indonesia</span>
-          <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 bg-neutral-500" /> US Treasury</span>
+          <span className="flex items-center gap-1.5">
+            <svg width="16" height="2" className="flex-shrink-0"><line x1="0" y1="1" x2="16" y2="1" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4 2" /></svg>
+            <span style={{ color: '#94a3b8' }}>US Treasury</span>
+          </span>
           <span className="ml-auto text-neutral-700">ACTIVE: {scenarioId.toUpperCase()}</span>
         </div>
       </div>

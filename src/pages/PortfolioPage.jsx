@@ -121,7 +121,7 @@ export default function PortfolioPage() {
             <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-3 font-mono">
               Analisis MPT — dengan Interpretasi
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 [&>*]:stat-hover">
               <MetricWithContext
                 label="Sharpe Ratio"
                 value={(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0).toFixed(2)}

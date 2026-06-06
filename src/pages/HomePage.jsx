@@ -159,21 +159,39 @@ export default function HomePage() {
           </div>
 
           {/* Sharpe Ratio — make this the HERO NUMBER */}
-          <div className="flex-shrink-0 text-center p-8 rounded-2xl min-w-[160px]"
-               style={{ background: accent + '10',
-                        border: `1px solid ${accent}20` }}>
-            <div className="text-[9px] font-mono tracking-[0.25em] uppercase mb-3"
-                 style={{ color: 'var(--as-text-dim)' }}>
-              SHARPE RATIO
-            </div>
-            <div className="text-[52px] font-black font-mono leading-none tabular-nums"
-                 style={{ color: accent,
-                          textShadow: `0 0 32px ${accent}50` }}>
-              {sharpeRatio.toFixed(2)}
-            </div>
-            <div className="text-[9px] font-mono mt-3"
-                 style={{ color: 'var(--as-text-dim)' }}>
-              skor efisiensi portofolio
+          <div className="flex-shrink-0 text-center p-7 rounded-2xl min-w-[180px]
+                          relative overflow-hidden"
+               style={{
+                 background: `radial-gradient(circle at center, ${accent}18 0%, ${accent}05 60%, transparent 100%)`,
+                 border: `1px solid ${accent}30`,
+                 boxShadow: `0 0 48px ${accent}12, inset 0 1px 0 ${accent}20`,
+               }}>
+            {/* Background glow blob */}
+            <div
+              className="absolute inset-0 rounded-2xl"
+              style={{
+                background: `radial-gradient(circle at 50% 60%, ${accent}10 0%, transparent 70%)`,
+              }}
+            />
+
+            <div className="relative">
+              <div className="text-[8px] font-mono tracking-[0.25em] uppercase mb-4"
+                   style={{ color: accent, opacity: 0.7 }}>
+                SHARPE RATIO
+              </div>
+              <div className="font-black font-mono leading-none tabular-nums mb-1"
+                   style={{
+                     fontSize: '58px',
+                     color: accent,
+                     textShadow: `0 0 40px ${accent}60, 0 0 80px ${accent}30`,
+                     letterSpacing: '-2px',
+                   }}>
+                {sharpeRatio.toFixed(2)}
+              </div>
+              <div className="text-[9px] font-mono mt-3"
+                   style={{ color: accent, opacity: 0.5 }}>
+                skor efisiensi portofolio
+              </div>
             </div>
           </div>
         </div>
@@ -252,7 +270,7 @@ export default function HomePage() {
           </div>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 stagger-children">
           {QUICK_SIGNALS_CONFIG.map(({ key, label, unit, icon, getValue }) => {
             const liveVal  = getValue(liveData);
             const fallback = SCENARIO_MACRO_FALLBACK[effectiveScenario]?.[key]
@@ -265,7 +283,7 @@ export default function HomePage() {
               : '—';
 
             return (
-              <div key={key} className="card-tier-3">
+              <div key={key} className="card-tier-3 card-hover-glow">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-2xl">{icon}</span>
                   <span className={`text-[8px] font-mono px-2 py-0.5 rounded-md
@@ -443,7 +461,7 @@ export default function HomePage() {
 
 function ActionGuidanceCard({ icon, title, body, color }) {
   return (
-    <div className="card-tier-3 flex flex-col justify-start transition-colors duration-300">
+    <div className="card-tier-3 card-hover flex flex-col justify-start transition-colors duration-300">
       <div className="mb-4 flex items-center">{icon}</div>
       <div className="text-[10px] font-bold font-mono uppercase tracking-widest mb-3" style={{ color }}>
         {title}

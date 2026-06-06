@@ -109,9 +109,9 @@ export function SectorCard({ sector }) {
             <div className="text-[10px] font-mono font-bold text-slate-400 dark:text-neutral-500 mb-3 tracking-widest uppercase">
               INSTRUMEN REPRESENTATIF
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="flex flex-col gap-3">
               {sector.tickers.map((ticker, i) => (
-                <div key={i} className="p-3 rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-black/20 flex gap-3">
+                <div key={i} className="w-full p-3 rounded-xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-black/20 flex gap-3">
                   {/* Ticker badge */}
                   <div className="pt-1">
                     <span className="text-[10px] font-mono font-black px-2 py-1 rounded bg-slate-100 dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 border border-slate-200 dark:border-neutral-700">

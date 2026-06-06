@@ -38,31 +38,47 @@ export function MacroDataProvider({ children }) {
   const [lastUpdated, setLastUpdated] = useState(new Date().toLocaleTimeString());
 
   useEffect(() => {
-    const fetchLiveMarketData = async () => {
-      try {
-        const API_URL = process.env.NEXT_PUBLIC_MARKET_API_URL || '/api/market-data';
-        const response = await fetch(API_URL);
+    const simulateMarketTick = () => {
+      setMarketData(prev => {
+        const fluctuate = (value) => value * (1 + (Math.random() * 0.002 - 0.001));
         
-        if (!response.ok) {
-          throw new Error('Failed to fetch market data');
-        }
-        
-        const fetchedData = await response.json();
-        
-        setMarketData(prev => ({ ...prev, ...fetchedData }));
-        setLastUpdated(new Date().toLocaleTimeString());
-        setIsLive(true);
-      } catch (error) {
-        console.error('Error fetching live market data:', error);
-        setIsLive(false);
-      }
+        return {
+          ...prev,
+          macro: {
+            ...prev.macro,
+            usdIdr: fluctuate(prev.macro.usdIdr),
+            dxy: fluctuate(prev.macro.dxy),
+            us10y: fluctuate(prev.macro.us10y),
+            // biRate and inflation remain static
+          },
+          equities: {
+            ...prev.equities,
+            ihsg: fluctuate(prev.equities.ihsg),
+            bbca: fluctuate(prev.equities.bbca),
+            bmri: fluctuate(prev.equities.bmri),
+            bbri: fluctuate(prev.equities.bbri),
+            tlkm: fluctuate(prev.equities.tlkm),
+          },
+          commodities: {
+            ...prev.commodities,
+            gold: fluctuate(prev.commodities.gold),
+          },
+          crypto: {
+            ...prev.crypto,
+            btcUsdt: fluctuate(prev.crypto.btcUsdt),
+          }
+        };
+      });
+      
+      setLastUpdated(new Date().toLocaleTimeString('id-ID'));
+      setIsLive(true);
     };
 
-    // Fetch immediately on mount
-    fetchLiveMarketData();
+    // Trigger immediately on mount
+    simulateMarketTick();
 
-    // Set up 60-second polling interval
-    const intervalId = setInterval(fetchLiveMarketData, 60000);
+    // Set up 3-second simulation interval
+    const intervalId = setInterval(simulateMarketTick, 3000);
 
     return () => clearInterval(intervalId);
   }, []);
