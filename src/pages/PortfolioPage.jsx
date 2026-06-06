@@ -13,6 +13,7 @@ import {
 import { PortfolioStoryPanel, PortfolioWhatIfSimulator } from "../components/PortfolioStoryPanel";
 import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
 import { PortfolioComparison } from '@/components/PortfolioComparison';
+import { PortfolioHealthScore } from '@/components/PortfolioHealthScore';
 import { AlertTriangle, Landmark, TrendingUp, Briefcase, Shield, DollarSign } from "lucide-react";
 
 function LedgerRow({ line }) {
@@ -197,6 +198,9 @@ export default function PortfolioPage() {
       </div>
 
       <PortfolioComparison />
+
+      {/* Portfolio Health Score — composite risk gauge */}
+      <PortfolioHealthScore />
     </div>
   );
 }
