@@ -13,21 +13,18 @@ export default function FloatingCopilotTrigger({ onOpen, onSuggestionClick, inpu
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      
       {/* Suggestion Chips */}
       <div className="overflow-x-auto scrollbar-hide flex items-center gap-2">
         {suggestions.map((text, idx) => (
           <button
             key={idx}
             onClick={() => onSuggestionClick(text)}
-            className="text-xs px-3 py-1.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors whitespace-nowrap cursor-pointer"
+            className="text-xs px-3.5 py-2.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors whitespace-nowrap cursor-pointer min-h-[44px] flex items-center justify-center"
           >
             {text}
           </button>
         ))}
-      </div>
-
-      {/* Input Mockup */}
+      </div>      {/* Input Mockup */}
       <div className="flex items-center gap-3 px-2">
         <Sparkles size={18} className="text-indigo-400 shrink-0" />
         <input 

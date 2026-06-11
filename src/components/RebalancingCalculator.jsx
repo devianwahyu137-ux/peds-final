@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
 
@@ -148,19 +148,19 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
 
       <div className="space-y-3.5">
         <div>
-          <label className="block text-[9px] text-slate-500 dark:text-neutral-400 uppercase tracking-widest mb-1.5">
+          <label className="block text-[9px] text-[var(--as-text-dim)] uppercase tracking-[0.2em] mb-1.5 font-mono">
             Total Capital Value (IDR)
           </label>
           <input
             type="text"
             value={capitalRaw ? parseInt(capitalRaw.replace(/\./g, "") || "0").toLocaleString("id-ID") : ""}
             onChange={(e) => setCapitalRaw(e.target.value.replace(/[^0-9]/g, ""))}
-            className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-3 text-2xl font-mono text-white font-bold tracking-tighter tabular-nums focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all shadow-inner"
+            className="w-full bg-[var(--as-bg-page)] border border-[var(--as-border-primary)] rounded-lg px-4 py-3 text-2xl font-mono text-[var(--as-text-primary)] font-bold tracking-tighter tabular-nums focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all shadow-inner"
           />
         </div>
 
         <div>
-          <label className="block text-[9px] text-slate-500 dark:text-neutral-400 uppercase tracking-widest mb-1.5">
+          <label className="block text-[9px] text-[var(--as-text-dim)] uppercase tracking-[0.2em] mb-1.5 font-mono">
             Current Equities Actual Weight: {Math.round(localStocks || 0)}%
           </label>
           <input
@@ -172,8 +172,10 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
             onChange={handleSliderChange}
             className="w-full cursor-pointer bg-slate-200 dark:bg-neutral-900 rounded-lg appearance-none accent-emerald-500 dark:accent-emerald-400"
             style={{
-              height: '4px',
-              padding: '12px 0',
+              height: '8px',
+              padding: '18px 0',
+              boxSizing: 'content-box',
+              backgroundClip: 'content-box',
             }}
           />
         </div>
@@ -244,7 +246,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
           {activeOrders.length > 0 && (
             <button
               onClick={handleCopyOrders}
-              className="text-[9px] px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-neutral-900 dark:hover:bg-neutral-800 text-slate-600 dark:text-neutral-400 border border-slate-200 dark:border-neutral-800 rounded transition-colors"
+              className="text-[9px] px-3.5 py-2.5 md:px-2.5 md:py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-neutral-900 dark:hover:bg-neutral-800 text-slate-600 dark:text-neutral-400 border border-slate-200 dark:border-neutral-800 rounded transition-colors min-h-[44px] flex items-center justify-center"
             >
               [ COPY ORDERS ]
             </button>

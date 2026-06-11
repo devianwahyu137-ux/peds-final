@@ -318,8 +318,15 @@ export function MonteCarloPanel() {
 
         {/* Idle state */}
         {!isCalculating && !result && !error && (
-          <div className="text-center text-[10px] font-mono text-neutral-600 py-8 tracking-wider">
-            Klik &quot;JALANKAN SIMULASI&quot; untuk memulai analisis probabilistik
+          <div className="flex flex-col items-center justify-center p-8 rounded-xl bg-slate-500/[0.015] border border-slate-300/10 py-12">
+            <svg className="w-14 h-14 mb-4 text-slate-400 dark:text-neutral-600 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
+              {/* Distribution curve + charts */}
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 20h18M3 20c1.5-3.5 3-7 5.5-7s3 4 5 4 4-11 7.5-11" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 14v2m3-5v5m3-3v3m3-6v6m3-9v9m3-12v12" opacity={0.3} />
+            </svg>
+            <div className="text-center text-[10px] font-mono text-[var(--as-text-secondary)] uppercase tracking-[0.15em] leading-relaxed max-w-sm">
+              Klik <span className="text-slate-800 dark:text-white font-bold">JALANKAN SIMULASI</span> untuk memulai analisis 1.000 skenario portofoliomu
+            </div>
           </div>
         )}
 

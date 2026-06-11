@@ -67,7 +67,7 @@ export function HistoricalBacktest() {
             className="text-[10px] font-mono mt-1"
             style={{ color: 'var(--as-text-tertiary)' }}
           >
-            Estimasi performa portofolio di 3 periode krisis — data edukatif, bukan backtesting akurat
+            Estimasi performa portofolio di 4 periode krisis — data edukatif, bukan backtesting akurat
           </p>
         </div>
         <div

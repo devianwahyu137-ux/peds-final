@@ -190,6 +190,7 @@ export const useRootStore = create(
       endpointStatus: INITIAL_STATUS,
       deltaMap:      {},
       lastSyncAt:    null,
+      triggerRefresh: null,
 
       // ── UI STATE ───────────────────────────────────────────
       activeTab:     'home',
@@ -338,6 +339,12 @@ export const useRootStore = create(
         set((state) => {
           if (state.endpointStatus[key] === status) return;
           state.endpointStatus[key] = status;
+        });
+      },
+
+      setTriggerRefresh: (fn) => {
+        set((state) => {
+          state.triggerRefresh = fn;
         });
       },
 

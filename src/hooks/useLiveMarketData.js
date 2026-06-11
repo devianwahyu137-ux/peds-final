@@ -71,6 +71,7 @@ export function useLiveMarketData() {
   // SECONDARY: Direct API polling (backup if Supabase unavailable)
   const setLiveMetric     = useRootStore((s) => s.setLiveMetric);
   const setEndpointStatus = useRootStore((s) => s.setEndpointStatus);
+  const setTriggerRefresh = useRootStore((s) => s.setTriggerRefresh);
 
   // ── Mutable refs for stable lifecycle management ──
   const timeoutRef = useRef(null);
@@ -95,6 +96,11 @@ export function useLiveMarketData() {
    */
   const scheduleNextCycleCb = useCallback(function scheduleNextCycle() {
     if (!isMountedRef.current) return;
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
 
     if (abortRef.current) {
       abortRef.current.abort();
@@ -131,8 +137,14 @@ export function useLiveMarketData() {
     // Kick off the initial fetch cycle
     scheduleNextCycleCb();
 
+    // Bind global trigger action
+    setTriggerRefresh(scheduleNextCycleCb);
+
     return () => {
       isMountedRef.current = false;
+
+      // Clean up global trigger action
+      setTriggerRefresh(null);
 
       // Clear scheduled timeout
       if (timeoutRef.current) {
@@ -146,7 +158,7 @@ export function useLiveMarketData() {
         abortRef.current = null;
       }
     };
-  }, [scheduleNextCycleCb]);
+  }, [scheduleNextCycleCb, setTriggerRefresh]);
 
   /**
    * Page Visibility API synchronization.

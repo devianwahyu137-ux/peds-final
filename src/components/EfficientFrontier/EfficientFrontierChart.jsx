@@ -116,7 +116,7 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
               <line
                 x1={CHART_PAD.left} y1={y}
                 x2={CHART_PAD.left + plotW} y2={y}
-                stroke="rgba(255,255,255,0.05)" strokeWidth={1}
+                stroke="var(--as-border-secondary)" strokeWidth={1}
                 strokeDasharray="2 4"
               />
               <text
@@ -138,7 +138,7 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
               <line
                 x1={x} y1={CHART_PAD.top}
                 x2={x} y2={CHART_PAD.top + plotH}
-                stroke="rgba(255,255,255,0.05)" strokeWidth={1}
+                stroke="var(--as-border-secondary)" strokeWidth={1}
                 strokeDasharray="2 4"
               />
               <text
@@ -204,15 +204,15 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
                 width={120} height={58}
                 rx={6}
                 fill="var(--as-bg-primary)"
-                stroke="#333" strokeWidth={0.5}
+                stroke="var(--as-border-primary)" strokeWidth={1}
               />
-              <text x={tx + 8} y={ty + 14} fontSize={8} fill="#666" letterSpacing="1">
+              <text x={tx + 8} y={ty + 14} fontSize={8} fill="var(--as-text-secondary)" letterSpacing="1">
                 PORTOFOLIO ACAK
               </text>
               <text x={tx + 8} y={ty + 28} fontSize={9} fill={sharpeToColor(pt.sharpe)} fontWeight="bold">
                 Sharpe: {pt.sharpe.toFixed(2)}
               </text>
-              <text x={tx + 8} y={ty + 42} fontSize={8} fill="#888">
+              <text x={tx + 8} y={ty + 42} fontSize={8} fill="var(--as-text-tertiary)">
                 R: {pt.returnPct.toFixed(1)}% σ: {pt.riskPct.toFixed(1)}%
               </text>
             </g>

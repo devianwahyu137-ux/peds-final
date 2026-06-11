@@ -26,18 +26,18 @@ const MACRO_INTERPRETATION = {
   TIGHTENING: [
     {
       icon: <AlertTriangle size={16} className="text-amber-500" />,
-      title: 'BI Naikkan Rate ke 5.25% (Mei 2026)',
-      body: 'RDG Bank Indonesia 19-20 Mei 2026 menaikkan BI Rate 50bps menjadi 5.25% — langkah pre-emptive menghadapi gejolak global akibat konflik Timur Tengah. Biaya modal korporasi naik, tekanan pada margin perbankan.',
+      title: 'Kenaikan BI Rate ke 5.25% (Juni 2026)',
+      body: 'BI Rate 5.25% berarti cost of capital korporasi naik minimal 50-75bps, menekan earning growth IHSG sekitar 8-12% year-forward. Investor ritel disarankan membatasi eksposur pada emiten dengan leverage tinggi (Debt-to-Equity Ratio > 1.2x) dan beralih ke sektor yang memiliki cadangan kas kuat.',
     },
     {
       icon: <Landmark size={16} className="text-indigo-400" />,
-      title: 'Rotasi ke SBN Jangka Pendek',
-      body: 'Yield SBN 10Y sideways di 6.71%. Strategi optimal: fokus tenor pendek (SR/ORI 3 tahun) untuk meminimalkan duration risk sambil lock-in yield di atas BI Rate. Hindari tenor panjang.',
+      title: 'Rotasi Yield SBN 10Y ke Level 6.71%',
+      body: 'Kenaikan yield ke 6.71% menekan harga obligasi tenor panjang (potensi capital loss > 5-8%). Ritel sebaiknya merotasi portofolio fixed-income ke instrumen tenor pendek (SR/ORI 3 tahun) untuk mengunci yield tinggi sekaligus meminimalisir risiko durasi.',
     },
     {
       icon: <TrendingDown size={16} className="text-red-400" />,
-      title: 'IHSG Koreksi Terburuk 26 Tahun di Mei',
-      body: 'IHSG turun 11.8% di bulan Mei 2026 — koreksi bulanan terburuk sejak Mei 2000. Investor asing net sell besar. Saham domestik dalam tekanan ganda: cost of capital naik + earning outlook turun.',
+      title: 'Konsolidasi IHSG di Level 6.000-6.500',
+      body: 'Setelah anjlok -11.8% di Mei, IHSG berkonsolidasi di rentang 6.000-6.500. Alokasikan 25-30% porsi saham ke sektor defensif seperti konsumer primer dengan Dividend Yield minimal 5-7% untuk mengamankan arus kas pasif di tengah perlambatan pasar.',
     },
   ],
   CURRENCY_STRESS: [

@@ -3,6 +3,7 @@ import MicroSparkline from "./MicroSparkline";
 import MacroTooltip from "./MacroTooltip";
 import { useRootStore } from "@/stores/rootStore";
 import { SCENARIO_CONFIG } from "@/lib/scenarioPulse";
+import { RefreshCw } from "lucide-react";
 
 
 
@@ -68,15 +69,18 @@ function useCountUp(targetValue, duration = 800) {
 }
 
 /**
- * Format the timestamp delta as a relative "time ago" string.
+ * Format the timestamp delta as a relative "time ago" string in Indonesian.
  */
-function formatTimeAgo(timestamp) {
+function formatTimeAgoIndonesian(timestamp) {
   if (!timestamp) return "";
   const delta = Date.now() - timestamp;
-  if (delta < 60000) return "just now";
-  if (delta < 3600000) return `${Math.floor(delta / 60000)}m ago`;
-  if (delta < 86400000) return `${Math.floor(delta / 3600000)}h ago`;
-  return `${Math.floor(delta / 86400000)}d ago`;
+  if (delta < 60000) return "baru saja";
+  const minutes = Math.floor(delta / 60000);
+  if (minutes < 60) return `${minutes} menit lalu`;
+  const hours = Math.floor(delta / 3600000);
+  if (hours < 24) return `${hours} jam lalu`;
+  const days = Math.floor(delta / 86400000);
+  return `${days} hari lalu`;
 }
 
 /**
@@ -123,6 +127,9 @@ export default function MacroIndicatorCard({
   const deltaInfo = useRootStore((s) => s.deltaMap[id]);
   const delta     = deltaInfo?.delta     ?? 0;
   const direction = deltaInfo?.direction ?? 'flat';
+
+  const triggerRefresh = useRootStore((s) => s.triggerRefresh);
+  const status         = useRootStore((s) => s.endpointStatus[id]);
 
   return (
     <div
@@ -206,10 +213,38 @@ export default function MacroIndicatorCard({
           {direction === 'up' ? '▲ ' : direction === 'down' ? '▼ ' : ''}
           {delta !== 0 ? `${delta > 0 ? '+' : ''}${delta.toFixed(2)}%` : '—'}
         </span>
-        <span className="text-[8px] font-mono font-light text-[var(--as-text-tertiary)] flex flex-col items-end">
+        <div className="text-[8px] font-mono font-light text-[var(--as-text-tertiary)] flex flex-col items-end">
           <span>vs periode lalu</span>
-          {timestamp && <span className="mt-1 opacity-60">{formatTimeAgo(timestamp)}</span>}
-        </span>
+          {(() => {
+            const isStale = !timestamp || (Date.now() - timestamp) > 3600000;
+            const isFetching = status === "fetching";
+            
+            if (isStale || isFetching) {
+              return (
+                <div className="flex items-center gap-1.5 mt-1 text-amber-500/90 font-medium">
+                  <span>Data dari cache — klik untuk refresh</span>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (triggerRefresh) triggerRefresh();
+                    }}
+                    disabled={isFetching}
+                    title={isFetching ? "Sedang menyegarkan..." : "Refresh data"}
+                    className="p-1 hover:bg-neutral-850 dark:hover:bg-neutral-800/80 rounded transition-colors duration-200 cursor-pointer flex items-center justify-center active:scale-90 disabled:opacity-50"
+                  >
+                    <RefreshCw size={10} className={isFetching ? "animate-spin text-amber-500" : "animate-pulse text-amber-500"} />
+                  </button>
+                </div>
+              );
+            } else {
+              return (
+                <span className="mt-1 opacity-65 text-emerald-500/80 font-medium">
+                  Diperbarui {formatTimeAgoIndonesian(timestamp)}
+                </span>
+              );
+            }
+          })()}
+        </div>
       </div>
     </div>
   );

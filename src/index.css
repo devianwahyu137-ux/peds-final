@@ -20,20 +20,19 @@
   --as-bg-hover:       rgba(255, 255, 255, 0.018);
   --as-bg-card:        var(--as-bg-secondary);
 
-  /* ── BORDERS ── */
-  --as-border-primary:   var(--as-border-primary);
-  --as-border-secondary: var(--as-border-secondary);
+  --as-border-primary:   rgba(255, 255, 255, 0.08);
+  --as-border-secondary: rgba(255, 255, 255, 0.04);
   --as-border-divider:   rgba(38,  38,  38,  1.00);
 
   /* ── TEXT ── */
-  --as-text-primary:   var(--as-text-primary);
-  --as-text-secondary: var(--as-text-secondary);
-  --as-text-tertiary:  var(--as-text-tertiary);
-  --as-text-dim:       var(--as-text-dim);
+  --as-text-primary:   #ffffff;
+  --as-text-secondary: #d4d4d4;
+  --as-text-tertiary:  #a3a3a3;
+  --as-text-dim:       #737373;
 
   /* ── TICKER / NAVBAR ── */
   --as-ticker-bg:      rgba(0, 0, 0, 0.96);
-  --as-navbar-bg:      var(--as-navbar-bg);
+  --as-navbar-bg:      rgba(10, 10, 10, 0.85);
   --as-navbar-border:  rgba(38, 38, 38, 0.70);
 
   /* ── STATUS PANEL ── */
@@ -592,8 +591,8 @@ svg * {
 
 /* ── TICKER ANIMATION v3.9 ─────────────────────────────────── */
 @keyframes tickerScroll {
-  0%   { transform: translateX(0%);    }
-  100% { transform: translateX(-50%);  }
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
 }
 
 .ticker-track {

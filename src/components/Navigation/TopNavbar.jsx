@@ -147,11 +147,11 @@ export const TopNavbar = memo(function TopNavbar() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setAlertSettingsOpen(true)}
-              className="relative p-1.5 rounded-lg cursor-pointer transition-colors hover:text-white flex items-center justify-center"
+              className="relative p-3 rounded-lg cursor-pointer transition-colors hover:text-white flex items-center justify-center min-w-[44px] min-h-[44px]"
               style={{ color: 'var(--as-text-dim)' }}
               title="Pengaturan Alert"
             >
-              <Bell size={16} />
+              <Bell size={18} />
             </button>
           </div>
 
@@ -240,10 +240,10 @@ export const TopNavbar = memo(function TopNavbar() {
 
             {/* Label */}
             <span
-              className="text-[9px] font-mono font-bold tracking-wider"
+              className="text-[9px] font-mono font-bold tracking-wider truncate max-w-full px-0.5 block text-center"
               style={{ color: isActive ? theme.color : 'var(--as-text-dim)' }}
             >
-              {item.label.split(' ')[0]}
+              {item.label}
             </span>
           </button>
         );

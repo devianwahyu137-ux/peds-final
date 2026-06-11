@@ -5,10 +5,25 @@ import { getAlphaShieldAnalysis } from '@/lib/gemini';
 import { useRootStore } from '@/stores/rootStore';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
 
+function formatMarkdown(text) {
+  if (!text) return "";
+  let html = text;
+  html = html
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
+  html = html.replace(/`(.*?)`/g, '<code class="bg-slate-850 dark:bg-neutral-800/80 px-1 py-0.5 rounded text-indigo-400 dark:text-indigo-300 text-xs font-mono">$1</code>');
+  html = html.replace(/\n/g, "<br />");
+  return html;
+}
+
 export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }) {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading]   = useState(false);
   const [error, setError]           = useState(null);
+  const [streamingText, setStreamingText] = useState("");
   
   const endOfMessagesRef = useRef(null);
   const inputRef         = useRef(null);
@@ -65,6 +80,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
 
     setInputValue("");
     setError(null);
+    setStreamingText("");
 
     // Only add user message to chat if not already added externally
     if (!isExternal) {
@@ -79,7 +95,10 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
       const aiResponseText = await getAlphaShieldAnalysis(
         msg,
         portfolioState,
-        messages
+        messages,
+        (chunkText, fullText) => {
+          setStreamingText(fullText);
+        }
       );
 
       setMessages(prev => [
@@ -91,8 +110,17 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
       setError(err.message || "Terjadi kesalahan saat menghubungi layanan AI.");
     } finally {
       setIsLoading(false);
+      setStreamingText("");
     }
   }, [inputValue, isLoading, messages, portfolioState, setMessages]);
+
+  const handleRetry = useCallback(() => {
+    const userMessages = messages.filter(m => m.role === 'user');
+    if (userMessages.length > 0) {
+      const lastUserMsg = userMessages[userMessages.length - 1].content;
+      handleSendMessage(lastUserMsg, true);
+    }
+  }, [messages, handleSendMessage]);
 
   const handleLocalSubmit = useCallback((text) => {
     if (text.trim() === '') return;
@@ -164,7 +192,20 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
 
           {/* Suggested questions — show when no user messages yet */}
           {messages.filter(m => m.role === 'user').length === 0 && !isLoading && (
-            <div className="space-y-2 mb-4">
+            <div className="space-y-4 mb-4 font-mono">
+              <div className="p-4 rounded-xl border border-[var(--as-border-primary)] bg-slate-500/[0.01] space-y-3">
+                <div className="flex items-center gap-2 text-indigo-400">
+                  <Sparkles size={16} />
+                  <span className="text-xs font-bold uppercase tracking-wider">Selamat Datang</span>
+                </div>
+                <p className="text-xs text-[var(--as-text-secondary)] leading-relaxed">
+                  Halo! Saya adalah <strong>AlphaShield Quant Copilot</strong>. Saya siap membantu Anda menganalisis alokasi aset, risiko krisis eksternal, dan efisiensi portofolio di bawah skenario aktif <strong>{config.label}</strong>.
+                </p>
+                <p className="text-[10px] text-[var(--as-text-tertiary)]">
+                  Gunakan kolom obrolan di bawah untuk bertanya, atau pilih salah satu topik diskusi yang disarankan berikut:
+                </p>
+              </div>
+
               <div
                 className="text-[9px] font-mono tracking-widest uppercase mb-2"
                 style={{ color: 'var(--as-text-dim)' }}
@@ -176,7 +217,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
                   key={i}
                   onClick={() => handleLocalSubmit(q)}
                   className="w-full text-left text-[10px] font-mono px-3 py-2.5
-                             rounded-xl cursor-pointer transition-all duration-150"
+                             rounded-xl cursor-pointer transition-all duration-150 min-h-[44px] flex items-center"
                   style={{
                     background: 'var(--as-bg-tertiary)',
                     color: 'var(--as-text-secondary)',
@@ -229,7 +270,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
                   }
                 >
                   {msg.role === 'ai' ? (
-                    <div dangerouslySetInnerHTML={{ __html: msg.content }} />
+                    <div dangerouslySetInnerHTML={{ __html: formatMarkdown(msg.content) }} />
                   ) : (
                     msg.content
                   )}
@@ -238,8 +279,26 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
             );
           })}
 
+          {/* Active streaming response */}
+          {isLoading && streamingText && (
+            <div className="flex justify-start">
+              <div
+                className="border rounded-r-xl rounded-tl-xl p-3 text-sm font-sans leading-relaxed max-w-[90%] shadow-sm"
+                style={{
+                  background: 'var(--as-bg-primary)',
+                  borderColor: 'var(--as-border-primary)',
+                  color: 'var(--as-text-primary)',
+                }}
+              >
+                <div dangerouslySetInnerHTML={{ __html: formatMarkdown(streamingText) }} />
+                {/* Blinking block cursor */}
+                <span className="inline-block w-1.5 h-3.5 ml-1 bg-indigo-400 animate-pulse align-middle" />
+              </div>
+            </div>
+          )}
+
           {/* Loading indicator — wait for AI response */}
-          {isLoading && (
+          {isLoading && !streamingText && (
             <div className="flex justify-start">
               <div
                 className="border rounded-r-xl rounded-tl-xl p-4 text-sm
@@ -252,7 +311,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
               >
                 <Sparkles size={14} className="text-indigo-400 animate-pulse" />
                 <span className="text-[11px] font-mono animate-pulse">
-                  AI is thinking...
+                  AI sedang berpikir...
                 </span>
                 <div className="flex gap-1.5 items-center ml-2">
                   {[0, 1, 2].map(i => (
@@ -274,14 +333,24 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
           {/* Error state */}
           {error && (
             <div
-              className="mx-1 px-3 py-2 rounded-xl text-[10px] font-mono"
+              className="mx-1 px-4 py-3 rounded-xl text-[11px] font-mono flex flex-col gap-2"
               style={{
                 background: 'rgba(239,68,68,0.10)',
                 color: '#ef4444',
-                border: '1px solid rgba(239,68,68,0.15)',
+                border: '1px solid rgba(239,68,68,0.20)',
               }}
             >
-              <span className="flex items-center gap-1.5"><AlertCircle size={12} className="text-red-500 shrink-0" />{error}</span>
+              <div className="flex items-center gap-1.5 font-bold">
+                <AlertCircle size={14} className="text-red-500 shrink-0" />
+                <span>Koneksi Gagal</span>
+              </div>
+              <p className="text-slate-400 dark:text-neutral-400">{error}</p>
+              <button
+                onClick={handleRetry}
+                className="mt-1 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-center cursor-pointer transition-colors min-h-[44px] inline-flex items-center justify-center font-bold uppercase tracking-wider text-[9px]"
+              >
+                Coba Lagi
+              </button>
             </div>
           )}
 
@@ -299,10 +368,10 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
             {suggestedQuestions.map((chipText, idx) => (
               <button
                 key={idx}
-                onClick={() => setInputValue(chipText)}
-                className="text-[11px] px-3 py-1.5 rounded-full bg-indigo-900/20
+                onClick={inputValue === chipText ? () => setInputValue("") : () => setInputValue(chipText)}
+                className="text-[11px] px-3.5 py-2.5 rounded-full bg-indigo-900/20
                            text-indigo-300 border border-indigo-500/20 cursor-pointer
-                           hover:bg-indigo-500/30 transition-colors whitespace-nowrap"
+                           hover:bg-indigo-500/30 transition-colors whitespace-nowrap min-h-[44px] flex items-center justify-center"
               >
                 {chipText}
               </button>
@@ -343,7 +412,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
                   setInputValue('');
                 }
               }}
-              className="transition-colors cursor-pointer"
+              className="transition-colors cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0"
               style={{
                 color: isLoading
                   ? 'var(--as-text-dim)'

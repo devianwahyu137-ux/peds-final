@@ -71,6 +71,13 @@ export default function PortfolioPage() {
 
   const [hoveredAsset, setHoveredAsset] = useState(null);
   const [animPct, setAnimPct] = useState({ stocks: 0, bonds: 0, gold: 0, cash: 0 });
+  const [isComputing, setIsComputing] = useState(false);
+
+  useEffect(() => {
+    setIsComputing(true);
+    const timer = setTimeout(() => setIsComputing(false), 450);
+    return () => clearTimeout(timer);
+  }, [scenarioId]);
 
   useEffect(() => {
     const handle = setTimeout(() => {
@@ -112,6 +119,7 @@ export default function PortfolioPage() {
                 setHovered={setHoveredAsset}
                 animPct={animPct}
                 analytics={targetAnalytics}
+                isComputing={isComputing}
               />
               <div className="flex-1 w-full space-y-3.5">
                 <AllocationRow assetKey="stocks" pct={Math.round(targetWeights?.stocks ?? 0)} />
@@ -129,36 +137,44 @@ export default function PortfolioPage() {
             <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-3 font-mono">
               Analisis <GlossaryTerm termId="mpt">MPT</GlossaryTerm> — dengan Interpretasi
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 [&>*]:stat-hover">
-              <MetricWithContext
-                label="Sharpe Ratio"
-                value={(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0).toFixed(2)}
-                unit=" σ"
-                interpretation={getSharpeInterpretation(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0)}
-                color={acc.neon}
-              />
-              <MetricWithContext
-                label="Portfolio Beta"
-                value={(targetAnalytics?.portfolioBeta ?? targetAnalytics?.beta ?? 0).toFixed(2)}
-                unit=" β"
-                interpretation={getBetaInterpretation(targetAnalytics?.portfolioBeta ?? targetAnalytics?.beta ?? 0)}
-                color="#a78bfa"
-              />
-              <MetricWithContext
-                label="Max Drawdown"
-                value={((targetAnalytics?.maxDrawdown ?? targetAnalytics?.estimatedMaxDrawdown ?? 0) * 100).toFixed(1)}
-                unit="%"
-                interpretation={getMddInterpretation(targetAnalytics?.maxDrawdown ?? targetAnalytics?.estimatedMaxDrawdown ?? 0)}
-                color="#ef4444"
-              />
-              <MetricWithContext
-                label="Volatilitas"
-                value={((targetAnalytics?.portfolioVolatility ?? targetAnalytics?.portfolioStdDev ?? 0) * 100).toFixed(1)}
-                unit="%"
-                interpretation={getVolInterpretation(targetAnalytics?.portfolioVolatility ?? targetAnalytics?.portfolioStdDev ?? 0)}
-                color="var(--as-text-secondary)"
-              />
-            </div>
+            {isComputing ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="shimmer h-[98px] rounded-xl" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 [&>*]:stat-hover">
+                <MetricWithContext
+                  label="Sharpe Ratio"
+                  value={(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0).toFixed(2)}
+                  unit=" σ"
+                  interpretation={getSharpeInterpretation(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0)}
+                  color={acc.neon}
+                />
+                <MetricWithContext
+                  label="Portfolio Beta"
+                  value={(targetAnalytics?.portfolioBeta ?? targetAnalytics?.beta ?? 0).toFixed(2)}
+                  unit=" β"
+                  interpretation={getBetaInterpretation(targetAnalytics?.portfolioBeta ?? targetAnalytics?.beta ?? 0)}
+                  color="#a78bfa"
+                />
+                <MetricWithContext
+                  label="Max Drawdown"
+                  value={((targetAnalytics?.maxDrawdown ?? targetAnalytics?.estimatedMaxDrawdown ?? 0) * 100).toFixed(1)}
+                  unit="%"
+                  interpretation={getMddInterpretation(targetAnalytics?.maxDrawdown ?? targetAnalytics?.estimatedMaxDrawdown ?? 0)}
+                  color="#ef4444"
+                />
+                <MetricWithContext
+                  label="Volatilitas"
+                  value={((targetAnalytics?.portfolioVolatility ?? targetAnalytics?.portfolioStdDev ?? 0) * 100).toFixed(1)}
+                  unit="%"
+                  interpretation={getVolInterpretation(targetAnalytics?.portfolioVolatility ?? targetAnalytics?.portfolioStdDev ?? 0)}
+                  color="var(--as-text-secondary)"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

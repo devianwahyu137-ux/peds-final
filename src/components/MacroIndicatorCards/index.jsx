@@ -14,7 +14,7 @@ const MACRO_INDICATORS = [
 ];
 
 export default function MacroIndicatorCards() {
-  const { scenarioId, crisisMode } = useRootStore();
+  const { scenarioId, crisisMode, liveData } = useRootStore();
   const { marketData, isLive } = useMarketData();
 
   const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : scenarioId;
@@ -41,6 +41,7 @@ export default function MacroIndicatorCards() {
         {MACRO_INDICATORS.map((indicator) => {
           const value = getMarketValueFormatted(indicator.id);
           const sparklineData = presets[indicator.id] || [];
+          const timestamp = liveData[indicator.id]?.t || null;
           
           return (
             <MacroIndicatorCard
@@ -50,8 +51,7 @@ export default function MacroIndicatorCards() {
               unit={indicator.unit}
               icon={indicator.icon}
               value={value}
-              delta={0}
-              timestamp={null}
+              timestamp={timestamp}
               isLive={isLive}
               scenarioId={scenarioId}
               sparklineData={sparklineData}

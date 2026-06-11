@@ -60,7 +60,7 @@ class PageErrorBoundary extends Component {
               this.setState({ hasError: false, error: null });
               window.location.reload();
             }}
-            className="text-[9px] font-mono px-4 py-2 rounded-lg
+            className="text-[9px] font-mono px-4 py-3 min-h-[44px] inline-flex items-center justify-center rounded-lg
                        border border-slate-300 dark:border-neutral-700 text-slate-600 dark:text-neutral-400
                        hover:border-slate-400 dark:hover:border-neutral-500 cursor-pointer
                        transition-colors"
@@ -126,14 +126,14 @@ export default function App() {
 
   // Tab → Component mapping
   const PAGE_MAP = {
-    home:      <HomePage />,
-    market:    <MarketPage />,
-    portfolio: <PortfolioPage />,
-    strategy:  <StrategyPage />,
-    analysis:  <AnalysisPage />,
+    home:      HomePage,
+    market:    MarketPage,
+    portfolio: PortfolioPage,
+    strategy:  StrategyPage,
+    analysis:  AnalysisPage,
   };
 
-  const CurrentPage = PAGE_MAP[activeTab] ?? <HomePage />;
+  const PageComponent = PAGE_MAP[activeTab] ?? HomePage;
 
   // STEALTH CONTEXT FUNCTION
   // This string will be prepended to user's prompt before sending to the future AI API
@@ -172,7 +172,7 @@ export default function App() {
       </div>
 
       <main
-        className="flex-1 overflow-y-auto pb-24 pt-8 w-full max-w-[1600px] mx-auto
+        className="flex-1 overflow-y-auto pb-32 md:pb-24 pt-8 w-full max-w-[1600px] mx-auto
                    overflow-x-hidden px-4 md:px-6 lg:px-8
                    print:overflow-visible print:pt-0 print:px-0 print:pb-0 print:w-full print:block"
       >
@@ -184,7 +184,7 @@ export default function App() {
               className="w-full fade-in-up"
               style={{ animationDuration: '250ms' }}
             >
-              {CurrentPage}
+              <PageComponent />
             </div>
           </Suspense>
         </PageErrorBoundary>

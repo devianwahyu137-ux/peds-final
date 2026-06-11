@@ -4,7 +4,7 @@ import { buildPortfolioContext } from './portfolioContextBuilder';
 // Initialize the Gemini client using Vite environment variable
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-export async function getAlphaShieldAnalysis(userMessage, portfolioState, chatHistory = []) {
+export async function getAlphaShieldAnalysis(userMessage, portfolioState, chatHistory = [], onChunk = null) {
   if (!apiKey) {
     throw new Error('API Key Gemini (VITE_GEMINI_API_KEY) tidak ditemukan di environment.');
   }
@@ -25,9 +25,9 @@ export async function getAlphaShieldAnalysis(userMessage, portfolioState, chatHi
 KONTEKS PORTOFOLIO SAAT INI:
 ${portfolioContext}`;
 
-    // Instantiate the model using gemini-1.5-flash
+    // Instantiate the model using gemini-1.5-flash-latest
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-1.5-flash-latest',
       systemInstruction: systemInstruction,
     });
 
@@ -58,10 +58,20 @@ ${portfolioContext}`;
       history: cleanHistory,
     });
 
-    // Send the new message
-    const result = await chat.sendMessage(userMessage);
-    
-    return result.response.text();
+    // Send the new message using stream if callback is provided
+    if (onChunk) {
+      const result = await chat.sendMessageStream(userMessage);
+      let fullText = '';
+      for await (const chunk of result.stream) {
+        const chunkText = chunk.text();
+        fullText += chunkText;
+        onChunk(chunkText, fullText);
+      }
+      return fullText;
+    } else {
+      const result = await chat.sendMessage(userMessage);
+      return result.response.text();
+    }
   } catch (error) {
     console.error('[AlphaShield] Gemini API Error:', error);
     throw new Error("Koneksi ke jaringan AlphaShield terputus. Silakan coba beberapa saat lagi.");

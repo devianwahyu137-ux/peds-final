@@ -1,11 +1,32 @@
 import SovereignYieldCurve from "../components/SovereignYieldCurve";
 import MacroNewsCards from "../components/MacroNewsCards";
-import { MonteCarloPanel } from "../components/EfficientFrontier/MonteCarloPanel";
-import { HistoricalBacktest } from '@/components/HistoricalBacktest';
 import { MacroSentimentSummary } from "../components/MacroSentimentSummary";
 import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
 import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 import { ACCENT } from "../components/SharedComponents";
+import { lazy, Suspense } from 'react';
+
+const MonteCarloPanel = lazy(() => import("../components/EfficientFrontier/MonteCarloPanel").then(m => ({ default: m.MonteCarloPanel })));
+const HistoricalBacktest = lazy(() => import("@/components/HistoricalBacktest").then(m => ({ default: m.HistoricalBacktest })));
+
+function ShimmerSkeleton({ heightClass = "h-[300px]", title = "MENGHITUNG SIMULASI..." }) {
+  return (
+    <div className="w-full bg-slate-100/30 dark:bg-[var(--as-bg-secondary)] border border-slate-200 dark:border-neutral-900 rounded-xl p-6 space-y-4 overflow-hidden relative transition-colors duration-300">
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <div className="h-4 w-32 bg-slate-200 dark:bg-neutral-800 rounded animate-pulse" />
+          <div className="h-3 w-48 bg-slate-200/50 dark:bg-neutral-800/50 rounded animate-pulse" />
+        </div>
+        <div className="h-6 w-20 bg-slate-200 dark:bg-neutral-800 rounded animate-pulse" />
+      </div>
+      <div className={`w-full ${heightClass} rounded-lg shimmer`} />
+      <div className="flex justify-between items-center pt-2">
+        <div className="h-3 w-24 bg-slate-200/50 dark:bg-neutral-800/50 rounded animate-pulse" />
+        <div className="h-3 w-36 bg-slate-200/50 dark:bg-neutral-800/50 rounded animate-pulse" />
+      </div>
+    </div>
+  );
+}
 
 /**
  * AnalysisPage — "ANALISIS" tab.
@@ -41,10 +62,14 @@ export default function AnalysisPage() {
       <MacroNewsCards />
 
       {/* Historical Backtesting Snapshot */}
-      <HistoricalBacktest />
+      <Suspense fallback={<ShimmerSkeleton heightClass="h-[300px]" title="MEMUAT BACKTEST SEJARAH..." />}>
+        <HistoricalBacktest />
+      </Suspense>
 
       {/* Monte Carlo Simulation Engine */}
-      <MonteCarloPanel />
+      <Suspense fallback={<ShimmerSkeleton heightClass="h-[400px]" title="MEMUAT MESIN SIMULASI MONTE CARLO..." />}>
+        <MonteCarloPanel />
+      </Suspense>
     </div>
   );
 }

@@ -11,8 +11,8 @@ export function ThemeToggle() {
     <button
       onClick={toggleTheme}
       title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-      className="flex items-center gap-1.5 px-1 py-1 md:px-3 md:py-1.5 rounded-lg
-                 border cursor-pointer transition-all duration-200"
+      className="flex items-center gap-1.5 px-3 py-2.5 md:px-3 md:py-1.5 rounded-lg
+                 border cursor-pointer transition-all duration-200 min-w-[44px] min-h-[44px] justify-center"
       style={{
         background:   'var(--as-bg-tertiary)',
         borderColor:  'var(--as-border-primary)',

@@ -53,7 +53,7 @@ export default function MarketPage() {
                   scenario={sc}
                   isActive={scenarioId === sc.id}
                   onClick={() => setScenario(sc.id)}
-                />
+                 />
               ))}
             </div>
           </div>
@@ -66,7 +66,7 @@ export default function MarketPage() {
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => setScenario('HIPERINFLASI')}
-                className={`p-2 rounded border text-[10px] flex items-center justify-center gap-2 font-bold cursor-pointer transition-colors font-mono ${
+                className={`p-3.5 md:p-2 min-h-[44px] md:min-h-0 rounded border text-[10px] flex items-center justify-center gap-2 font-bold cursor-pointer transition-colors font-mono ${
                   scenarioId === "HIPERINFLASI"
                     ? "bg-red-900/40 border-red-500 text-white"
                     : "border-slate-200 dark:border-neutral-900 text-slate-400 dark:text-neutral-500 hover:bg-red-950/40 hover:border-red-500/50"
@@ -76,7 +76,7 @@ export default function MarketPage() {
               </button>
               <button
                 onClick={() => setScenario('RUPIAH_CRASH')}
-                className={`p-2 rounded border text-[10px] flex items-center justify-center gap-2 font-bold cursor-pointer transition-colors font-mono ${
+                className={`p-3.5 md:p-2 min-h-[44px] md:min-h-0 rounded border text-[10px] flex items-center justify-center gap-2 font-bold cursor-pointer transition-colors font-mono ${
                   scenarioId === "RUPIAH_CRASH"
                     ? "bg-amber-900/40 border-amber-500 text-white"
                     : "border-slate-200 dark:border-neutral-900 text-slate-400 dark:text-neutral-500 hover:bg-amber-950/40 hover:border-amber-500/50"
@@ -88,7 +88,6 @@ export default function MarketPage() {
           </div>
         </div>
 
-        {/* Right: Macro Indicator Cards Grid */}
         <div className="lg:col-span-8">
           <MacroIndicatorCards />
         </div>

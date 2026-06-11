@@ -104,12 +104,11 @@ export function AllocationRow({ assetKey, pct }) {
   );
 }
 
-// ── SCENARIO BUTTON ─────────────────────────────────────────────────────────────
 
 export function ScenarioButton({ scenario, isActive, onClick }) {
   const acc = ACCENT[scenario.accent];
   return (
-    <button onClick={onClick} className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 cursor-pointer ${isActive ? `${acc.bg} ${acc.border} ring-1 ring-${scenario.accent}-500/20` : "border-white/5 bg-neutral-900/20 hover:bg-neutral-900/40 text-neutral-400"}`}>
+    <button onClick={onClick} className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 cursor-pointer min-h-[44px] ${isActive ? `${acc.bg} ${acc.border} ring-1 ring-${scenario.accent}-500/20` : "border-white/5 bg-neutral-900/20 hover:bg-neutral-900/40 text-neutral-400"}`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: isActive ? acc.neon : "#444" }} />
@@ -128,7 +127,19 @@ export function ScenarioButton({ scenario, isActive, onClick }) {
 
 // ── DONUT CHART ─────────────────────────────────────────────────────────────────
 
-export function DonutChart({ accentColor, hovered, setHovered, animPct, analytics }) {
+export function DonutChart({ accentColor, hovered, setHovered, animPct, analytics, isComputing }) {
+  if (isComputing) {
+    return (
+      <div className="relative flex flex-col items-center justify-center font-mono w-full max-w-[260px] mx-auto h-[260px]">
+        <div className="relative w-48 h-48 rounded-full shimmer flex items-center justify-center">
+          <div className="w-32 h-32 rounded-full bg-[var(--as-bg-secondary)] flex flex-col items-center justify-center border border-white/5 shadow-inner">
+            <span className="text-[9px] text-[var(--as-text-dim)] tracking-widest uppercase animate-pulse">OPTIMASI</span>
+            <span className="text-[10px] text-[var(--as-text-secondary)] font-bold mt-1 animate-pulse">MENGHITUNG...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const size = 260;
   const cx = size / 2; const cy = size / 2;
   const R = 96; const r = 62;

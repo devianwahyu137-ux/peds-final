@@ -40,32 +40,31 @@ export function ScenarioIntelligence() {
   if (mismatch.isAligned) {
     return (
       <div
-        className="flex items-center gap-3 px-4 py-2 rounded-xl mb-4"
+        className="flex items-center gap-2 px-3 h-8 rounded-lg mb-4 text-[9px] font-mono"
         style={{
-          background: 'rgba(16,185,129,0.06)',
-          border:     '1px solid rgba(16,185,129,0.12)',
+          background: 'rgba(16,185,129,0.02)',
+          border:     '1px solid rgba(16,185,129,0.06)',
         }}
       >
         {/* Animated dot */}
         <span className="relative flex h-1.5 w-1.5 flex-shrink-0">
           <span className="animate-ping absolute inline-flex h-full w-full
-                           rounded-full bg-emerald-400 opacity-40" />
+                           rounded-full bg-emerald-400 opacity-30" />
           <span className="relative inline-flex rounded-full h-1.5 w-1.5
                            bg-emerald-500" />
         </span>
 
-        <span className="text-[9px] font-mono truncate"
+        <span className="truncate opacity-60 hover:opacity-100 transition-opacity duration-200"
               style={{ color: 'var(--as-text-tertiary)' }}>
           <span className="font-bold text-emerald-500">SELARAS</span>
           {' — '}{macroData.biRate}% BI Rate · IDR{' '}
           {macroData.usdIdr.toLocaleString('id-ID')} · Skenario{' '}
-          <span style={{ color: activeConfig.color }}>
+          <span style={{ color: activeConfig.color, fontWeight: 'bold' }}>
             {activeConfig.label}
           </span>
         </span>
 
-        <span className="ml-auto flex-shrink-0 text-[8px] font-mono
-                         text-emerald-500/60">
+        <span className="ml-auto flex-shrink-0 text-[8px] opacity-50 text-emerald-500">
           {mismatch.confidence}% confidence
         </span>
       </div>

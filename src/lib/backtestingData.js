@@ -107,6 +107,34 @@ export const HISTORICAL_CRISES = [
           + 'memberikan proteksi signifikan. Alokasi normal sudah kehilangan 9% YTD. '
           + 'Keputusan alokasi yang tepat di awal tahun sangat menentukan.',
   },
+  {
+    id:          'taper_tantrum_2013',
+    name:        'Krisis Rate Hike 2013 (Taper Tantrum)',
+    period:      'Mei 2013 — Des 2013',
+    duration:    '8 bulan',
+    icon:        '⚡',
+    severity:    'SIGNIFIKAN',
+    severityColor: '#f97316',
+    context:     'Federal Reserve secara mengejutkan menyiratkan tapering stimulus moneter, memicu capital outflow masif dari emerging markets. Rupiah terdepresiasi dari Rp9.700 menjadi Rp12.200 per USD, SBN mengalami aksi jual keras, dan Bank Indonesia terpaksa menaikkan BI Rate agresif dari 5.75% ke 7.50% guna menstabilkan pasar.',
+    macroConditions: {
+      'USD/IDR':        '9.700 -> 12.200 (+25.7%)',
+      'BI Rate':        'Naik ke 7.50% (dari 5.75%)',
+      'IHSG Decline':   '-23% (peak to trough)',
+      'SBN Yield':      'Meledak dari ~5.4% ke ~8.5%',
+    },
+    assetPerformance: {
+      stocks: { returnPct: -15, note: 'IHSG sempat koreksi tajam -23% sebelum pulih ke net -15% YTD' },
+      bonds:  { returnPct: -11, note: 'Yield SBN melonjak tinggi mengakibatkan koreksi harga obligasi' },
+      gold:   { returnPct: +12, note: 'Harga emas USD jatuh, tapi XAU/IDR menguat berkat depresiasi Rupiah' },
+      cash:   { returnPct: +26, note: 'Aset kas berdenominasi USD melonjak +25.7% dalam nilai Rupiah' },
+    },
+    portfolioOutcomes: {
+      EQUILIBRIUM:     { returnPct: -9,  label: 'Alokasi Normal (40% saham, 30% SBN)', color: '#f59e0b' },
+      TIGHTENING:      { returnPct: -7,  label: 'Alokasi Defensif (15% saham, 45% SBN)', color: '#f59e0b' },
+      CURRENCY_STRESS: { returnPct: +15, label: 'Alokasi Krisis (45% emas, 35% USD)', color: '#10b981' },
+    },
+    lesson: 'Krisis 2013 memperlihatkan dampak guncangan suku bunga AS terhadap ketidakstabilan nilai tukar dan obligasi lokal. Memiliki cadangan kas dalam mata uang keras (USD) terbukti menjadi instrumen penyelamat terbaik.',
+  },
 ];
 
 // Helper: get performance for specific scenario allocation

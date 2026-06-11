@@ -8,7 +8,14 @@
  * @param {{ data: number[], color: string, width?: number, height?: number, showArea?: boolean }} props
  */
 export default function MicroSparkline({ data, color, width = 120, height = 40, showArea = true }) {
-  if (!data || data.length < 2) return null;
+  if (!data || data.length < 2) {
+    return (
+      <div 
+        className="shimmer w-full rounded-md" 
+        style={{ height: `${height}px`, opacity: 0.4 }} 
+      />
+    );
+  }
 
   // Normalize data to [padding, height - padding] range
   const padding = 4;

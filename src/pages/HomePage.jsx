@@ -125,16 +125,13 @@ export default function HomePage() {
   const isDriftWarning = maxDrift > 5;
 
   // ── GLOBAL PULSE TICKER ──
-  // Updated Global Pulse Ticker data — May 2026 verified
+  // Updated Global Pulse Ticker data — June 2026 verified
   const GLOBAL_PULSE_DATA = [
-    { label: 'IHSG',      value: marketData.equities.ihsg.toLocaleString('id-ID'),   delta: '-11.8%', dir: -1, unit: 'pts' },
-    { label: 'SBN 10Y',   value: marketData.macro.us10y.toFixed(2),   delta: '+0.32%', dir: 1,  unit: '%'    },
-    { label: 'USD/IDR',   value: marketData.macro.usdIdr.toLocaleString('id-ID'),  delta: '+9.2%',  dir: -1, unit: ''    },
-    { label: 'GOLD',      value: marketData.commodities.gold.toLocaleString('id-ID'),   delta: '+1.15%', dir: 1,  unit: 'USD' },
-    { label: 'BI RATE',   value: marketData.macro.biRate.toFixed(2),   delta: '+50bps', dir: -1, unit: '%'    },
-    { label: 'DXY',       value: marketData.macro.dxy.toFixed(2),  delta: '+0.3%',  dir: -1, unit: 'pts' },
-    { label: 'US 10Y',    value: marketData.macro.us10y.toFixed(2),   delta: '-0.02%', dir: -1, unit: '%'    },
-    { label: 'XAU/IDR',   value: '41.3M',   delta: '+12.1%', dir: 1,  unit: 'IDR/gr'},
+    { label: 'IHSG',      value: '6.170',  delta: '-11.8%', dir: -1, unit: 'pts' },
+    { label: 'SBN 10Y',   value: '6.71',   delta: '+0.32%', dir: 1,  unit: '%'    },
+    { label: 'USD/IDR',   value: '17.700', delta: '+9.2%',  dir: -1, unit: ''    },
+    { label: 'GOLD',      value: '2.342',  delta: '+1.15%', dir: 1,  unit: 'USD' },
+    { label: 'BI RATE',   value: '5.25',   delta: '+50BPS', dir: -1, unit: '%'    },
   ];
 
   return (
@@ -197,9 +194,8 @@ export default function HomePage() {
                    style={{ color: accent, opacity: 0.7 }}>
                 SHARPE RATIO
               </div>
-              <div className="font-black font-mono leading-none tabular-nums mb-1"
+              <div className="font-black font-mono leading-none tabular-nums mb-1 text-[38px] md:text-[58px]"
                    style={{
-                     fontSize: '58px',
                      color: accent,
                      textShadow: `0 0 40px ${accent}60, 0 0 80px ${accent}30`,
                      letterSpacing: '-2px',
@@ -233,9 +229,9 @@ export default function HomePage() {
           </div>
           <button
             onClick={() => setTab?.("portfolio")}
-            className="flex-shrink-0 text-[10px] font-semibold font-sans uppercase tracking-widest px-5 py-2.5 rounded-lg border
+            className="flex-shrink-0 text-[10px] font-semibold font-sans uppercase tracking-widest px-5 py-3.5 md:py-2.5 rounded-lg border
                        border-[var(--as-border-secondary)] text-[var(--as-text-secondary)] hover:border-[var(--as-border-primary)]
-                       hover:text-[var(--as-text-primary)] transition-colors duration-200 cursor-pointer shadow-sm"
+                       hover:text-[var(--as-text-primary)] transition-colors duration-200 cursor-pointer shadow-sm min-h-[44px] flex items-center justify-center"
           >
             Lihat Detail MPT →
           </button>
@@ -315,7 +311,7 @@ export default function HomePage() {
                      style={{ color: 'var(--as-text-dim)' }}>
                   {label}
                 </div>
-                <div className="text-[28px] font-black font-mono tabular-nums
+                <div className="text-xl md:text-[28px] font-black font-mono tabular-nums
                                 leading-none text-[var(--as-text-primary)]">
                   {display}
                 </div>
@@ -442,29 +438,45 @@ export default function HomePage() {
 
       {/* ── ZONA 5: GLOBAL PULSE TICKER ── */}
       <div 
-        className="w-full bg-[var(--as-bg-card)] border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 overflow-x-auto py-3 px-6 rounded-xl flex items-center transition-colors duration-300"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        className="w-full bg-[var(--as-bg-card)] border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 overflow-hidden py-3 px-6 rounded-xl flex items-center transition-colors duration-300 relative"
       >
-        <div className="flex items-center gap-6 md:gap-10 whitespace-nowrap min-w-max mx-auto">
-          <div className="text-xs font-semibold uppercase tracking-widest text-[var(--as-text-dim)] flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse drop-shadow-md"></span>
-            Global Pulse
-          </div>
-          <div className="h-4 w-px bg-[var(--as-border-secondary)]"></div>
-          {GLOBAL_PULSE_DATA.map((item, i) => (
-            <div key={item.label} className="flex items-center gap-4">
-              <div className="text-[11px] font-semibold uppercase flex items-baseline">
-                <span className="text-[var(--as-text-dim)] font-semibold mr-2.5">{item.label}</span>
-                <span className="text-sm font-black text-[var(--as-text-primary)] tabular-nums font-mono">{item.value} {item.unit}</span>
-                <span className={`ml-2.5 text-xs font-bold tabular-nums font-mono ${item.dir > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
-                  ({item.delta})
-                </span>
+        <div className="flex items-center gap-3 pr-6 mr-6 border-r border-[var(--as-border-secondary)] bg-[var(--as-bg-card)] z-10">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse drop-shadow-md flex-shrink-0"></span>
+          <span className="text-xs font-semibold uppercase tracking-widest text-[var(--as-text-dim)] whitespace-nowrap">Global Pulse</span>
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <div className="ticker-track">
+            {/* First loop */}
+            {GLOBAL_PULSE_DATA.map((item, i) => (
+              <div key={`pulse-1-${item.label}`} className="flex items-center gap-4 mr-10 whitespace-nowrap">
+                <div className="text-[11px] font-semibold uppercase flex items-baseline">
+                  <span className="text-[var(--as-text-dim)] font-semibold mr-2.5">{item.label}</span>
+                  <span className="text-sm font-black text-[var(--as-text-primary)] tabular-nums font-mono">
+                    {item.value}{item.unit ? ` ${item.unit}` : ''}
+                  </span>
+                  <span className={`ml-2.5 text-xs font-bold tabular-nums font-mono ${item.dir > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                    ({item.delta})
+                  </span>
+                </div>
+                <div className="w-1.5 h-1.5 rounded-full bg-[var(--as-border-secondary)]"></div>
               </div>
-              {i < GLOBAL_PULSE_DATA.length - 1 && (
-                <div className="w-1.5 h-1.5 rounded-full bg-[var(--as-border-secondary)] ml-5 md:ml-8"></div>
-              )}
-            </div>
-          ))}
+            ))}
+            {/* Second loop for seamless scrolling */}
+            {GLOBAL_PULSE_DATA.map((item, i) => (
+              <div key={`pulse-2-${item.label}`} className="flex items-center gap-4 mr-10 whitespace-nowrap" aria-hidden="true">
+                <div className="text-[11px] font-semibold uppercase flex items-baseline">
+                  <span className="text-[var(--as-text-dim)] font-semibold mr-2.5">{item.label}</span>
+                  <span className="text-sm font-black text-[var(--as-text-primary)] tabular-nums font-mono">
+                    {item.value}{item.unit ? ` ${item.unit}` : ''}
+                  </span>
+                  <span className={`ml-2.5 text-xs font-bold tabular-nums font-mono ${item.dir > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                    ({item.delta})
+                  </span>
+                </div>
+                <div className="w-1.5 h-1.5 rounded-full bg-[var(--as-border-secondary)]"></div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
