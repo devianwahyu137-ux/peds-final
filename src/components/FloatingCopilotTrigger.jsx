@@ -1,49 +1,57 @@
-import { Sparkles, Bot } from "lucide-react";
+import { Sparkles, Bot, Send } from "lucide-react";
+import { useRootStore, SCENARIOS } from '@/stores/rootStore';
+import { ACCENT } from './SharedComponents';
 
 export default function FloatingCopilotTrigger({ onOpen, onSuggestionClick, inputValue, setInputValue, onSubmit, isVisible }) {
-  const suggestions = [
-    "Evaluasi Efisiensi Portofolio",
-    "Dampak Suku Bunga",
-    "Simulasi Rotasi Sektor"
-  ];
+  const scenarioId = useRootStore((s) => s.scenarioId);
+  const crisisMode = useRootStore((s) => s.crisisMode);
+
+  const baseScenario = SCENARIOS[scenarioId] || SCENARIOS.EQUILIBRIUM;
+  const currentAccent = crisisMode ? "red" : baseScenario.accent;
+  const acc = ACCENT[currentAccent] || ACCENT.emerald;
 
   return (
     <div 
-      className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-full px-4 py-3 w-[90%] md:w-[600px] flex flex-col gap-3 shadow-2xl bg-[#121212]/80 backdrop-blur-md border border-white/10 transition-opacity duration-300 ${
-        isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+      className={`fixed bottom-12 left-1/2 -translate-x-1/2 w-[90%] max-w-xl z-[100] bg-black rounded-full border px-5 py-2.5 flex flex-row items-center gap-3 transition-all duration-500 animate-pulse ${
+        isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       }`}
+      style={{ boxShadow: `0 0 30px -5px ${acc.neon || '#f59e0b'}`, borderColor: `${acc.neon || '#f59e0b'}80` }}
     >
-      {/* Suggestion Chips */}
-      <div className="overflow-x-auto scrollbar-hide flex items-center gap-2">
-        {suggestions.map((text, idx) => (
-          <button
-            key={idx}
-            onClick={() => onSuggestionClick(text)}
-            className="text-xs px-3.5 py-2.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors whitespace-nowrap cursor-pointer min-h-[44px] flex items-center justify-center"
-          >
-            {text}
-          </button>
-        ))}
-      </div>      {/* Input Mockup */}
-      <div className="flex items-center gap-3 px-2">
-        <Sparkles size={18} className="text-indigo-400 shrink-0" />
-        <input 
-          type="text" 
-          placeholder="Tanyakan analisis kuantitatif..." 
-          className="bg-transparent border-none outline-none text-sm w-full text-neutral-200 placeholder-neutral-500 flex-1"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onFocus={onOpen}
-          onKeyDown={(e) => { 
-            if (e.key === 'Enter' && e.target.value.trim() !== '') { 
-              onSubmit(e.target.value); 
-              setInputValue(''); 
-              e.target.value = ''; 
-            } 
-          }}
-        />
+      {/* Bot/User Avatar Icon */}
+      <div className="w-6 h-6 rounded-full bg-indigo-500/10 flex items-center justify-center shrink-0 border border-indigo-500/20">
+        <Sparkles size={12} className="text-indigo-400" />
       </div>
-      
+
+      {/* Input Element */}
+      <input 
+        type="text" 
+        placeholder="Apa yang ada di benak Anda?" 
+        className="bg-transparent border-none outline-none text-sm w-full text-neutral-200 placeholder-neutral-500 flex-1 cursor-pointer"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onFocus={onOpen}
+        onKeyDown={(e) => { 
+          if (e.key === 'Enter' && e.target.value.trim() !== '') { 
+            onSubmit(e.target.value); 
+            setInputValue(''); 
+          } 
+        }}
+      />
+
+      {/* Send Icon */}
+      <button 
+        onClick={() => {
+          if (inputValue.trim() !== '') {
+            onSubmit(inputValue);
+            setInputValue('');
+          } else {
+            onOpen();
+          }
+        }}
+        className="text-neutral-400 hover:text-indigo-400 transition-colors shrink-0"
+      >
+        <Send size={16} />
+      </button>
     </div>
   );
 }

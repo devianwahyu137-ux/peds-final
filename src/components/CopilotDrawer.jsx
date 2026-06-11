@@ -2,8 +2,9 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { X, Sparkles, Send, AlertCircle } from "lucide-react";
 import { buildSuggestedQuestions } from '@/lib/portfolioContextBuilder';
 import { getAlphaShieldAnalysis } from '@/lib/gemini';
-import { useRootStore } from '@/stores/rootStore';
+import { useRootStore, SCENARIOS } from '@/stores/rootStore';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
+import { ACCENT } from './SharedComponents';
 
 function formatMarkdown(text) {
   if (!text) return "";
@@ -29,10 +30,15 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
   const inputRef         = useRef(null);
 
   const scenarioId  = useRootStore((s) => s.scenarioId);
+  const crisisMode  = useRootStore((s) => s.crisisMode);
   const weights     = useRootStore((s) => s.weights);
   const analytics   = useRootStore((s) => s.analytics);
   const macroInputs = useRootStore((s) => s.macroInputs);
   const liveData    = useRootStore((s) => s.liveData);
+
+  const baseScenario = SCENARIOS[scenarioId] || SCENARIOS.EQUILIBRIUM;
+  const currentAccent = crisisMode ? "red" : baseScenario.accent;
+  const acc = ACCENT[currentAccent] || ACCENT.emerald;
 
   const config = SCENARIO_CONFIG[scenarioId] ?? SCENARIO_CONFIG.EQUILIBRIUM;
 
@@ -139,18 +145,36 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
         />
       )}
 
-      {/* Drawer Container */}
+      {/* Floating Panel Container */}
       <div
-        className={`fixed top-0 right-0 h-screen w-[90%] md:w-[400px] z-50
-                    backdrop-blur-2xl border-l shadow-2xl flex flex-col
-                    transform transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed bottom-6 right-6 z-50
+                    bg-black/80 backdrop-blur-md border rounded-2xl shadow-2xl flex flex-col
+                    w-[450px] h-[90vh] max-h-[90vh]
+                    transition-all duration-300 ease-in-out copilot-breathing-glow ${
+          isOpen ? "opacity-100 translate-y-0 scale-100 pointer-events-auto" : "opacity-0 translate-y-4 scale-95 pointer-events-none"
         }`}
         style={{
-          background: 'var(--as-bg-secondary)',
-          borderColor: 'var(--as-border-primary)',
+          "--glow-color": `${acc.neon}33`,
+          "--glow-color-active": `${acc.neon}55`,
+          "--glow-border": `${acc.neon}30`,
+          "--glow-border-active": `${acc.neon}60`,
         }}
       >
+        <style>{`
+          @keyframes copilotGlow {
+            0%, 100% {
+              box-shadow: 0 0 20px -5px var(--glow-color);
+              border-color: var(--glow-border);
+            }
+            50% {
+              box-shadow: 0 0 25px 0px var(--glow-color-active);
+              border-color: var(--glow-border-active);
+            }
+          }
+          .copilot-breathing-glow {
+            animation: copilotGlow 6s ease-in-out infinite;
+          }
+        `}</style>
         {/* Header */}
         <div
           className="flex items-center justify-between p-4 border-b shrink-0"

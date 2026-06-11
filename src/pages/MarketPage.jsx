@@ -14,9 +14,10 @@ import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
 export default function MarketPage() {
   const scenarioId = useRootStore((s) => s.scenarioId);
   const setScenario = useRootStore((s) => s.setScenario);
+  const crisisMode = useRootStore((s) => s.crisisMode);
 
   const baseScenario = SCENARIOS[scenarioId] || SCENARIOS.EQUILIBRIUM;
-  const currentAccent = baseScenario.accent;
+  const currentAccent = crisisMode ? "red" : baseScenario.accent;
   const acc = ACCENT[currentAccent] || ACCENT.emerald;
 
   return (

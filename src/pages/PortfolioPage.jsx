@@ -67,7 +67,7 @@ export default function PortfolioPage() {
   const baseScenario = SCENARIOS[scenarioId] || SCENARIOS.EQUILIBRIUM;
   const currentAccent = crisisMode ? "red" : baseScenario.accent;
   const currentTheme = crisisMode ? "Crisis Mode" : baseScenario.theme;
-  const acc = ACCENT[currentAccent];
+  const acc = ACCENT[currentAccent] || ACCENT.emerald;
 
   const [hoveredAsset, setHoveredAsset] = useState(null);
   const [animPct, setAnimPct] = useState({ stocks: 0, bonds: 0, gold: 0, cash: 0 });
