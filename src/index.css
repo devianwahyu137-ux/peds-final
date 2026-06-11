@@ -576,7 +576,7 @@ svg * {
 }
 
 .fade-in-up {
-  animation: fadeInUp 300ms ease both;
+  animation: fadeInUp 250ms ease both;
 }
 
 /* Stagger children fade-in */

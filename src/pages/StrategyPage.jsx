@@ -2,19 +2,30 @@ import { SectorPlaybook } from "../components/SectorPlaybook";
 import DriftMonitor from "../components/DriftMonitor";
 import RebalancingCalculator from "../components/RebalancingCalculator";
 import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
+import { useRootStore, SCENARIOS } from "@/stores/rootStore";
+import { ACCENT } from "../components/SharedComponents";
 
 /**
  * StrategyPage — "STRATEGI" tab.
  * Wraps existing rebalancing components.
  */
 export default function StrategyPage() {
+  const scenarioId  = useRootStore((s) => s.scenarioId);
+  const crisisMode  = useRootStore((s) => s.crisisMode);
+
+  const baseScenario = SCENARIOS[scenarioId] || SCENARIOS.EQUILIBRIUM;
+  const currentAccent = crisisMode ? "red" : baseScenario.accent;
+  const acc = ACCENT[currentAccent] || ACCENT.emerald;
+
   return (
     <div className="space-y-6 w-full page-enter">
       {/* Header */}
       <div className="border-b border-[var(--as-border-secondary)] pb-4">
-        <h1 className="text-lg font-black font-mono uppercase tracking-tight">
-          Strategi <span className="text-emerald-400">// Rebalancing</span>
-        </h1>
+        <h2 className="text-xl font-bold text-white tracking-wide uppercase">
+          STRATEGI
+          <span className="text-gray-600 mx-3 font-light">//</span>
+          <span style={{ color: acc.neon }}>REBALANCING</span>
+        </h2>
         <p className="text-[10px] font-mono font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">
           Kalkulator penyesuaian portofolio dan rotasi sektoral
         </p>

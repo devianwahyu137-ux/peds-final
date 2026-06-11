@@ -27,9 +27,11 @@ export default function MarketPage() {
 
       {/* Header */}
       <div className="border-b border-slate-200 dark:border-neutral-900 pb-4">
-        <h1 className="text-lg font-black font-mono uppercase tracking-tight">
-          Kondisi Pasar <span style={{ color: acc.neon }}>// Makroekonomi</span>
-        </h1>
+        <h2 className="text-xl font-bold text-white tracking-wide uppercase">
+          KONDISI PASAR
+          <span className="text-gray-600 mx-3 font-light">//</span>
+          <span style={{ color: acc.neon }}>MAKROEKONOMI</span>
+        </h2>
         <p className="text-[10px] font-mono text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">
           Indikator Ekonomi Indonesia &amp; Global — Simulasi Data Live
         </p>

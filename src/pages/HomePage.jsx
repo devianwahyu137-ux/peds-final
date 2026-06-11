@@ -1,8 +1,9 @@
 import { useRootStore } from "@/stores/rootStore";
 import { SENTIMENT_AGGREGATE, OVERALL_STYLE } from "../components/MacroSentimentSummary";
-import { Landmark, BarChart2, ArrowRightLeft, DollarSign, TrendingUp, Gem, Wallet, AlertTriangle, Lock, AlertOctagon, Lightbulb, Target } from "lucide-react";
+import { Landmark, BarChart2, ArrowRightLeft, DollarSign, TrendingUp, Gem, Wallet, AlertTriangle, Lock, AlertOctagon, Lightbulb, Target, AlertCircle, Check } from "lucide-react";
 import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
 import { useMarketData } from '@/contexts/MacroDataContext';
+import { SCENARIO_CONFIG } from "@/lib/scenarioPulse";
 
 // ── Narasi Bahasa Indonesia per skenario ────────────────────────────────────────
 
@@ -24,10 +25,24 @@ const SCENARIO_NARRATIVE = {
   CURRENCY_STRESS: {
     headline: "Kondisi Pasar: Tekanan Nilai Tukar",
     body: "Rupiah mengalami pelemahan signifikan. Aset yang aman dalam kondisi ini adalah emas fisik dan kas dalam USD. Hindari aset IDR dalam jumlah besar hingga situasi mereda.",
-    advice: "Prioritaskan emas fisik dan kas USD sebagai benteng kekayaan dari depresiasi Rupiah.",
+    advice: "Prioritaskan emas fisik and kas USD sebagai benteng kekayaan dari depresiasi Rupiah.",
     riskLabel: "RISIKO TINGGI",
     color: "#ef4444",
   },
+  HIPERINFLASI: {
+    headline: "Kondisi Pasar: Hiperinflasi Ekstrem",
+    body: "Inflasi melonjak tajam ke 15.5%. BI Rate terpaksa ditarik ke 12.00%, dan daya beli anjlok tajam. Lindungi aset Anda dengan beralih ke emas dan kas berisiko rendah.",
+    advice: "Lari ke aset riil dan lindung nilai (Emas 60%). Hindari aset tunai rupiah secara drastis.",
+    riskLabel: "RISIKO EKSTREM",
+    color: "#ef4444",
+  },
+  RUPIAH_CRASH: {
+    headline: "Kondisi Pasar: Keruntuhan Nilai Tukar",
+    body: "USD/IDR meroket tajam menembus 20.000. DXY kokoh di 110.00. Krisis depresiasi akut yang menekan pasar domestik.",
+    advice: "Kunci aset di valuta asing dan emas. Ekuitas domestik sangat rentan terhadap beban impor operasional.",
+    riskLabel: "RISIKO EKSTREM",
+    color: "#f59e0b",
+  }
 };
 
 const QUICK_SIGNALS_CONFIG = [
@@ -85,9 +100,12 @@ export default function HomePage() {
   const setTab          = useRootStore((s) => s.setActiveTab);
   const { marketData, isLive } = useMarketData();
 
-  const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : scenarioId;
+  const effectiveScenario = crisisMode
+    ? (crisisMode === "HYPERINFLATION" ? "HIPERINFLASI" : crisisMode)
+    : scenarioId;
   const narrative = SCENARIO_NARRATIVE[effectiveScenario] || SCENARIO_NARRATIVE.EQUILIBRIUM;
-  const accent = narrative.color;
+  const scenarioConfig = SCENARIO_CONFIG[effectiveScenario] || SCENARIO_CONFIG.EQUILIBRIUM;
+  const accent = scenarioConfig.color;
 
   // Sharpe from store analytics — NEVER hardcoded
   const sharpeRatio = targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0;
@@ -126,7 +144,7 @@ export default function HomePage() {
       {/* ── ZONA 1: SITUASI HARI INI ── */}
       <div className="card-tier-1" style={{
         background: `linear-gradient(135deg, var(--as-bg-primary), ${accent}08)`,
-        borderColor: `${accent}25`,
+        border: `1px solid ${accent}25`,
         boxShadow: `0 0 0 1px rgba(255,255,255,0.02), 0 8px 48px rgba(0,0,0,0.50), 0 0 60px ${accent}08`,
       }}>
         {/* Left: text content */}
@@ -317,10 +335,10 @@ export default function HomePage() {
           )
         );
         const execStatus = maxDrift > 10
-          ? { label: 'REBALANCING DIPERLUKAN', color: '#ef4444', icon: '⚠' }
+          ? { label: 'REBALANCING DIPERLUKAN', color: '#ef4444', icon: <AlertTriangle size={14} className="text-red-500" /> }
           : maxDrift > 5
-            ? { label: 'DRIFT MINOR TERDETEKSI', color: '#f59e0b', icon: '〜' }
-            : { label: 'EKSEKUSI SELARAS',       color: '#10b981', icon: '✓' };
+            ? { label: 'DRIFT MINOR TERDETEKSI', color: '#f59e0b', icon: <AlertCircle size={14} className="text-amber-500" /> }
+            : { label: 'EKSEKUSI SELARAS',       color: '#10b981', icon: <Check size={14} className="text-emerald-500" /> };
 
         // Macro status: from active scenario
         const macroStatus = {
@@ -381,14 +399,14 @@ export default function HomePage() {
             </h2>
           </div>
           <span
-            className="flex-shrink-0 px-4 py-1.5 rounded-lg text-[10px] font-bold font-mono uppercase tracking-widest border"
+            className="flex-shrink-0 px-4 py-1.5 rounded-lg text-[10px] font-bold font-mono uppercase tracking-widest"
             style={{
               color:       accent,
-              borderColor: `${accent}30`,
+              border:      `1px solid ${accent}30`,
               background:  `${accent}15`,
             }}
           >
-            {scenarioId.replace('_', ' ')}
+            {effectiveScenario.replace('_', ' ')}
           </span>
         </div>
 

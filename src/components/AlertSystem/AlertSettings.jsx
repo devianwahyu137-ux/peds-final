@@ -5,6 +5,7 @@
 import { useState, useCallback } from 'react';
 import { loadThresholds, saveThresholds, ALERT_INDICATORS }
   from '@/lib/alertThresholdSystem';
+import { Bell } from 'lucide-react';
 
 export function AlertSettings({ isOpen, onClose }) {
   const [thresholds, setThresholds] = useState(loadThresholds);
@@ -57,10 +58,10 @@ export function AlertSettings({ isOpen, onClose }) {
         >
           <div>
             <h3
-              className="text-sm font-bold font-mono"
+              className="text-sm font-bold font-mono flex items-center"
               style={{ color: 'var(--as-text-primary)' }}
             >
-              🔔 Alert Thresholds
+              <Bell size={16} className="text-indigo-400 mr-2" /> Alert Thresholds
             </h3>
             <p
               className="text-[9px] font-mono mt-0.5"

@@ -1,4 +1,4 @@
-import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Globe, Briefcase, Zap } from "lucide-react";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Globe, Briefcase, Zap, Bell, Download, Loader2 } from "lucide-react";
 import { memo, useState, useEffect, useCallback } from "react";
 import { useRootStore } from "@/stores/rootStore";
 import { exportTearSheetPDF } from "@/lib/tearSheetExporter";
@@ -6,6 +6,7 @@ import { NavHealthIndicator } from "../NavHealthIndicator";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AlertSettings } from "@/components/AlertSystem/AlertSettings";
 import { useTheme } from "@/hooks/useTheme";
+import { SCENARIO_CONFIG } from "@/lib/scenarioPulse";
 
 const NAV_ITEMS = [
   {
@@ -40,11 +41,7 @@ const NAV_ITEMS = [
   },
 ];
 
-const SCENARIO_THEME = {
-  EQUILIBRIUM:     { color: "#10b981", label: "AMAN",    bg: "rgba(16,185,129,0.08)"  },
-  TIGHTENING:      { color: "#f59e0b", label: "WASPADA", bg: "rgba(245,158,11,0.08)"  },
-  CURRENCY_STRESS: { color: "#ef4444", label: "KRISIS",  bg: "rgba(239,68,68,0.08)"   },
-};
+
 
 export const TopNavbar = memo(function TopNavbar() {
   const activeTab   = useRootStore((s) => s.activeTab);
@@ -62,8 +59,15 @@ export const TopNavbar = memo(function TopNavbar() {
   // Grab isDark from the global theme hook we just built
   const { isDark: isDarkMode, toggleTheme } = useTheme();
 
-  const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : scenarioId;
-  const theme = SCENARIO_THEME[effectiveScenario] || SCENARIO_THEME.EQUILIBRIUM;
+  const effectiveScenario = crisisMode
+    ? (crisisMode === "HYPERINFLATION" ? "HIPERINFLASI" : crisisMode)
+    : scenarioId;
+  const config = SCENARIO_CONFIG[effectiveScenario] || SCENARIO_CONFIG.EQUILIBRIUM;
+  const theme = {
+    color: config.color,
+    label: config.riskBadge,
+    bg: config.colorDim
+  };
 
   const handleExport = useCallback(() => {
     exportTearSheetPDF({
@@ -131,7 +135,7 @@ export const TopNavbar = memo(function TopNavbar() {
                 color:       isExporting ? 'var(--as-text-tertiary)' : '#10b981',
               }}
             >
-              <span>{isExporting ? '⟳' : '⬇'}</span>
+              <span className="flex items-center justify-center">{isExporting ? <Loader2 className="animate-spin" size={12} /> : <Download size={12} />}</span>
               <span>{isExporting ? 'GENERATING...' : 'DOWNLOAD TEAR SHEET'}</span>
             </button>
             {exportMsg && (
@@ -143,11 +147,11 @@ export const TopNavbar = memo(function TopNavbar() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setAlertSettingsOpen(true)}
-              className="relative p-1.5 rounded-lg cursor-pointer transition-colors"
+              className="relative p-1.5 rounded-lg cursor-pointer transition-colors hover:text-white flex items-center justify-center"
               style={{ color: 'var(--as-text-dim)' }}
               title="Pengaturan Alert"
             >
-              🔔
+              <Bell size={16} />
             </button>
           </div>
 

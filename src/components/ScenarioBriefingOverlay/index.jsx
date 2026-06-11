@@ -9,6 +9,16 @@ import {
   ASSET_LABELS,
   ASSET_COLORS,
 } from '@/lib/scenarioBriefingData';
+import { TrendingUp, Landmark, Coins, TrendingDown, DollarSign, Zap } from 'lucide-react';
+
+const ACTION_ICONS = {
+  '📈': <TrendingUp size={16} className="text-blue-400" />,
+  '🏛️': <Landmark size={16} className="text-indigo-400" />,
+  '🥇': <Coins size={16} className="text-amber-500" />,
+  '📉': <TrendingDown size={16} className="text-red-500" />,
+  '💵': <DollarSign size={16} className="text-emerald-500" />,
+  '⚡': <Zap size={16} className="text-yellow-400" />,
+};
 
 const TREND_ICON  = { up: '↑', down: '↓', stable: '→' };
 
@@ -184,8 +194,8 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
               </div>
               <div className="space-y-2.5">
                 {briefing.keyActions.map((a, i) => (
-                  <div key={i} className="flex items-start gap-2">
-                    <span className="text-sm flex-shrink-0">{a.icon}</span>
+                  <div key={i} className="flex items-start gap-2.5">
+                    <span className="flex-shrink-0 mt-0.5">{ACTION_ICONS[a.icon] || a.icon}</span>
                     <span
                       className="text-[10px] font-mono leading-relaxed"
                       style={{ color: 'var(--as-text-secondary)' }}

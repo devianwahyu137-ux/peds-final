@@ -3,7 +3,7 @@
 // Shows per-endpoint health, TTL, and manual refresh option
 
 import { useState, useEffect } from 'react';
-import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Flag, FileText } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
 
 const ENDPOINT_REGISTRY = [
@@ -19,7 +19,7 @@ const ENDPOINT_REGISTRY = [
     key:       'gs10',
     label:     'US 10Y Treasury',
     provider:  'FRED API',
-    icon:      '🇺🇸',
+    icon:      <Flag size={16} className="text-blue-400" />,
     ttlMs:     15 * 60 * 1000,
     userLabel: 'Federal Reserve St. Louis',
   },
@@ -35,7 +35,7 @@ const ENDPOINT_REGISTRY = [
     key:       'usdIdr',
     label:     'USD/IDR Spot',
     provider:  'Alpha Vantage',
-    icon:      '💱',
+    icon:      <Coins size={16} className="text-amber-500" />,
     ttlMs:     10 * 60 * 1000,
     userLabel: 'Alpha Vantage Markets',
   },
@@ -51,7 +51,7 @@ const ENDPOINT_REGISTRY = [
     key:       'sbn_yields',
     label:     'SBN Yield Curve',
     provider:  'Supabase Edge',
-    icon:      '📋',
+    icon:      <FileText size={16} className="text-slate-400" />,
     ttlMs:     15 * 60 * 1000,
     userLabel: 'DJPPR / Kementerian Keuangan',
   },
@@ -60,7 +60,7 @@ const ENDPOINT_REGISTRY = [
 const STATUS_CONFIG = {
   ok:       { dot: '#10b981', label: 'LIVE',     labelColor: '#10b981', bg: 'rgba(16,185,129,0.08)'  },
   stale:    { dot: '#f59e0b', label: 'ESTIMASI', labelColor: '#f59e0b', bg: 'rgba(245,158,11,0.08)'  },
-  fallback: { dot: '#f59e0b', label: 'ESTIMASI', labelColor: '#f59e0b', bg: 'rgba(245,158,11,0.06)'  },
+  fallback: { dot: '#f59e0b', label: 'FALLBACK', labelColor: '#f59e0b', bg: 'rgba(245,158,11,0.06)'  },
   idle:     { dot: 'var(--as-text-dim)', label: 'MEMUAT',   labelColor: 'var(--as-text-tertiary)', bg: 'rgba(64,64,64,0.06)'    },
   loading:  { dot: '#3b82f6', label: 'MEMUAT',   labelColor: '#3b82f6', bg: 'rgba(59,130,246,0.08)'  },
 };
@@ -85,9 +85,18 @@ export function DataHealthPanel() {
     return () => clearInterval(id);
   }, []);
 
-  const liveCount = Object.values(endpointStatus).filter(s => s === 'ok').length;
+  const activeCount = ENDPOINT_REGISTRY.filter(ep => {
+    const s = endpointStatus[ep.key];
+    return s === 'ok' || s === 'stale' || s === 'fallback';
+  }).length;
+
+  const liveCount = ENDPOINT_REGISTRY.filter(ep => endpointStatus[ep.key] === 'ok').length;
   const total     = ENDPOINT_REGISTRY.length;
   const allLive   = liveCount === total;
+
+  const statusText = allLive
+    ? `${activeCount}/${total} sumber aktif`
+    : `${activeCount}/${total} endpoint memuat data estimasi`;
 
   return (
     <div className="flex items-center justify-between px-6 py-3 rounded-xl mb-8"
@@ -107,7 +116,7 @@ export function DataHealthPanel() {
         </span>
         <span className="text-[10px] font-mono"
               style={{ color: 'var(--as-text-dim)' }}>
-          {liveCount}/{total} sumber aktif
+          {statusText}
         </span>
       </div>
 
@@ -115,15 +124,16 @@ export function DataHealthPanel() {
       <div className="flex items-center gap-2 flex-wrap hidden md:flex">
         {ENDPOINT_REGISTRY.map((ep) => {
           const status = endpointStatus[ep.key] ?? 'idle';
-          const isOk   = status === 'ok';
+          const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.idle;
           return (
             <span key={ep.key}
-                  className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5"
+                  className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5 border"
                   style={{
-                    background: isOk ? 'rgba(16,185,129,0.10)' : 'var(--as-bg-secondary)',
-                    color:      isOk ? '#10b981' : 'var(--as-text-dim)',
+                    background:  cfg.bg,
+                    color:       cfg.labelColor,
+                    borderColor: `${cfg.dot}20`,
                   }}>
-              <span>{ep.icon}</span> <span>{isOk ? 'LIVE' : status.toUpperCase()}</span>
+              <span>{ep.icon}</span> <span>{cfg.label}</span>
             </span>
           );
         })}

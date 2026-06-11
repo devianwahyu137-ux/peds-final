@@ -5,6 +5,7 @@
 import { useState, useMemo } from 'react';
 import { useRootStore } from '@/stores/rootStore';
 import { loadThresholds, checkAlerts } from '@/lib/alertThresholdSystem';
+import { AlertTriangle } from 'lucide-react';
 
 const SESSION_DISMISSED_KEY = 'alphashield_dismissed_alerts';
 
@@ -79,10 +80,10 @@ export function AlertBanner() {
           {/* Alert text */}
           <div className="flex-1 min-w-0">
             <div
-              className="text-[10px] font-mono font-bold tracking-widest uppercase"
+              className="text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1"
               style={{ color: '#ef4444' }}
             >
-              ⚠ ALERT: {alert.label}
+              <AlertTriangle size={12} className="text-red-500" /> ALERT: {alert.label}
             </div>
             <div
               className="text-[9px] font-mono mt-0.5"

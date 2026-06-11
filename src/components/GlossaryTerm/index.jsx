@@ -5,6 +5,7 @@
 
 import { useState, useRef } from 'react';
 import { GLOSSARY } from '@/lib/glossaryData';
+import { Lightbulb } from 'lucide-react';
 
 /**
  * GlossaryTerm — inline term wrapper that shows a contextual
@@ -125,10 +126,10 @@ export function GlossaryTerm({ termId, children, className = '' }) {
 
             {/* Learn more */}
             <p
-              className="text-[8px] font-mono italic"
+              className="text-[8px] font-mono italic flex items-center gap-1"
               style={{ color: 'rgba(255,255,255,0.30)' }}
             >
-              💡 {term.learnMore}
+              <Lightbulb size={9} className="text-yellow-400" /> {term.learnMore}
             </p>
           </div>
 

@@ -2,15 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import MicroSparkline from "./MicroSparkline";
 import MacroTooltip from "./MacroTooltip";
 import { useRootStore } from "@/stores/rootStore";
+import { SCENARIO_CONFIG } from "@/lib/scenarioPulse";
 
-/**
- * Glow color map per scenario — smooth transitions via inline style.
- */
-const GLOW_MAP = {
-  EQUILIBRIUM:     { color: "#10b981", shadow: "rgba(16,185,129,0.20)" },
-  TIGHTENING:      { color: "#f59e0b", shadow: "rgba(245,158,11,0.18)" },
-  CURRENCY_STRESS: { color: "#ef4444", shadow: "rgba(239,68,68,0.20)" },
-};
+
 
 /**
  * useCountUp — requestAnimationFrame-based counter animation hook.
@@ -101,8 +95,14 @@ export default function MacroIndicatorCard({
   sparklineData,
   crisisMode,
 }) {
-  const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : (scenarioId || "EQUILIBRIUM");
-  const glow = GLOW_MAP[effectiveScenario] || GLOW_MAP.EQUILIBRIUM;
+  const effectiveScenario = crisisMode
+    ? (crisisMode === "HYPERINFLATION" ? "HIPERINFLASI" : crisisMode)
+    : (scenarioId || "EQUILIBRIUM");
+  const config = SCENARIO_CONFIG[effectiveScenario] || SCENARIO_CONFIG.EQUILIBRIUM;
+  const glow = {
+    color: config.color,
+    shadow: config.colorGlow,
+  };
   const isActive = isLive;
   const [isChanging, setIsChanging] = useState(false);
   const prevValueRef = useRef(value);

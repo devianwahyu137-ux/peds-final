@@ -4,6 +4,7 @@
 // Output: clean A4 landscape institutional financial report
 
 import jsPDF from 'jspdf';
+import { useRootStore, SCENARIOS } from '@/stores/rootStore';
 
 // ── COLOR PALETTE ──────────────────────────────────────────────
 const C = {
@@ -43,6 +44,18 @@ const SCENARIO_META = {
     color:     C.red,
     badge:     'KRISIS',
   },
+  HIPERINFLASI: {
+    label:     'Hiperinflasi',
+    riskLabel: 'RISIKO TINGGI',
+    color:     C.red,
+    badge:     'STRESS TEST',
+  },
+  RUPIAH_CRASH: {
+    label:     'Rupiah Crash',
+    riskLabel: 'RISIKO TINGGI',
+    color:     C.red,
+    badge:     'STRESS TEST',
+  },
 };
 
 const ASSET_COLORS = {
@@ -63,6 +76,19 @@ const SCENARIO_STRATEGY = {
   EQUILIBRIUM: 'Maintain 40% allocation to top-tier IDX banking & consumer staples (BBCA, BMRI, ICBP) for growth. Hold 30% SBN FR series for baseline yield. 10% Physical Gold as portfolio insurance. 20% Liquidity buffer for opportunistic deployment.',
   TIGHTENING:  'Scale back equities to 15% — BI Rate 5.25% raises cost of capital. Rotate aggressively into SBN (ORI/SR/FR) to lock in risk-free yields. 15% Gold hedge against IDR pressure. 25% Cash for tactical redeployment when cycle turns.',
   CURRENCY_STRESS: 'WEALTH PRESERVATION MODE: 45% Physical Gold (XAU/IDR double-return: gold price + IDR depreciation). 35% USD/hard currency liquidity. Only 5% defensive commodity-exporter equities (ADRO, PTBA). 15% short-duration SBN (<1Y).',
+  HIPERINFLASI: 'HIPERINFLASI STRESS TEST: Purchasing power collapsing. Shift 60% of liquid capital into Physical Gold immediately. Avoid holding IDR cash. Target high yield and safe-haven defensive assets.',
+  RUPIAH_CRASH: 'CURRENCY COLLAPSE STRESS TEST: Convert all remaining Rupiah cash into USD/hard currency and Physical Gold to survive severe devaluation. Shift to international equities and USD assets.',
+};
+
+const FALLBACK = {
+  biRate:   5.25,
+  cpi:      3.48,
+  usdIdr:   17700,
+  sbn10y:   6.71,
+  gs10:     4.40,
+  dxy:      104.50,
+  gold:     2342,
+  fedFunds: 3.75,
 };
 
 // ── HELPER: set fill color ─────────────────────────────────────
@@ -99,19 +125,6 @@ function rRect(doc, x, y, w, h, r, fillRgb, strokeRgb = null) {
   }
 }
 
-// ── HELPER: label + value pair in a row ───────────────────────
-function labelValue(doc, x, y, label, value, labelColor, valueColor, labelSize = 7, valueSize = 9) {
-  doc.setFontSize(labelSize);
-  doc.setFont('courier', 'normal');
-  setTextColor(doc, labelColor);
-  doc.text(label, x, y);
-
-  doc.setFontSize(valueSize);
-  doc.setFont('courier', 'bold');
-  setTextColor(doc, valueColor);
-  doc.text(value, x + 38, y);
-}
-
 // ── HELPER: progress bar ──────────────────────────────────────
 function progressBar(doc, x, y, w, h, pct, barColor) {
   // Track
@@ -130,30 +143,46 @@ function wrapText(doc, text, maxWidth, fontSize) {
 /**
  * exportTearSheetPDF
  * Main export function — pure programmatic PDF generation
- *
- * @param {object} params
- *   scenarioId   - 'EQUILIBRIUM' | 'TIGHTENING' | 'CURRENCY_STRESS'
- *   weights      - { stocks, bonds, gold, cash } in %
- *   analytics    - { sharpe, beta, estimatedMaxDrawdown, portfolioStdDev, portfolioReturn, riskFreeRate }
- *   macroInputs  - { biRate, inflation, usdIdr }
- *   onStart      - callback when export begins
- *   onDone       - callback when PDF saved
- *   onError      - callback on error with message string
+ * Reads directly from Zustand store state on execution
  */
 export async function exportTearSheetPDF({
-  scenarioId   = 'TIGHTENING',
-  weights      = { stocks: 15, bonds: 45, gold: 15, cash: 25 },
-  analytics    = {},
-  macroInputs  = {},
   onStart      = () => {},
   onDone       = () => {},
   onError      = () => {},
-}) {
+} = {}) {
   onStart();
 
   try {
-    const meta   = SCENARIO_META[scenarioId] ?? SCENARIO_META.TIGHTENING;
+    // ── ZUSTAND STATE EXTRACTION ──────────────────────────────
+    const state = useRootStore.getState();
+    const activeScenarioId = state.scenarioId || 'TIGHTENING';
+    const crisisMode = state.crisisMode;
+    const weights = state.weights || { stocks: 15, bonds: 45, gold: 15, cash: 25 };
+    const analytics = state.analytics || {};
+    const macroInputs = state.macroInputs || {};
+    const liveData = state.liveData || {};
+
+    const effectiveScenarioId = crisisMode ? 'CURRENCY_STRESS' : activeScenarioId;
+    const meta = SCENARIO_META[effectiveScenarioId] ?? SCENARIO_META.TIGHTENING;
     const assets = ['stocks', 'bonds', 'gold', 'cash'];
+
+    // Resolve macro indicators
+    const biRateVal = liveData.biRate?.v ?? macroInputs.biRate ?? FALLBACK.biRate;
+    const inflationVal = liveData.cpi?.v ?? macroInputs.inflation ?? FALLBACK.cpi;
+    const usdIdrVal = liveData.usdIdr?.v ?? macroInputs.usdIdr ?? FALLBACK.usdIdr;
+    const sbnYield10YVal = liveData.sbnYield10Y?.v ?? liveData.sbn_yields?.y10 ?? macroInputs.sbn10y ?? FALLBACK.sbn10y;
+    const gs10Val = liveData.gs10?.v ?? macroInputs.gs10 ?? FALLBACK.gs10;
+    const dxyVal = liveData.dxy?.v ?? macroInputs.dxy ?? FALLBACK.dxy;
+    const goldVal = liveData.xauUsd?.v ?? FALLBACK.gold;
+    const fedFundsVal = liveData.fedFunds?.v ?? FALLBACK.fedFunds;
+
+    // Resolve MPT metrics
+    const sharpe = analytics.sharpe ?? analytics.sharpeRatio ?? 0;
+    const beta = analytics.beta ?? analytics.portfolioBeta ?? 0;
+    const mdd = analytics.estimatedMaxDrawdown ?? analytics.maxDrawdown ?? 0;
+    const stdDev = analytics.portfolioStdDev ?? analytics.portfolioVolatility ?? 0;
+    const eReturn = analytics.portfolioReturn ?? 0;
+    const rf = analytics.riskFreeRate ?? 0;
 
     // A4 Landscape: 297mm × 210mm
     const doc  = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
@@ -176,7 +205,7 @@ export async function exportTearSheetPDF({
     doc.setFontSize(7);
     doc.setFont('courier', 'normal');
     setTextColor(doc, C.textDim);
-    doc.text('ALPHASHIELD · PEDS CORE SYSTEM V3.7', ML, 8);
+    doc.text('ALPHASHIELD · PEDS CORE SYSTEM', ML, 8);
 
     // Report title
     doc.setFontSize(18);
@@ -226,14 +255,14 @@ export async function exportTearSheetPDF({
     hRule(doc, contentY + 2, col1X, col1X + colW, C.lightGray);
 
     const macroData = [
-      { label: 'BI Rate (Mei 2026)',  value: `${macroInputs.biRate ?? 5.25}%` },
-      { label: 'Inflasi YoY',         value: `${macroInputs.inflation ?? 3.48}%` },
-      { label: 'USD/IDR Spot',        value: `Rp ${(macroInputs.usdIdr ?? 17700).toLocaleString('id-ID')}` },
-      { label: 'SBN 10Y Yield',       value: '6.71%' },
-      { label: 'US 10Y Treasury',     value: '4.40%' },
-      { label: 'DXY Index',           value: '104.50 pts' },
-      { label: 'Gold (XAU/USD)',      value: 'USD 2.342' },
-      { label: 'Fed Funds Rate',      value: '3.75%' },
+      { label: 'BI Rate',         value: `${biRateVal.toFixed(2)}%` },
+      { label: 'Inflasi',         value: `${inflationVal.toFixed(2)}%` },
+      { label: 'USD/IDR',         value: `Rp ${Math.round(usdIdrVal).toLocaleString('id-ID')}` },
+      { label: 'SBN 10Y',         value: `${sbnYield10YVal.toFixed(2)}%` },
+      { label: 'US Treasury',     value: `${gs10Val.toFixed(2)}%` },
+      { label: 'DXY',             value: `${dxyVal.toFixed(2)} pts` },
+      { label: 'Gold',            value: `USD ${Math.round(goldVal).toLocaleString('id-ID')}` },
+      { label: 'Fed Rate',        value: `${fedFundsVal.toFixed(2)}%` },
     ];
 
     let rowY = contentY + 8;
@@ -296,13 +325,6 @@ export async function exportTearSheetPDF({
     doc.text('MPT ANALYTICS ENGINE', col3X, contentY);
     hRule(doc, contentY + 2, col3X, col3X + colW, C.lightGray);
 
-    const sharpe  = analytics.sharpe        ?? 0;
-    const beta    = analytics.beta          ?? 0;
-    const mdd     = analytics.estimatedMaxDrawdown ?? 0;
-    const stdDev  = analytics.portfolioStdDev ?? 0;
-    const eReturn = analytics.portfolioReturn ?? 0;
-    const rf      = analytics.riskFreeRate  ?? 0;
-
     // Sharpe — large featured metric
     let mptY = contentY + 10;
     doc.setFontSize(6.5);
@@ -320,10 +342,10 @@ export async function exportTearSheetPDF({
 
     // Other metrics in 2-column grid
     const mptMetrics = [
-      { label: 'Portfolio Beta',  value: `${beta.toFixed(2)} β`,    color: C.violet  },
+      { label: 'Portfolio Beta',  value: `${beta.toFixed(2)} β`,    color: C.blue    },
       { label: 'Max Drawdown',    value: `-${Math.abs(mdd).toFixed(1)}%`, color: C.red     },
-      { label: 'Volatilitas σ',   value: `${(stdDev < 1 ? stdDev * 100 : stdDev).toFixed(1)}%`, color: C.amber   },
-      { label: 'E(Return)',       value: `${(eReturn < 1 ? eReturn * 100 : eReturn).toFixed(1)}%`, color: C.emerald },
+      { label: 'Volatilitas',     value: `${(stdDev < 1 ? stdDev * 100 : stdDev).toFixed(1)}%`, color: C.amber   },
+      { label: 'Expected Return', value: `${(eReturn < 1 ? eReturn * 100 : eReturn).toFixed(1)}%`, color: C.emerald },
       { label: 'Risk-Free Rate',  value: `${(rf < 1 ? rf * 100 : rf).toFixed(2)}%`,  color: C.textDim  },
     ];
 
@@ -349,9 +371,9 @@ export async function exportTearSheetPDF({
     doc.setFontSize(6.5);
     doc.setFont('courier', 'bold');
     setTextColor(doc, C.textDim);
-    doc.text(`EXECUTION STRATEGY  ·  SCENARIO: ${scenarioId}`, ML + 4, stratY + 6);
+    doc.text(`EXECUTION STRATEGY  ·  SCENARIO: ${effectiveScenarioId}`, ML + 4, stratY + 6);
 
-    const stratText = SCENARIO_STRATEGY[scenarioId] ?? '';
+    const stratText = SCENARIO_STRATEGY[effectiveScenarioId] ?? SCENARIO_STRATEGY.CURRENCY_STRESS;
     const stratLines = wrapText(doc, stratText, CW - 10, 8);
     doc.setFontSize(8);
     doc.setFont('courier', 'normal');
@@ -368,11 +390,11 @@ export async function exportTearSheetPDF({
 
     const riskLevels = [
       { label: 'RENDAH',  pct: 33,  color: C.emerald,
-        active: scenarioId === 'EQUILIBRIUM' },
+        active: effectiveScenarioId === 'EQUILIBRIUM' },
       { label: 'SEDANG',  pct: 33,  color: C.amber,
-        active: scenarioId === 'TIGHTENING' },
+        active: effectiveScenarioId === 'TIGHTENING' },
       { label: 'TINGGI',  pct: 34,  color: C.red,
-        active: scenarioId === 'CURRENCY_STRESS' },
+        active: ['CURRENCY_STRESS', 'HIPERINFLASI', 'RUPIAH_CRASH'].includes(effectiveScenarioId) },
     ];
 
     doc.setFontSize(6);
@@ -404,7 +426,7 @@ export async function exportTearSheetPDF({
     const footerText =
       'EDUCATIONAL SIMULATION MODEL ONLY  ·  NOT INVESTMENT ADVICE  ·  ' +
       'COMPLIANT WITH OJK SIMULATION FRAMEWORK STANDARDS  ·  ' +
-      'PEDS ALPHASHIELD ENGINE V3.7  ·  ALL DATA IS HYPOTHETICAL FOR SIMULATION DEMONSTRATION PURPOSES  ·  ' +
+      'PEDS ALPHASHIELD ENGINE V3.0  ·  ALL DATA IS HYPOTHETICAL FOR SIMULATION DEMONSTRATION PURPOSES  ·  ' +
       'DATA MAKRO ESTIMASI BERDASARKAN KONDISI PASAR MEI 2026  ·  ' +
       'KONSULTASIKAN KEPUTUSAN INVESTASI DENGAN ADVISOR KEUANGAN TERDAFTAR OJK';
     const footLines = wrapText(doc, footerText, CW, 5.5);

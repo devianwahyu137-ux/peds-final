@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Flame, Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
+import { Flame, Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Globe } from "lucide-react";
 import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 import MasterDetailLayout from "./components/MasterDetailLayout";
 import SovereignYieldCurve from "./components/SovereignYieldCurve";
@@ -228,7 +228,7 @@ export default function AlphaShield() {
           <div className="space-y-1.5">
             {[
               { id: "portfolio", label: "PORTFOLIO_MATRIX", icon: <LineChart size={16} className="text-blue-400" /> },
-              { id: "macro", label: "MACRO_INTELLIGENCE", icon: "🌎" },
+              { id: "macro", label: "MACRO_INTELLIGENCE", icon: <Globe size={16} className="text-blue-400" /> },
               { id: "rebalancing", label: "ASSET_REBALANCING", icon: <Settings2 size={16} className="text-slate-400" /> }
             ].map((item) => (
               <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full text-left px-3 py-2.5 rounded-lg text-xs font-bold border flex items-center gap-2.5 transition-all cursor-pointer ${activeTab === item.id ? `bg-neutral-900 border-neutral-700/60 ${acc.text}` : "bg-transparent border-transparent text-neutral-500 hover:text-neutral-300"}`}>

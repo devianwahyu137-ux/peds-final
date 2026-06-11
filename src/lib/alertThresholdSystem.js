@@ -1,6 +1,5 @@
-// src/lib/alertThresholdSystem.js
-// In-app macro alert threshold management
-// Persists to localStorage — no backend needed
+import React from 'react';
+import { Coins, Landmark, LineChart, Activity } from 'lucide-react';
 
 const STORAGE_KEY = 'alphashield_alert_thresholds';
 
@@ -11,7 +10,7 @@ export const ALERT_INDICATORS = [
   {
     id:           'usdIdr',
     label:        'USD/IDR',
-    icon:         '💱',
+    icon:         React.createElement(Coins, { size: 16, className: 'text-amber-500' }),
     defaultValue: 18000,
     unit:         '',
     description:  'Alert jika Rupiah melemah di atas level ini',
@@ -21,7 +20,7 @@ export const ALERT_INDICATORS = [
   {
     id:           'biRate',
     label:        'BI Rate',
-    icon:         '🏦',
+    icon:         React.createElement(Landmark, { size: 16, className: 'text-blue-500' }),
     defaultValue: 6.0,
     unit:         '%',
     description:  'Alert jika BI Rate naik di atas level ini',
@@ -31,7 +30,7 @@ export const ALERT_INDICATORS = [
   {
     id:           'ihsg',
     label:        'IHSG',
-    icon:         '📈',
+    icon:         React.createElement(LineChart, { size: 16, className: 'text-emerald-500' }),
     defaultValue: 5500,
     unit:         'pts',
     description:  'Alert jika IHSG jatuh di bawah level ini',
@@ -41,7 +40,7 @@ export const ALERT_INDICATORS = [
   {
     id:           'inflation',
     label:        'Inflasi YoY',
-    icon:         '📊',
+    icon:         React.createElement(Activity, { size: 16, className: 'text-red-500' }),
     defaultValue: 5.0,
     unit:         '%',
     description:  'Alert jika inflasi melampaui level ini',
@@ -49,6 +48,7 @@ export const ALERT_INDICATORS = [
     format:       v => `${v}`,
   },
 ];
+
 
 /**
  * Build default thresholds from indicator definitions.

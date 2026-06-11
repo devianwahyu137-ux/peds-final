@@ -1,5 +1,5 @@
 import SentimentBar from "./SentimentBar";
-import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
+import { ExternalLink, TrendingUp, TrendingDown, ArrowRight } from "lucide-react";
 
 /**
  * Badge class map for sentiment badges.
@@ -47,10 +47,18 @@ export default function NewsCard({
   url,
 }) {
   const badge = BADGE_CONFIG[sentiment] || BADGE_CONFIG.NEUTRAL;
+  const isValidUrl = url && url !== '#' && url !== '';
+
+  const handleCardClick = (e) => {
+    if (isValidUrl) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   return (
     <div
-      className="card-hover rounded-xl overflow-hidden transition-all duration-200 cursor-pointer group"
+      onClick={handleCardClick}
+      className="card-hover rounded-xl overflow-hidden transition-all duration-200 cursor-pointer group relative"
       style={{
         background: "var(--as-bg-secondary)",
         border: "1px solid var(--as-border-primary)",
@@ -58,6 +66,13 @@ export default function NewsCard({
         WebkitBackdropFilter: "blur(8px)",
       }}
     >
+      {/* External link icon indicator */}
+      {isValidUrl && (
+        <span className="absolute top-3.5 right-3.5 text-neutral-500 group-hover:text-emerald-400 transition-colors z-20">
+          <ExternalLink size={12} />
+        </span>
+      )}
+
       {/* Sentiment Bar — full width at top */}
       <SentimentBar score={sentimentScore} sentiment={sentiment} />
 
@@ -74,16 +89,9 @@ export default function NewsCard({
         </div>
 
         {/* Title */}
-        <h4 className="text-[13px] font-bold leading-snug text-slate-900 dark:text-white mb-2 line-clamp-2 font-mono"
+        <h4 className="text-[13px] font-bold leading-snug text-slate-900 dark:text-white mb-2 line-clamp-2 font-mono group-hover:text-emerald-400 transition-colors"
             style={{ lineHeight: '1.5' }}>
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-emerald-400 transition-colors"
-          >
-            {title}
-          </a>
+          {title}
         </h4>
 
         {/* Summary */}

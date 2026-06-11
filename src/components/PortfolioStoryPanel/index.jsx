@@ -2,7 +2,7 @@
 // COMPLETE FILE — narrativo panel with What-If simulator
 
 import { useState, useMemo } from 'react';
-import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Gauge, FlaskConical } from "lucide-react";
+import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Gauge, FlaskConical, Zap } from "lucide-react";
 import { useRootStore } from '@/stores/rootStore';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
 import {
@@ -72,7 +72,7 @@ export function PortfolioStoryPanel() {
 
   const STORY_METRICS = [
     {
-      id: 'sharpe', icon: '⚡', label: 'Efisiensi Portofolio',
+      id: 'sharpe', icon: <Zap size={16} className="text-yellow-400" />, label: 'Efisiensi Portofolio',
       value: sharpe?.toFixed(2) ?? '—', unit: 'σ',
       narrative: sharpe != null ? narrateSharpRatio(sharpe, scenarioId) : '',
     },

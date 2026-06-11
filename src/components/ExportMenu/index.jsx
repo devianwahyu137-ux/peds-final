@@ -6,17 +6,18 @@ import { useState, useRef, useEffect } from 'react';
 import { useRootStore } from '@/stores/rootStore';
 import { exportPortfolioCSV, exportPortfolioJSON } from '@/lib/dataExporter';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
+import { Download, ChevronUp, ChevronDown, FileSpreadsheet, FileJson } from 'lucide-react';
 
 const EXPORT_OPTIONS = [
   {
     type:     'csv',
-    icon:     '📊',
+    icon:     <FileSpreadsheet size={16} className="text-emerald-500" />,
     label:    'Export CSV',
     subLabel: 'Excel / Google Sheets compatible',
   },
   {
     type:     'json',
-    icon:     '{ }',
+    icon:     <FileJson size={16} className="text-blue-500" />,
     label:    'Export JSON',
     subLabel: 'Raw data untuk analisis lanjutan',
   },
@@ -65,7 +66,7 @@ export function ExportMenu() {
       {/* Trigger button */}
       <button
         onClick={() => setIsOpen(p => !p)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border
                    text-[9px] font-mono font-bold tracking-widest uppercase
                    cursor-pointer transition-all duration-150"
         style={{
@@ -74,9 +75,9 @@ export function ExportMenu() {
           color:       isOpen ? config.color : 'var(--as-text-secondary)',
         }}
       >
-        <span>⬇</span>
+        <Download size={11} />
         <span>EXPORT</span>
-        <span className="text-[7px] opacity-50">{isOpen ? '▲' : '▼'}</span>
+        <span className="flex items-center justify-center opacity-50">{isOpen ? <ChevronUp size={10} /> : <ChevronDown size={10} />}</span>
       </button>
 
       {/* Dropdown */}

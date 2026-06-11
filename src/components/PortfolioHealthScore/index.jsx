@@ -8,13 +8,34 @@ import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
 import { computeHealthScore, HEALTH_DIMENSIONS } from '@/lib/healthScoreEngine';
 import { getScenarioMismatch } from '@/lib/scenarioDetector';
 import { ArcGauge } from './ArcGauge';
+import { Zap, Activity, Shield, Compass, Target } from 'lucide-react';
+
+const DIMENSION_ICONS = {
+  'efisiensi': <Zap size={14} className="text-yellow-400" />,
+  'stabilitas': <Activity size={14} className="text-blue-400" />,
+  'perlindungan': <Shield size={14} className="text-emerald-400" />,
+  'diversifikasi': <Compass size={14} className="text-purple-400" />,
+  'skenario': <Target size={14} className="text-red-400" />,
+};
+
+const DIMENSION_ICONS_LARGE = {
+  'efisiensi': <Zap size={18} className="text-yellow-400" />,
+  'stabilitas': <Activity size={18} className="text-blue-400" />,
+  'perlindungan': <Shield size={18} className="text-emerald-400" />,
+  'diversifikasi': <Compass size={18} className="text-purple-400" />,
+  'skenario': <Target size={18} className="text-red-400" />,
+};
 
 export function PortfolioHealthScore() {
   const scenarioId  = useRootStore(s => s.scenarioId);
+  const crisisMode  = useRootStore(s => s.crisisMode);
   const analytics   = useRootStore(s => s.analytics);
   const macroInputs = useRootStore(s => s.macroInputs);
   const liveData    = useRootStore(s => s.liveData);
-  const config      = SCENARIO_CONFIG[scenarioId] ?? SCENARIO_CONFIG.EQUILIBRIUM;
+  const effectiveScenario = crisisMode
+    ? (crisisMode === "HYPERINFLATION" ? "HIPERINFLASI" : crisisMode)
+    : scenarioId;
+  const config      = SCENARIO_CONFIG[effectiveScenario] ?? SCENARIO_CONFIG.EQUILIBRIUM;
 
   // Build macro snapshot for mismatch detection
   const macroData = useMemo(() => ({
@@ -72,15 +93,15 @@ export function PortfolioHealthScore() {
         <div className="flex items-center gap-8 flex-col md:flex-row">
           {/* Left: arc gauge + grade badge */}
           <div className="flex flex-col items-center flex-shrink-0">
-            <ArcGauge score={total} color={grade.color} />
+            <ArcGauge score={total} color={config.color} />
             <div className="text-center -mt-2">
               <span
                 className="text-[11px] font-mono font-bold px-3 py-1
                            rounded-full tracking-widest"
                 style={{
-                  background: grade.color + '18',
-                  color:      grade.color,
-                  border:     `1px solid ${grade.color}30`,
+                  background: config.color + '18',
+                  color:      config.color,
+                  border:     `1px solid ${config.color}30`,
                 }}
               >
                 {grade.label}
@@ -102,7 +123,7 @@ export function PortfolioHealthScore() {
                   {/* Label row */}
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm">{dim.icon}</span>
+                      <span className="flex-shrink-0 flex items-center">{DIMENSION_ICONS[dim.id] || dim.icon}</span>
                       <span
                         className="text-[10px] font-mono font-bold uppercase
                                    tracking-wider"
@@ -162,7 +183,7 @@ export function PortfolioHealthScore() {
                   className="absolute top-0 left-0 right-0 h-0.5"
                   style={{ background: dimColor, opacity: 0.5 }}
                 />
-                <div className="text-lg mb-1">{dim.icon}</div>
+                <div className="mb-1.5 flex justify-center">{DIMENSION_ICONS_LARGE[dim.id] || dim.icon}</div>
                 <div
                   className="text-[8px] font-mono leading-snug"
                   style={{ color: 'var(--as-text-dim)' }}

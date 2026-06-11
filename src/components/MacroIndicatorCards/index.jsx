@@ -1,5 +1,5 @@
 import { useRootStore } from "@/stores/rootStore";
-import { Landmark, LineChart, Wallet, TrendingUp } from "lucide-react";
+import { Landmark, LineChart, Wallet, TrendingUp, Coins, Flag } from "lucide-react";
 import { SPARKLINE_PRESETS } from "../../lib/historicalPresets";
 import MacroIndicatorCard from "./MacroIndicatorCard";
 import { useMarketData } from '@/contexts/MacroDataContext';
@@ -7,9 +7,9 @@ import { useMarketData } from '@/contexts/MacroDataContext';
 const MACRO_INDICATORS = [
   { id: "biRate",  label: "BI Rate",         unit: "%",   icon: <Landmark size={16} className="text-indigo-400" /> },
   { id: "cpi",     label: "Inflasi YoY",     unit: "%",   icon: <LineChart size={16} className="text-blue-400" />  },
-  { id: "usdIdr",  label: "USD/IDR",         unit: "IDR", icon: "💱"  },
+  { id: "usdIdr",  label: "USD/IDR",         unit: "IDR", icon: <Coins size={16} className="text-amber-500" />  },
   { id: "dxy",     label: "DXY Index",       unit: "pts", icon: <Wallet size={16} className="text-emerald-400" />  },
-  { id: "gs10",    label: "US 10Y Yield",    unit: "%",   icon: "🇺🇸"   },
+  { id: "gs10",    label: "US 10Y Yield",    unit: "%",   icon: <Flag size={16} className="text-blue-400" />   },
   { id: "ihsg",    label: "IHSG Composite",  unit: "pts", icon: <TrendingUp size={16} className="text-emerald-400" /> },
 ];
 

@@ -182,7 +182,7 @@ export default function App() {
             <div
               key={activeTab}
               className="w-full fade-in-up"
-              style={{ animationDuration: '200ms' }}
+              style={{ animationDuration: '250ms' }}
             >
               {CurrentPage}
             </div>

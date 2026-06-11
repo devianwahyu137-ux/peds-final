@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useRootStore } from '@/stores/rootStore';
 import { HISTORICAL_CRISES } from '@/lib/backtestingData';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
+import { BarChart3, Lightbulb } from 'lucide-react';
 
 const ASSET_LABELS = {
   stocks: 'Ekuitas',
@@ -104,7 +105,9 @@ export function HistoricalBacktest() {
                 borderBottom: `3px solid ${isActive ? crisis.severityColor : 'transparent'}`,
               }}
             >
-              <div className="text-xl mb-2">{crisis.icon}</div>
+              <div className="w-6 h-6 rounded-full flex items-center justify-center mb-2" style={{ backgroundColor: crisis.severityColor + '20' }}>
+                <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: crisis.severityColor }} />
+              </div>
               <div className="text-[9px] font-mono font-bold uppercase tracking-widest mb-1"
                    style={{ color: isActive ? crisis.severityColor : 'var(--as-text-dim)' }}>
                 {crisis.severity}
@@ -243,10 +246,10 @@ export function HistoricalBacktest() {
             }}
           >
             <div
-              className="text-[9px] font-mono tracking-[0.2em] uppercase mb-3"
+              className="text-[9px] font-mono tracking-[0.2em] uppercase mb-3 flex items-center gap-1"
               style={{ color: 'var(--as-text-dim)' }}
             >
-              📊 ESTIMASI PORTOFOLIO KAMU ({scenarioId})
+              <BarChart3 size={11} className="text-indigo-400" /> ESTIMASI PORTOFOLIO KAMU ({scenarioId})
             </div>
             <div className="flex items-center justify-between gap-4">
               <div>
@@ -296,7 +299,7 @@ export function HistoricalBacktest() {
             borderLeft: `3px solid ${config.color}`,
           }}
         >
-          <span className="text-base flex-shrink-0">💡</span>
+          <Lightbulb size={16} className="text-yellow-400 flex-shrink-0 mt-0.5" />
           <p
             className="text-[10px] font-mono leading-loose"
             style={{ color: 'var(--as-text-secondary)' }}

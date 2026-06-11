@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { X, Sparkles, Send } from "lucide-react";
+import { X, Sparkles, Send, AlertCircle } from "lucide-react";
 import { buildSuggestedQuestions } from '@/lib/portfolioContextBuilder';
 import { getAlphaShieldAnalysis } from '@/lib/gemini';
 import { useRootStore } from '@/stores/rootStore';
@@ -281,7 +281,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
                 border: '1px solid rgba(239,68,68,0.15)',
               }}
             >
-              ⚠ {error}
+              <span className="flex items-center gap-1.5"><AlertCircle size={12} className="text-red-500 shrink-0" />{error}</span>
             </div>
           )}
 

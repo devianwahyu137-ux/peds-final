@@ -85,9 +85,11 @@ export default function PortfolioPage() {
       {/* Header */}
       <div className="border-b border-[var(--as-border-secondary)] pb-4 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-lg font-black font-mono uppercase tracking-tight">
-            Portofoliomu <span style={{ color: acc.neon }}>// Alokasi Aset</span>
-          </h1>
+          <h2 className="text-xl font-bold text-white tracking-wide uppercase">
+            PORTOFOLIOMU
+            <span className="text-gray-600 mx-3 font-light">//</span>
+            <span style={{ color: acc.neon }}>ALOKASI ASET</span>
+          </h2>
           <p className="text-[10px] font-mono font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">
             Distribusi optimal berdasarkan skenario {scenarioId}
           </p>

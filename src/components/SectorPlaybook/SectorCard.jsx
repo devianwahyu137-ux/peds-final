@@ -1,7 +1,19 @@
-// src/components/SectorPlaybook/SectorCard.jsx
 import { useState, useCallback } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Landmark, ShoppingCart, Radio, Building, Laptop, Coins, DollarSign, Zap, Ban } from 'lucide-react';
 import { STANCE_CONFIG, RISK_SIGNALS } from '@/lib/sectorPlaybookData';
+
+const SECTOR_ICONS = {
+  '🏦': <Landmark size={18} className="text-indigo-400" />,
+  '🛒': <ShoppingCart size={18} className="text-amber-500" />,
+  '📡': <Radio size={18} className="text-blue-400" />,
+  '🏗️': <Building size={18} className="text-slate-400" />,
+  '🏛️': <Landmark size={18} className="text-purple-400" />,
+  '💻': <Laptop size={18} className="text-indigo-400" />,
+  '🥇': <Coins size={18} className="text-yellow-500" />,
+  '💵': <DollarSign size={18} className="text-emerald-500" />,
+  '⚡': <Zap size={18} className="text-yellow-400" />,
+  '🚫': <Ban size={18} className="text-red-500" />,
+};
 
 export function SectorCard({ sector }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -19,8 +31,8 @@ export function SectorCard({ sector }) {
       >
         <div className="flex items-center gap-3 min-w-0 w-full md:w-auto">
           {/* Icon */}
-          <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-neutral-800 flex items-center justify-center text-lg shrink-0">
-            {sector.icon}
+          <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-neutral-800/50 border border-white/5 flex items-center justify-center text-lg shrink-0">
+            {SECTOR_ICONS[sector.icon] || sector.icon}
           </div>
 
           {/* Text — must have min-w-0 to allow truncation */}

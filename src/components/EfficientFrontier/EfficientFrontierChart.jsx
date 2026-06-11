@@ -12,7 +12,11 @@ const CHART_H   = 300;
 
 export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
   const scenarioId          = useRootStore((s) => s.scenarioId);
-  const config              = SCENARIO_CONFIG[scenarioId];
+  const crisisMode          = useRootStore((s) => s.crisisMode);
+  const effectiveScenario = crisisMode
+    ? (crisisMode === "HYPERINFLATION" ? "HIPERINFLASI" : crisisMode)
+    : scenarioId;
+  const config              = SCENARIO_CONFIG[effectiveScenario] || SCENARIO_CONFIG.EQUILIBRIUM;
   const [hovered, setHovered] = useState(null);
   const svgRef              = useRef(null);
 

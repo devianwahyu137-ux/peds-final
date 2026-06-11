@@ -19,10 +19,67 @@ const ASSET_COLORS = {
 };
 
 const RebalancingCalculator = React.memo(function RebalancingCalculator() {
-  const { weights, actualWeights, targetWeights, setActualWeight } = useRootStore();
+  const { weights, actualWeights, targetWeights, setActualWeightsBulk } = useRootStore();
   const currentTargetWeights = useMemo(() => targetWeights || weights || {}, [targetWeights, weights]);
   const currentActualWeights = useMemo(() => actualWeights || currentTargetWeights, [actualWeights, currentTargetWeights]);
   
+  const [localStocks, setLocalStocks] = useState(() => {
+    return Math.round(currentActualWeights.stocks || 0);
+  });
+
+  const storeStocks = Math.round(currentActualWeights.stocks || 0);
+  useEffect(() => {
+    setLocalStocks(storeStocks);
+  }, [storeStocks]);
+
+  const timeoutRef = useRef(null);
+
+  const debouncedStoreUpdate = useCallback((val) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      const target = currentTargetWeights;
+      const remaining = 100 - val;
+      const otherTargetTotal = Math.max((target.bonds || 0) + (target.gold || 0) + (target.cash || 0), 1);
+      
+      const nextActuals = {
+        stocks: val,
+        bonds: remaining * ((target.bonds || 0) / otherTargetTotal),
+        gold: remaining * ((target.gold || 0) / otherTargetTotal),
+        cash: remaining * ((target.cash || 0) / otherTargetTotal)
+      };
+      setActualWeightsBulk(nextActuals);
+    }, 150);
+  }, [currentTargetWeights, setActualWeightsBulk]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleSliderChange = (e) => {
+    const val = parseFloat(e.target.value) || 0;
+    setLocalStocks(val);
+    debouncedStoreUpdate(val);
+  };
+
+  const localActualWeights = useMemo(() => {
+    const target = currentTargetWeights;
+    const remaining = 100 - localStocks;
+    const otherTargetTotal = Math.max((target.bonds || 0) + (target.gold || 0) + (target.cash || 0), 1);
+    
+    return {
+      stocks: localStocks,
+      bonds: remaining * ((target.bonds || 0) / otherTargetTotal),
+      gold: remaining * ((target.gold || 0) / otherTargetTotal),
+      cash: remaining * ((target.cash || 0) / otherTargetTotal)
+    };
+  }, [localStocks, currentTargetWeights]);
+
   const [capitalRaw, setCapitalRaw] = useState("100000000");
 
   const capital = useMemo(() => {
@@ -33,7 +90,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
   const rebalanceData = useMemo(() => {
     const assets = ["stocks", "bonds", "gold", "cash"];
     return assets.map((asset) => {
-      const actualPct = currentActualWeights[asset] || 0;
+      const actualPct = localActualWeights[asset] || 0;
       const targetPct = currentTargetWeights[asset] || 0;
       
       const currentIDR = (actualPct / 100) * capital;
@@ -56,7 +113,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
         action
       };
     });
-  }, [currentActualWeights, currentTargetWeights, capital]);
+  }, [localActualWeights, currentTargetWeights, capital]);
 
   const totalFee = useMemo(() => {
     return rebalanceData.reduce((sum, r) => sum + r.fee, 0);
@@ -104,15 +161,15 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
 
         <div>
           <label className="block text-[9px] text-slate-500 dark:text-neutral-400 uppercase tracking-widest mb-1.5">
-            Current Equities Actual Weight: {Math.round(currentActualWeights.stocks || 0)}%
+            Current Equities Actual Weight: {Math.round(localStocks || 0)}%
           </label>
           <input
             type="range"
             min="0"
             max="100"
             step="1"
-            value={Math.round(currentActualWeights.stocks || 0)}
-            onChange={(e) => setActualWeight("stocks", parseFloat(e.target.value) || 0)}
+            value={Math.round(localStocks || 0)}
+            onChange={handleSliderChange}
             className="w-full cursor-pointer bg-slate-200 dark:bg-neutral-900 rounded-lg appearance-none accent-emerald-500 dark:accent-emerald-400"
             style={{
               height: '4px',

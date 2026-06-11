@@ -177,6 +177,7 @@ export const useRootStore = create(
 
       // ── SCENARIO STATE ──────────────────────────────────────
       scenarioId:    'TIGHTENING',
+      crisisMode:    null,
       macroInputs:   INITIAL_MACRO,
       weights:       INITIAL_WEIGHTS,
       actualWeights: null,
@@ -203,8 +204,37 @@ export const useRootStore = create(
           state.scenarioId  = id;
           state.macroInputs = defaults;
           state.weights     = defaults.weights;
+          state.actualWeights = null;
+          state.crisisMode  = null;
           state.analytics   = newAnalytics;
         });
+      },
+
+      setCrisisMode: (mode) => {
+        set((state) => {
+          state.crisisMode = mode;
+          state.actualWeights = null;
+          if (mode) {
+            const mappedId = mode === "HYPERINFLATION" ? "HIPERINFLASI" : mode;
+            const defaults = SCENARIO_DEFAULTS[mappedId];
+            if (defaults) {
+              state.macroInputs = defaults;
+              state.weights     = defaults.weights;
+            }
+          } else {
+            const defaults = SCENARIO_DEFAULTS[state.scenarioId];
+            if (defaults) {
+              state.macroInputs = defaults;
+              state.weights     = defaults.weights;
+            }
+          }
+        });
+        const { scenarioId, macroInputs, weights, crisisMode } = get();
+        const effectiveScenarioId = crisisMode
+          ? (crisisMode === "HYPERINFLATION" ? "HIPERINFLASI" : crisisMode)
+          : scenarioId;
+        const newAnalytics = safeRunMPT(effectiveScenarioId, macroInputs, weights);
+        set((state) => { state.analytics = newAnalytics; });
       },
 
       setMacroInput: (key, value) => {
@@ -225,6 +255,12 @@ export const useRootStore = create(
             state.actualWeights = { ...state.weights };
           }
           state.actualWeights[asset] = parseFloat(pct) || 0;
+        });
+      },
+
+      setActualWeightsBulk: (newActualWeights) => {
+        set((state) => {
+          state.actualWeights = newActualWeights;
         });
       },
 
