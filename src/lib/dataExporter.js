@@ -2,6 +2,9 @@
 // Client-side data export — CSV and JSON
 // Uses native browser Blob API — zero dependencies
 
+import { formatNumber, formatIDR, formatPoints } from '@/utils/format';
+import { APP_VERSION } from '@/stores/rootStore';
+
 /**
  * Trigger a file download using a temporary anchor element.
  */
@@ -40,6 +43,8 @@ export function exportPortfolioCSV({ scenarioId, weights, analytics, macroInputs
   const stdDev  = raw < 1 && raw > 0 ? raw * 100 : raw;
   const retRaw  = analytics?.portfolioReturn ?? 0;
   const portRet = retRaw < 1 && retRaw > 0 ? retRaw * 100 : retRaw;
+  const rfRaw   = analytics?.riskFreeRate ?? 0;
+  const rf      = rfRaw < 1 && rfRaw > 0 ? rfRaw * 100 : rfRaw;
 
   const rows = [
     ['ALPHASHIELD PORTFOLIO EXPORT', '', ''],
@@ -60,21 +65,21 @@ export function exportPortfolioCSV({ scenarioId, weights, analytics, macroInputs
 
     ['=== ANALISIS MPT ===', '', ''],
     ['Metrik', 'Nilai', 'Interpretasi'],
-    ['Sharpe Ratio',    (analytics?.sharpe ?? 0).toFixed(3),                                     'Efisiensi return per risiko'],
-    ['Portfolio Beta',  (analytics?.beta ?? 0).toFixed(3),                                       'Sensitivitas vs IHSG'],
-    ['Max Drawdown',    `-${Math.abs(analytics?.estimatedMaxDrawdown ?? 0).toFixed(2)}%`,         'Penurunan maksimal estimasi'],
-    ['Volatilitas',     `${stdDev.toFixed(2)}%`,                                                 'Standar deviasi return'],
-    ['Expected Return', `${portRet.toFixed(2)}%`,                                                'Estimasi return tahunan'],
-    ['Risk-Free Rate',  `${(analytics?.riskFreeRate ?? 0).toFixed(2)}%`,                          'SBN acuan'],
+    ['Sharpe Ratio',    formatNumber(analytics?.sharpe ?? 0, 3),                                 'Efisiensi return per risiko'],
+    ['Portfolio Beta',  formatNumber(analytics?.beta ?? 0, 3),                                   'Sensitivitas vs IHSG'],
+    ['Max Drawdown',    `-${formatNumber(Math.abs(analytics?.estimatedMaxDrawdown ?? 0) * (analytics?.estimatedMaxDrawdown < 1 ? 100 : 1), 2)}%`, 'Penurunan maksimal estimasi'],
+    ['Volatilitas',     `${formatNumber(stdDev, 2)}%`,                                           'Standar deviasi return'],
+    ['Expected Return', `${formatNumber(portRet, 2)}%`,                                          'Estimasi return tahunan'],
+    ['Risk-Free Rate',  `${formatNumber(rf, 2)}%`,                    'SBN acuan'],
     ['', '', ''],
 
     ['=== MAKROEKONOMI ===', '', ''],
     ['Indikator', 'Nilai', 'Sumber'],
-    ['BI Rate',       `${macroInputs?.biRate    ?? 5.25}%`,  'Bank Indonesia'],
-    ['Inflasi YoY',   `${macroInputs?.inflation ?? 3.48}%`,  'BPS'],
-    ['USD/IDR',       `${macroInputs?.usdIdr    ?? 17700}`,  'Alpha Vantage'],
-    ['SBN 10Y Yield', '6.71%',                               'DJPPR Kemenkeu'],
-    ['DXY Index',     '104.50',                              'Federal Reserve'],
+    ['BI Rate',       `${formatNumber(macroInputs?.biRate ?? 5.25, 2)}%`,  'Estimasi (per Mei 2026)'],
+    ['Inflasi YoY',   `${formatNumber(macroInputs?.inflation ?? 3.48, 2)}%`,  'Estimasi (per Mei 2026)'],
+    ['USD/IDR',       `Rp ${formatIDR(macroInputs?.usdIdr ?? 17700)}`,  'Estimasi (per Mei 2026)'],
+    ['SBN 10Y Yield', `${formatNumber(macroInputs?.sbn10y ?? 6.71, 2)}%`,                               'Estimasi (per Mei 2026)'],
+    ['DXY Index',     `${formatPoints(macroInputs?.dxy ?? 104.50)}`,                              'Estimasi (per Mei 2026)'],
     ['', '', ''],
 
     ['=== DISCLAIMER ===', '', ''],
@@ -101,11 +106,17 @@ export function exportPortfolioCSV({ scenarioId, weights, analytics, macroInputs
 export function exportPortfolioJSON({ scenarioId, weights, analytics, macroInputs }) {
   const ts  = getTimestamp();
   const raw = analytics?.portfolioStdDev ?? 0;
+  const stdDev  = raw < 1 && raw > 0 ? raw * 100 : raw;
   const retRaw = analytics?.portfolioReturn ?? 0;
+  const portRet = retRaw < 1 && retRaw > 0 ? retRaw * 100 : retRaw;
+  const rfRaw   = analytics?.riskFreeRate ?? 0;
+  const rf      = rfRaw < 1 && rfRaw > 0 ? rfRaw * 100 : rfRaw;
+  const mdRaw   = analytics?.estimatedMaxDrawdown ?? 0;
+  const md      = mdRaw < 1 && mdRaw > -1 ? mdRaw * 100 : mdRaw;
 
   const payload = {
     meta: {
-      platform:   'AlphaShield PEDS Core System v3.9',
+      platform:   `AlphaShield PEDS Core System ${APP_VERSION}`,
       exportedAt: new Date().toISOString(),
       disclaimer: 'Educational simulation only. Not investment advice.',
     },
@@ -122,19 +133,19 @@ export function exportPortfolioJSON({ scenarioId, weights, analytics, macroInput
       cash:   weights?.cash   ?? 0,
     },
     analytics: {
-      sharpeRatio:       analytics?.sharpe                 ?? 0,
-      portfolioBeta:     analytics?.beta                   ?? 0,
-      maxDrawdown:       analytics?.estimatedMaxDrawdown   ?? 0,
-      volatilitasPct:    raw < 1 && raw > 0 ? raw * 100 : raw,
-      expectedReturnPct: retRaw < 1 && retRaw > 0 ? retRaw * 100 : retRaw,
-      riskFreeRatePct:   analytics?.riskFreeRate           ?? 0,
+      sharpeRatio:       Number((analytics?.sharpe ?? 0).toFixed(4)),
+      portfolioBeta:     Number((analytics?.beta ?? 0).toFixed(4)),
+      maxDrawdownPct:    Number(md.toFixed(2)),
+      volatilitasPct:    Number(stdDev.toFixed(2)),
+      expectedReturnPct: Number(portRet.toFixed(2)),
+      riskFreeRatePct:   Number(rf.toFixed(2)),
     },
     macroContext: {
-      biRate:  `${macroInputs?.biRate ?? 5.25}%`,
-      usdIdr:  `${macroInputs?.usdIdr ?? 17700}`,
-      inflasi: `${macroInputs?.inflation ?? 3.48}% YoY`,
-      sbn10y:  '6.71%',
-      dxy:     '104.50',
+      biRate:  `${formatNumber(macroInputs?.biRate ?? 5.25, 2)}%`,
+      usdIdr:  `Rp ${formatIDR(macroInputs?.usdIdr ?? 17700)}`,
+      inflasi: `${formatNumber(macroInputs?.inflation ?? 3.48, 2)}% YoY`,
+      sbn10y:  `${formatNumber(macroInputs?.sbn10y ?? 6.71, 2)}%`,
+      dxy:     `${formatPoints(macroInputs?.dxy ?? 104.50)}`,
     },
   };
 

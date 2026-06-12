@@ -5,6 +5,7 @@
 import { useMemo, useState, useRef } from 'react';
 import { useRootStore } from "@/stores/rootStore";
 import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
+import { formatNumber } from '@/utils/format';
 
 const CHART_PAD = { top: 32, right: 24, bottom: 52, left: 56 };
 const CHART_W   = 660;
@@ -210,10 +211,10 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
                 PORTOFOLIO ACAK
               </text>
               <text x={tx + 8} y={ty + 28} fontSize={9} fill={sharpeToColor(pt.sharpe)} fontWeight="bold">
-                Sharpe: {pt.sharpe.toFixed(2)}
+                Sharpe: {formatNumber(pt.sharpe, 2)}
               </text>
               <text x={tx + 8} y={ty + 42} fontSize={8} fill="var(--as-text-tertiary)">
-                R: {pt.returnPct.toFixed(1)}% σ: {pt.riskPct.toFixed(1)}%
+                R: {formatNumber(pt.returnPct, 1)}% σ: {formatNumber(pt.riskPct, 1)}%
               </text>
             </g>
           );
@@ -264,7 +265,7 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
               x={currentX + 10} y={currentY - 2}
               fontSize={8} fill="#888"
             >
-              Sharpe: {currentPortfolio.sharpe?.toFixed(2)}
+              Sharpe: {formatNumber(currentPortfolio.sharpe, 2)}
             </text>
           </g>
         )}

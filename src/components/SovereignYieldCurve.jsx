@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Globe } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
+import { formatNumber } from "@/utils/format";
 
 const tenures = ["1Y", "3Y", "5Y", "10Y"];
 const ustYields = [4.95, 4.60, 4.50, 4.45];
@@ -103,8 +104,8 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
   // Build spread data for tooltip
   const spreadData = tenures.map((tenor, i) => ({
     tenor,
-    sbn: (sbnYields[i] ?? 0).toFixed(2),
-    ust: (ustYields[i] ?? 0).toFixed(2),
+    sbn: formatNumber(sbnYields[i] ?? 0, 2),
+    ust: formatNumber(ustYields[i] ?? 0, 2),
     spread: Math.round(((sbnYields[i] ?? 0) - (ustYields[i] ?? 0)) * 100), // in bps
   }));
 
@@ -118,7 +119,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
             <p className="text-[10px] text-[var(--as-text-tertiary)] mt-1 uppercase tracking-wider">Dynamic SBN vs UST Tenure Bezier Plot</p>
           </div>
           <div className="text-[10px] font-mono text-[var(--as-text-tertiary)]">
-            SPREAD 10Y: <span className="font-bold text-amber-400">+{(spread ?? 0).toFixed(2)}%</span>
+            SPREAD 10Y: <span className="font-bold text-amber-400">+{formatNumber(spread ?? 0, 2)}%</span>
           </div>
         </div>
 
@@ -128,7 +129,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
             {[mn, mn + (mx - mn) * 0.25, mn + (mx - mn) * 0.5, mn + (mx - mn) * 0.75, mx].map((v, i) => (
               <g key={i}>
                 <line x1={pL} y1={tY(v)} x2={W - pR} y2={tY(v)} stroke="var(--as-border-secondary)" strokeWidth="0.75" />
-                <text x={pL - 8} y={tY(v) + 3} textAnchor="end" fontSize="10" fill="var(--as-text-dim)" fontFamily="monospace">{v.toFixed(2)}%</text>
+                <text x={pL - 8} y={tY(v) + 3} textAnchor="end" fontSize="10" fill="var(--as-text-dim)" fontFamily="monospace">{formatNumber(v, 2)}%</text>
               </g>
             ))}
             
@@ -186,7 +187,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
                     textAnchor="middle" fontSize="8" fill="#fff" fontFamily="monospace"
                     style={{ pointerEvents: "none" }}
                   >
-                    {(sbnYields[i] ?? 0).toFixed(2)}%
+                    {formatNumber(sbnYields[i] ?? 0, 2)}%
                   </text>
                 </g>
               );
@@ -196,7 +197,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
             {ustPoints.map((pt, i) => (
               <g key={`u-${i}`}>
                 <circle cx={pt.x} cy={pt.y} r={4} fill="transparent" stroke="#94a3b8" strokeWidth={2} />
-                <text x={pt.x} y={pt.y + 14} textAnchor="middle" fontSize="10" fill="#94a3b8" fontFamily="monospace">{ustYields[i].toFixed(2)}%</text>
+                <text x={pt.x} y={pt.y + 14} textAnchor="middle" fontSize="10" fill="#94a3b8" fontFamily="monospace">{formatNumber(ustYields[i], 2)}%</text>
               </g>
             ))}
 
@@ -297,7 +298,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
                           backgroundColor: isDiag ? "transparent" : `${getCellColor(val)}11`
                         }}
                       >
-                        {isDiag ? "—" : val.toFixed(2)}
+                        {isDiag ? "—" : formatNumber(val, 2)}
                       </td>
                     );
                   })}

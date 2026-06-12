@@ -7,6 +7,7 @@ import { useRootStore } from "@/stores/rootStore";
 import { EfficientFrontierChart } from './EfficientFrontierChart';
 import { GlossaryTerm } from '@/components/GlossaryTerm';
 import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
+import { formatNumber, formatIDR } from "@/utils/format";
 
 const CAPITAL_PRESETS = [
   { label: '10 Juta',  value: 10_000_000  },
@@ -15,12 +16,6 @@ const CAPITAL_PRESETS = [
   { label: '500 Juta', value: 500_000_000 },
   { label: '1 Miliar', value: 1_000_000_000 },
 ];
-
-function formatIDR(n) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency', currency: 'IDR', maximumFractionDigits: 0,
-  }).format(n);
-}
 
 // Fallback matrices if store is still syncing
 const FALLBACK_EXPECTED_RETURNS = { stocks: 0.12, bonds: 0.065, gold: 0.08, cash: 0.045 };
@@ -39,11 +34,24 @@ const SCENARIO_RETURN_FLOOR = {
   CURRENCY_STRESS: 4.5,  // Gold + USD still provide positive real return
 };
 
+// Scenario-specific expected return (mu) and volatility (sigma) multipliers for realistic Monte Carlo paths
+const SCENARIO_MC_MULTIPLIERS = {
+  EQUILIBRIUM:     { mu: 1.0, sigma: 1.0 },
+  TIGHTENING:      { mu: 0.8, sigma: 1.2 },
+  CURRENCY_STRESS: { mu: 0.3, sigma: 2.5 },
+  HIPERINFLASI:     { mu: 0.1, sigma: 3.0 },
+  RUPIAH_CRASH:     { mu: 0.0, sigma: 3.5 },
+};
+
 export function MonteCarloPanel() {
   const scenarioId      = useRootStore((s) => s.scenarioId);
+  const crisisMode      = useRootStore((s) => s.crisisMode);
   const targetAnalytics = useRootStore((s) => s.targetAnalytics);
   const analytics       = useRootStore((s) => s.analytics);
-  const config          = SCENARIO_CONFIG[scenarioId];
+  const effectiveScenarioId = crisisMode
+    ? (crisisMode === 'HYPERINFLATION' ? 'HIPERINFLASI' : crisisMode)
+    : scenarioId;
+  const config          = SCENARIO_CONFIG[effectiveScenarioId] || SCENARIO_CONFIG.EQUILIBRIUM;
   
   const [capital, setCapital]   = useState(100_000_000);
   const [inputVal, setInputVal] = useState('100000000');
@@ -91,13 +99,18 @@ export function MonteCarloPanel() {
       : rawStdDev;
 
     // Apply scenario-based minimums for realistic simulation
-    const finalReturn = normReturn > 0.1
+    const baseReturn = normReturn > 0.1
       ? normReturn
-      : (SCENARIO_RETURN_FLOOR[scenarioId] ?? 6.0);
+      : (SCENARIO_RETURN_FLOOR[effectiveScenarioId] ?? 6.0);
 
-    const finalStdDev = normStdDev > 0.1
+    const baseStdDev = normStdDev > 0.1
       ? normStdDev
       : 10.0; // default 10% volatility if calculation fails
+
+    // Apply scenario-specific multipliers
+    const mult = SCENARIO_MC_MULTIPLIERS[effectiveScenarioId] ?? SCENARIO_MC_MULTIPLIERS.EQUILIBRIUM;
+    const finalReturn = baseReturn * mult.mu;
+    const finalStdDev = baseStdDev * mult.sigma;
 
     // ── SAFE EXPECTED RETURNS & COVARIANCE ────────────────────
     const expReturns = effectiveAnalytics?.expectedReturns;
@@ -216,7 +229,7 @@ export function MonteCarloPanel() {
               </span>
               <input
                 type="text"
-                value={parseInt(inputVal || '0').toLocaleString('id-ID')}
+                value={capital ? formatIDR(capital) : ''}
                 onChange={(e) => handleCapitalChange(e.target.value)}
                 disabled={isCalculating}
                 className="bg-slate-50 dark:bg-black border border-slate-300 dark:border-neutral-800/70 rounded-lg pl-8 pr-3 py-2 text-slate-900 dark:text-white font-mono text-xs tabular-nums focus:outline-none w-40 disabled:opacity-50"
@@ -249,25 +262,25 @@ export function MonteCarloPanel() {
             {[
               {
                 label: 'Median 1 Tahun',
-                value: formatIDR(result.summary.median),
-                sub:   `${result.summary.medianReturnPct > 0 ? '+' : ''}${result.summary.medianReturnPct}%`,
+                value: `Rp ${formatIDR(result.summary.median)}`,
+                sub:   `${result.summary.medianReturnPct > 0 ? '+' : ''}${formatNumber(result.summary.medianReturnPct, 2)}%`,
                 color: '#10b981',
               },
               {
-                label: 'Skenario Terbaik (P95)',
-                value: formatIDR(result.summary.bestCase),
-                sub:   `+${result.summary.bestReturnPct}%`,
+                label: 'Proyeksi Stokastik P95',
+                value: `Rp ${formatIDR(result.summary.bestCase)}`,
+                sub:   `+${formatNumber(result.summary.bestReturnPct, 2)}%`,
                 color: '#3b82f6',
               },
               {
-                label: 'Skenario Terburuk (P5)',
-                value: formatIDR(result.summary.worstCase),
-                sub:   `${result.summary.worstReturnPct}%`,
+                label: 'Proyeksi Stokastik P5',
+                value: `Rp ${formatIDR(result.summary.worstCase)}`,
+                sub:   `${result.summary.worstReturnPct > 0 ? '+' : ''}${formatNumber(result.summary.worstReturnPct, 2)}%`,
                 color: '#ef4444',
               },
               {
                 label: 'Probabilitas Rugi',
-                value: `${result.summary.probOfLoss}%`,
+                value: `${formatNumber(result.summary.probOfLoss, 1)}%`,
                 sub:   'dari 1.000 simulasi',
                 color: result.summary.probOfLoss > 30 ? '#ef4444'
                       : result.summary.probOfLoss > 15 ? '#f59e0b'

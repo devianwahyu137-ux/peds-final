@@ -133,7 +133,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
     handleSendMessage(text);
   }, [handleSendMessage]);
 
-  const providerLabel = import.meta.env.VITE_GEMINI_API_KEY ? 'Gemini 1.5' : 'Offline';
+  const providerLabel = import.meta.env.VITE_SUPABASE_URL ? 'GEMINI 2.5 FLASH' : 'Offline';
 
   return (
     <>

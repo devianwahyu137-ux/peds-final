@@ -2,8 +2,8 @@ import { useRootStore } from "@/stores/rootStore";
 import { SENTIMENT_AGGREGATE, OVERALL_STYLE } from "../components/MacroSentimentSummary";
 import { Landmark, BarChart2, ArrowRightLeft, DollarSign, TrendingUp, Gem, Wallet, AlertTriangle, Lock, AlertOctagon, Lightbulb, Target, AlertCircle, Check } from "lucide-react";
 import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
-import { useMarketData } from '@/contexts/MacroDataContext';
 import { SCENARIO_CONFIG } from "@/lib/scenarioPulse";
+import { formatNumber, formatPoints, formatIDR } from "@/utils/format";
 
 // ── Narasi Bahasa Indonesia per skenario ────────────────────────────────────────
 
@@ -51,36 +51,26 @@ const QUICK_SIGNALS_CONFIG = [
     label:     'BI Rate',
     unit:      '%',
     icon:      <Landmark size={18} className="text-slate-400 dark:text-neutral-500" />,
-    getValue:  (ld) => ld?.bi_macro?.biRate ?? ld?.bi_macro?.v ?? ld?.biRate?.v ?? null,
   },
   {
-    key:       'cpi',
+    key:       'inflasi',
     label:     'Inflasi',
     unit:      '%',
     icon:      <BarChart2 size={18} className="text-slate-400 dark:text-neutral-500" />,
-    getValue:  (ld) => ld?.bi_macro?.cpi ?? ld?.cpi?.v ?? null,
   },
   {
     key:       'usdIdr',
     label:     'USD/IDR',
     unit:      '',
     icon:      <ArrowRightLeft size={18} className="text-slate-400 dark:text-neutral-500" />,
-    getValue:  (ld) => ld?.usdIdr?.v ?? (typeof ld?.usdIdr === 'number' ? ld.usdIdr : null),
   },
   {
     key:       'dxy',
     label:     'DXY Index',
     unit:      ' pts',
     icon:      <DollarSign size={18} className="text-slate-400 dark:text-neutral-500" />,
-    getValue:  (ld) => ld?.dxy?.v ?? (typeof ld?.dxy === 'number' ? ld.dxy : null),
   },
 ];
-
-const SCENARIO_MACRO_FALLBACK = {
-  EQUILIBRIUM:     { biRate: 5.50, cpi: 2.8, usdIdr: 15850, dxy: 101.2 },
-  TIGHTENING:      { biRate: 6.75, cpi: 4.2, usdIdr: 16250, dxy: 104.5 },
-  CURRENCY_STRESS: { biRate: 7.50, cpi: 5.8, usdIdr: 17150, dxy: 106.8 },
-};
 
 const ASSET_BARS = [
   { key: "stocks", label: "Saham (IDX)",    icon: <TrendingUp size={18} className="text-blue-500" />, color: "#3b82f6" },
@@ -98,7 +88,7 @@ export default function HomePage() {
   const macroInputs     = useRootStore((s) => s.macroInputs);
   const liveData        = useRootStore((s) => s.liveData || {});
   const setTab          = useRootStore((s) => s.setActiveTab);
-  const { marketData, isLive } = useMarketData();
+  const macro           = useRootStore((s) => s.macro);
 
   const effectiveScenario = crisisMode
     ? (crisisMode === "HYPERINFLATION" ? "HIPERINFLASI" : crisisMode)
@@ -127,11 +117,11 @@ export default function HomePage() {
   // ── GLOBAL PULSE TICKER ──
   // Updated Global Pulse Ticker data — June 2026 verified
   const GLOBAL_PULSE_DATA = [
-    { label: 'IHSG',      value: '6.170',  delta: '-11.8%', dir: -1, unit: 'pts' },
-    { label: 'SBN 10Y',   value: '6.71',   delta: '+0.32%', dir: 1,  unit: '%'    },
-    { label: 'USD/IDR',   value: '17.700', delta: '+9.2%',  dir: -1, unit: ''    },
-    { label: 'GOLD',      value: '2.342',  delta: '+1.15%', dir: 1,  unit: 'USD' },
-    { label: 'BI RATE',   value: '5.25',   delta: '+50BPS', dir: -1, unit: '%'    },
+    { label: 'IHSG',      value: '6.170',  delta: '-11,8%', dir: -1, unit: 'pts' },
+    { label: 'SBN 10Y',   value: '6,71',   delta: '+0,32%', dir: 1,  unit: '%'    },
+    { label: 'USD/IDR',   value: '17.700', delta: '+9,2%',  dir: -1, unit: ''    },
+    { label: 'GOLD',      value: '2.342',  delta: '+1,15%', dir: 1,  unit: 'USD' },
+    { label: 'BI RATE',   value: '5,25',   delta: '+50BPS', dir: -1, unit: '%'    },
   ];
 
   return (
@@ -200,7 +190,7 @@ export default function HomePage() {
                      textShadow: `0 0 40px ${accent}60, 0 0 80px ${accent}30`,
                      letterSpacing: '-2px',
                    }}>
-                {sharpeRatio.toFixed(2)}
+                {formatNumber(sharpeRatio, 2)}
               </div>
               <div className="text-[9px] font-mono mt-3"
                    style={{ color: accent, opacity: 0.5 }}>
@@ -281,19 +271,22 @@ export default function HomePage() {
                 style={{ color: 'var(--as-text-primary)' }}>
               Sinyal Pasar Terkini
             </h2>
+            <p className="text-[10px] font-mono text-[var(--as-text-dim)] mt-1.5 uppercase tracking-wider">
+              * Seluruh indikator di bawah menggunakan data estimasi per Mei 2026, bukan data live real-time.
+            </p>
           </div>
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 stagger-children">
-          {QUICK_SIGNALS_CONFIG.map(({ key, label, unit, icon, getValue }) => {
-            const liveVal  = getValue(liveData);
-            const fallback = SCENARIO_MACRO_FALLBACK[effectiveScenario]?.[key]
-                          ?? macroInputs?.[key];
-            const rawVal   = liveVal ?? fallback;
-            const isLive   = liveVal != null;
+          {QUICK_SIGNALS_CONFIG.map(({ key, label, unit, icon }) => {
+            const rawVal   = macro[key];
+            const isLiveVal = key === 'biRate' ? (liveData?.bi_macro?.biRate ?? liveData?.bi_macro?.v ?? liveData?.biRate?.v) :
+                             key === 'inflasi' ? (liveData?.bi_macro?.cpi ?? liveData?.cpi?.v) :
+                             (liveData[key]?.v ?? (typeof liveData[key] === 'number' ? liveData[key] : null));
+            const isLive   = isLiveVal != null;
 
             const display = rawVal != null
-              ? `${Number(rawVal).toLocaleString('id-ID', { maximumFractionDigits: 2 })}${unit}`
+              ? (key === 'usdIdr' ? formatIDR(rawVal) : key === 'dxy' ? formatPoints(rawVal) : formatNumber(rawVal, 2)) + unit
               : '—';
 
             return (
@@ -301,10 +294,10 @@ export default function HomePage() {
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-2xl">{icon}</span>
                   <span className={`text-[8px] font-mono px-2 py-0.5 rounded-md
-                                    ${isLive ? 'bg-emerald-500/15 text-emerald-500'
+                                    ${isLive ? 'bg-amber-500/15 text-amber-500'
                                              : 'text-neutral-600'}`}
                         style={isLive ? {} : { background: 'var(--as-bg-tertiary)' }}>
-                    {isLive ? 'LIVE' : 'EST'}
+                    ESTIMASI - per Mei 2026
                   </span>
                 </div>
                 <div className="text-[10px] font-mono tracking-[0.2em] uppercase mb-2"
@@ -358,9 +351,9 @@ export default function HomePage() {
                   </div>
                   <div className="text-[10px] text-[var(--as-text-tertiary)] max-w-sm">
                     {maxDrift > 10
-                      ? `Drift ${maxDrift.toFixed(1)}% terdeteksi — rebalancing segera disarankan.`
+                      ? `Drift ${formatNumber(maxDrift, 1)}% terdeteksi — rebalancing segera disarankan.`
                       : maxDrift > 5
-                        ? `Drift minor ${maxDrift.toFixed(1)}% — pantau dalam 1-2 minggu.`
+                        ? `Drift minor ${formatNumber(maxDrift, 1)}% — pantau dalam 1-2 minggu.`
                         : 'Portofolio selaras dengan target skenario aktif.'
                     }
                   </div>

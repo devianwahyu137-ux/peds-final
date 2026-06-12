@@ -2,6 +2,8 @@
 // Generates human-readable narrative from MPT analytics + scenario
 // Pure functions — no side effects, fully testable
 
+import { formatNumber } from "@/utils/format";
+
 export function narrateSharpRatio(sharpe, scenarioId) {
   const scenarios = {
     EQUILIBRIUM: {
@@ -35,10 +37,10 @@ export function narrateBeta(beta) {
 
 export function narrateMaxDrawdown(mdd) {
   const abs = Math.abs(mdd);
-  if (abs < 8)   return `Risiko penurunan terkontrol. Buffer ${abs.toFixed(1)}% masih dalam zona aman untuk sebagian besar investor.`;
-  if (abs < 15)  return `Potensi koreksi ${abs.toFixed(1)}% perlu diantisipasi. Pastikan dana darurat terpisah dari portofolio ini.`;
-  if (abs < 25)  return `Drawdown ${abs.toFixed(1)}% bisa terasa signifikan. Hanya cocok untuk investor dengan toleransi risiko tinggi.`;
-  return `Drawdown hingga ${abs.toFixed(1)}% adalah risiko serius. Pertimbangkan rebalancing segera ke aset lebih defensif.`;
+  if (abs < 8)   return `Risiko penurunan terkontrol. Buffer ${formatNumber(abs, 1)}% masih dalam zona aman untuk sebagian besar investor.`;
+  if (abs < 15)  return `Potensi koreksi ${formatNumber(abs, 1)}% perlu diantisipasi. Pastikan dana darurat terpisah dari portofolio ini.`;
+  if (abs < 25)  return `Drawdown ${formatNumber(abs, 1)}% bisa terasa signifikan. Hanya cocok untuk investor dengan toleransi risiko tinggi.`;
+  return `Drawdown hingga ${formatNumber(abs, 1)}% adalah risiko serius. Pertimbangkan rebalancing segera ke aset lebih defensif.`;
 }
 
 export function narrateVolatility(stdDev, scenarioId) {
@@ -50,35 +52,35 @@ export function narrateVolatility(stdDev, scenarioId) {
 
   if (scenarioId === 'CURRENCY_STRESS') {
     return stdDev < 8
-      ? `Volatilitas ${stdDev.toFixed(1)}% relatif terkontrol mengingat kondisi krisis. `
+      ? `Volatilitas ${formatNumber(stdDev, 1)}% relatif terkontrol mengingat kondisi krisis. `
       + `Alokasi emas membantu menstabilkan fluktuasi portofolio.`
-      : `Volatilitas ${stdDev.toFixed(1)}% dalam kondisi krisis ini cukup tinggi. `
+      : `Volatilitas ${formatNumber(stdDev, 1)}% dalam kondisi krisis ini cukup tinggi. `
       + `Review ulang komposisi aset defensif dan tambah porsi emas fisik.`;
   }
-  if (stdDev < 4)  return `Volatilitas ${stdDev.toFixed(1)}% sangat rendah — `
+  if (stdDev < 4)  return `Volatilitas ${formatNumber(stdDev, 1)}% sangat rendah — `
     + `portofolio terdiversifikasi baik dengan dominasi fixed income.`;
-  if (stdDev < 8)  return `Volatilitas moderat ${stdDev.toFixed(1)}% — `
+  if (stdDev < 8)  return `Volatilitas moderat ${formatNumber(stdDev, 1)}% — `
     + `tipikal untuk portofolio campuran saham-obligasi yang seimbang.`;
-  if (stdDev < 14) return `Volatilitas ${stdDev.toFixed(1)}% cukup tinggi. `
+  if (stdDev < 14) return `Volatilitas ${formatNumber(stdDev, 1)}% cukup tinggi. `
     + `Pertimbangkan tambah alokasi obligasi atau emas untuk stabilisasi.`;
-  return `Volatilitas ${stdDev.toFixed(1)}% tergolong agresif. `
+  return `Volatilitas ${formatNumber(stdDev, 1)}% tergolong agresif. `
     + `Hanya sesuai untuk investor dengan toleransi risiko tinggi.`;
 }
 
 export function generateWhatIfImpact(currentSharpe, biRateDelta) {
   // Approximation: every 100bps rate hike reduces Sharpe by ~0.12
   const sharpeImpact = -(biRateDelta / 100) * 0.12;
-  const newSharpe    = Math.max(0, currentSharpe + sharpeImpact).toFixed(2);
+  const newSharpe    = Math.max(0, currentSharpe + sharpeImpact);
   const direction    = biRateDelta > 0 ? 'naik' : 'turun';
   const absDelta     = Math.abs(biRateDelta);
 
   return {
-    newSharpe,
+    newSharpe: formatNumber(newSharpe, 2),
     direction,
     absDelta,
     interpretation:
       biRateDelta > 0
-        ? `Jika BI Rate naik ${absDelta}bps, estimasi Sharpe Ratio turun dari ${currentSharpe.toFixed(2)} ke ${newSharpe}. Obligasi akan mengalami tekanan harga.`
-        : `Jika BI Rate turun ${absDelta}bps, estimasi Sharpe Ratio naik dari ${currentSharpe.toFixed(2)} ke ${newSharpe}. Positif untuk ekuitas.`,
+        ? `Jika BI Rate naik ${absDelta}bps, estimasi Sharpe Ratio turun dari ${formatNumber(currentSharpe, 2)} ke ${formatNumber(newSharpe, 2)}. Obligasi akan mengalami tekanan harga.`
+        : `Jika BI Rate turun ${absDelta}bps, estimasi Sharpe Ratio naik dari ${formatNumber(currentSharpe, 2)} ke ${formatNumber(newSharpe, 2)}. Positif untuk ekuitas.`,
   };
 }

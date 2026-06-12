@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRootStore, SCENARIOS } from "@/stores/rootStore";
+import { formatNumber } from "@/utils/format";
 import {
   ACCENT,
   AllocationRow,
@@ -147,28 +148,28 @@ export default function PortfolioPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 [&>*]:stat-hover">
                 <MetricWithContext
                   label="Sharpe Ratio"
-                  value={(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0).toFixed(2)}
+                  value={formatNumber(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0, 2)}
                   unit=" σ"
                   interpretation={getSharpeInterpretation(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0)}
                   color={acc.neon}
                 />
                 <MetricWithContext
                   label="Portfolio Beta"
-                  value={(targetAnalytics?.portfolioBeta ?? targetAnalytics?.beta ?? 0).toFixed(2)}
+                  value={formatNumber(targetAnalytics?.portfolioBeta ?? targetAnalytics?.beta ?? 0, 2)}
                   unit=" β"
                   interpretation={getBetaInterpretation(targetAnalytics?.portfolioBeta ?? targetAnalytics?.beta ?? 0)}
                   color="#a78bfa"
                 />
                 <MetricWithContext
                   label="Max Drawdown"
-                  value={((targetAnalytics?.maxDrawdown ?? targetAnalytics?.estimatedMaxDrawdown ?? 0) * 100).toFixed(1)}
+                  value={formatNumber((targetAnalytics?.maxDrawdown ?? targetAnalytics?.estimatedMaxDrawdown ?? 0) * 100, 1)}
                   unit="%"
                   interpretation={getMddInterpretation(targetAnalytics?.maxDrawdown ?? targetAnalytics?.estimatedMaxDrawdown ?? 0)}
                   color="#ef4444"
                 />
                 <MetricWithContext
                   label="Volatilitas"
-                  value={((targetAnalytics?.portfolioVolatility ?? targetAnalytics?.portfolioStdDev ?? 0) * 100).toFixed(1)}
+                  value={formatNumber((targetAnalytics?.portfolioVolatility ?? targetAnalytics?.portfolioStdDev ?? 0) * 100, 1)}
                   unit="%"
                   interpretation={getVolInterpretation(targetAnalytics?.portfolioVolatility ?? targetAnalytics?.portfolioStdDev ?? 0)}
                   color="var(--as-text-secondary)"

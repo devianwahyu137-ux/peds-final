@@ -4,6 +4,8 @@
 // Uses in-memory previous value registry (survives component re-renders
 // because it's module-level, not component-level state)
 
+import { formatNumber } from '@/utils/format';
+
 // Module-level registry — persists across component re-renders
 // Key: metric key string, Value: { v: number, t: number }
 const PREVIOUS_REGISTRY = new Map();
@@ -23,7 +25,7 @@ const MIN_UPDATE_INTERVAL_MS = 60_000; // 1 minute
  */
 export function computeDelta(key, current, timestamp = Date.now()) {
   if (typeof current !== 'number' || !isFinite(current)) {
-    return { delta: 0, deltaFormatted: '0.00%', direction: 'flat' };
+    return { delta: 0, deltaFormatted: '0,00%', direction: 'flat' };
   }
 
   const prev = PREVIOUS_REGISTRY.get(key);
@@ -31,7 +33,7 @@ export function computeDelta(key, current, timestamp = Date.now()) {
   if (!prev || typeof prev.v !== 'number') {
     // First time seeing this key — register and return flat
     PREVIOUS_REGISTRY.set(key, { v: current, t: timestamp });
-    return { delta: 0, deltaFormatted: '0.00%', direction: 'flat' };
+    return { delta: 0, deltaFormatted: '0,00%', direction: 'flat' };
   }
 
   // Skip update if too recent (prevents 0% from same poll cycle)
@@ -60,7 +62,7 @@ function formatDeltaResult(delta) {
   const prefix    = rounded > 0 ? '+' : '';
   return {
     delta:          rounded,
-    deltaFormatted: `${prefix}${rounded.toFixed(2)}%`,
+    deltaFormatted: `${prefix}${formatNumber(rounded, 2)}%`,
     direction,
   };
 }

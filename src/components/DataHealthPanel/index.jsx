@@ -26,10 +26,10 @@ const ENDPOINT_REGISTRY = [
   {
     key:       'dxy',
     label:     'DXY Dollar Index',
-    provider:  'FRED API',
+    provider:  'ICE',
     icon:      <Wallet size={16} className="text-emerald-400" />,
     ttlMs:     15 * 60 * 1000,
-    userLabel: 'Federal Reserve St. Louis',
+    userLabel: 'ICE (Intercontinental Exchange)',
   },
   {
     key:       'usdIdr',
@@ -58,7 +58,7 @@ const ENDPOINT_REGISTRY = [
 ];
 
 const STATUS_CONFIG = {
-  ok:       { dot: '#10b981', label: 'LIVE',     labelColor: '#10b981', bg: 'rgba(16,185,129,0.08)'  },
+  ok:       { dot: '#f59e0b', label: 'ESTIMASI', labelColor: '#f59e0b', bg: 'rgba(245,158,11,0.08)'  },
   stale:    { dot: '#f59e0b', label: 'ESTIMASI', labelColor: '#f59e0b', bg: 'rgba(245,158,11,0.08)'  },
   fallback: { dot: '#f59e0b', label: 'FALLBACK', labelColor: '#f59e0b', bg: 'rgba(245,158,11,0.06)'  },
   idle:     { dot: 'var(--as-text-dim)', label: 'MEMUAT',   labelColor: 'var(--as-text-tertiary)', bg: 'rgba(64,64,64,0.06)'    },
@@ -94,9 +94,7 @@ export function DataHealthPanel() {
   const total     = ENDPOINT_REGISTRY.length;
   const allLive   = liveCount === total;
 
-  const statusText = allLive
-    ? `${activeCount}/${total} sumber aktif`
-    : `${activeCount}/${total} endpoint memuat data estimasi`;
+  const statusText = `${activeCount}/${total} endpoint terhubung (Data Estimasi per Mei 2026)`;
 
   return (
     <div className="flex items-center justify-between px-6 py-3 rounded-xl mb-8"
@@ -106,9 +104,9 @@ export function DataHealthPanel() {
         <span className="relative flex h-2 w-2">
           <span className="animate-ping absolute inline-flex h-full w-full
                            rounded-full opacity-40"
-                style={{ backgroundColor: allLive ? '#10b981' : '#f59e0b' }} />
+                style={{ backgroundColor: '#f59e0b' }} />
           <span className="relative inline-flex rounded-full h-2 w-2"
-                style={{ backgroundColor: allLive ? '#10b981' : '#f59e0b' }} />
+                style={{ backgroundColor: '#f59e0b' }} />
         </span>
         <span className="text-[10px] font-mono font-bold tracking-widest"
               style={{ color: 'var(--as-text-secondary)' }}>

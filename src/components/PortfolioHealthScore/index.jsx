@@ -52,7 +52,7 @@ export function PortfolioHealthScore() {
   );
 
   // Compute final health score
-  const { scores, total, grade } = useMemo(
+  const { scores, total, grade, cappedBy } = useMemo(
     () => computeHealthScore({ analytics, mismatch }),
     [analytics, mismatch]
   );
@@ -106,6 +106,14 @@ export function PortfolioHealthScore() {
               >
                 {grade.label}
               </span>
+              {cappedBy && (
+                <div
+                  className="text-[9px] font-mono mt-3 uppercase tracking-wider"
+                  style={{ color: 'var(--as-text-dim)' }}
+                >
+                  Dibatasi oleh: <span className="font-bold" style={{ color: config.color }}>{cappedBy}</span>
+                </div>
+              )}
             </div>
           </div>
 

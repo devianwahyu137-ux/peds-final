@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
+import { formatIDR } from "@/utils/format";
 
 const BROKER_FEE = 0.0020; // 0.20% flat fee
 
@@ -126,18 +127,12 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
   const handleCopyOrders = () => {
     if (activeOrders.length === 0) return;
     const text = activeOrders.map(r => 
-      `${r.action} ${ASSET_LABELS[r.asset]}: ${formatIDR(Math.abs(r.deltaIDR))}`
+      `${r.action} ${ASSET_LABELS[r.asset]}: Rp ${formatIDR(Math.abs(r.deltaIDR))}`
     ).join('\n');
     navigator.clipboard.writeText(text);
   };
 
-  const formatIDR = (n) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      maximumFractionDigits: 0
-    }).format(n);
-  };
+
 
   return (
     <div className="card-tier-2 space-y-5 font-mono transition-colors duration-300">
@@ -153,7 +148,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
           </label>
           <input
             type="text"
-            value={capitalRaw ? parseInt(capitalRaw.replace(/\./g, "") || "0").toLocaleString("id-ID") : ""}
+            value={capitalRaw ? formatIDR(parseInt(capitalRaw.replace(/\./g, "") || "0")) : ""}
             onChange={(e) => setCapitalRaw(e.target.value.replace(/[^0-9]/g, ""))}
             className="w-full bg-[var(--as-bg-page)] border border-[var(--as-border-primary)] rounded-lg px-4 py-3 text-2xl font-mono text-[var(--as-text-primary)] font-bold tracking-tighter tabular-nums focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all shadow-inner"
           />
@@ -210,7 +205,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
                   <td className={`p-2 text-right font-bold tabular-nums ${
                     isZero ? "text-slate-400 dark:text-neutral-600" : isBuy ? "text-emerald-500 dark:text-emerald-400" : "text-red-500 dark:text-red-400"
                   }`}>
-                    {isZero ? "—" : `${isBuy ? "+" : ""}${formatIDR(row.deltaIDR)}`}
+                    {isZero ? "—" : `${isBuy ? "+" : "-"}Rp ${formatIDR(Math.abs(row.deltaIDR))}`}
                   </td>
                   <td className="p-2 text-center">
                     <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${
@@ -231,7 +226,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
       <div className="flex flex-col gap-1 text-[9px] text-slate-500 dark:text-neutral-500 border-t border-slate-200 dark:border-neutral-900/60 pt-3">
         <div className="flex justify-between">
           <span>Broker Commission Fee (0.20%):</span>
-          <span className="font-bold text-slate-700 dark:text-neutral-300">{formatIDR(totalFee)}</span>
+          <span className="font-bold text-slate-700 dark:text-neutral-300">Rp {formatIDR(totalFee)}</span>
         </div>
         <div className="flex justify-between">
           <span>Trading Execution Strategy:</span>
@@ -272,7 +267,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
                     <span className="text-xs text-slate-700 dark:text-neutral-300 font-bold">{ASSET_LABELS[order.asset]}</span>
                   </div>
                   <span className={`text-2xl font-mono font-bold tracking-tighter tabular-nums ${isBuy ? "text-emerald-500 dark:text-emerald-400" : "text-red-500 dark:text-red-400"}`}>
-                    {formatIDR(Math.abs(order.deltaIDR))}
+                    Rp {formatIDR(Math.abs(order.deltaIDR))}
                   </span>
                 </div>
               );

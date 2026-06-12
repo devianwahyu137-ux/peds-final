@@ -3,6 +3,8 @@
 // based on current live data or fallback data
 // Returns confidence score and recommendation
 
+import { formatNumber, formatPercent, formatIDR, formatPoints } from '../utils/format';
+
 // Thresholds based on verified May 2026 conditions
 const THRESHOLDS = {
   // BI Rate boundaries
@@ -60,27 +62,27 @@ export function detectOptimalScenario(macroData) {
     scores.EQUILIBRIUM += 35;
     signals.push({
       indicator: 'BI Rate',
-      value:     `${biRate}%`,
+      value:     formatPercent(biRate, 2),
       verdict:   'EQUILIBRIUM',
-      reason:    `BI Rate ${biRate}% menunjukkan kondisi akomodatif`,
+      reason:    `BI Rate ${formatNumber(biRate, 2)}% menunjukkan kondisi akomodatif`,
       color:     '#10b981',
     });
   } else if (biRate <= THRESHOLDS.biRate.tighteningMax) {
     scores.TIGHTENING += 35;
     signals.push({
       indicator: 'BI Rate',
-      value:     `${biRate}%`,
+      value:     formatPercent(biRate, 2),
       verdict:   'TIGHTENING',
-      reason:    `BI Rate ${biRate}% dalam zona pengetatan moneter`,
+      reason:    `BI Rate ${formatNumber(biRate, 2)}% dalam zona pengetatan moneter`,
       color:     '#f59e0b',
     });
   } else {
     scores.CURRENCY_STRESS += 35;
     signals.push({
       indicator: 'BI Rate',
-      value:     `${biRate}%`,
+      value:     formatPercent(biRate, 2),
       verdict:   'CURRENCY_STRESS',
-      reason:    `BI Rate ${biRate}% sangat tinggi — tekanan inflasi dan nilai tukar ekstrem`,
+      reason:    `BI Rate ${formatNumber(biRate, 2)}% sangat tinggi — tekanan inflasi dan nilai tukar ekstrem`,
       color:     '#ef4444',
     });
   }
@@ -90,7 +92,7 @@ export function detectOptimalScenario(macroData) {
     scores.EQUILIBRIUM += 30;
     signals.push({
       indicator: 'USD/IDR',
-      value:     usdIdr.toLocaleString('id-ID'),
+      value:     formatIDR(usdIdr),
       verdict:   'EQUILIBRIUM',
       reason:    `Rupiah stabil di bawah 16.000 — zona aman`,
       color:     '#10b981',
@@ -99,7 +101,7 @@ export function detectOptimalScenario(macroData) {
     scores.TIGHTENING += 30;
     signals.push({
       indicator: 'USD/IDR',
-      value:     usdIdr.toLocaleString('id-ID'),
+      value:     formatIDR(usdIdr),
       verdict:   'TIGHTENING',
       reason:    `Rupiah mulai tertekan di kisaran 16.000-17.000`,
       color:     '#f59e0b',
@@ -108,7 +110,7 @@ export function detectOptimalScenario(macroData) {
     scores.CURRENCY_STRESS += 30;
     signals.push({
       indicator: 'USD/IDR',
-      value:     usdIdr.toLocaleString('id-ID'),
+      value:     formatIDR(usdIdr),
       verdict:   'CURRENCY_STRESS',
       reason:    `Rupiah di atas 17.000 — zona krisis nilai tukar`,
       color:     '#ef4444',
@@ -120,27 +122,27 @@ export function detectOptimalScenario(macroData) {
     scores.EQUILIBRIUM += 20;
     signals.push({
       indicator: 'Inflasi YoY',
-      value:     `${cpi}%`,
+      value:     formatPercent(cpi, 2),
       verdict:   'EQUILIBRIUM',
-      reason:    `Inflasi ${cpi}% terkendali dalam target BI`,
+      reason:    `Inflasi ${formatNumber(cpi, 2)}% terkendali dalam target BI`,
       color:     '#10b981',
     });
   } else if (cpi <= THRESHOLDS.inflation.tighteningMax) {
     scores.TIGHTENING += 20;
     signals.push({
       indicator: 'Inflasi YoY',
-      value:     `${cpi}%`,
+      value:     formatPercent(cpi, 2),
       verdict:   'TIGHTENING',
-      reason:    `Inflasi ${cpi}% di atas target BI 2.5% — pengetatan diperlukan`,
+      reason:    `Inflasi ${formatNumber(cpi, 2)}% di atas target BI 2,5% — pengetatan diperlukan`,
       color:     '#f59e0b',
     });
   } else {
     scores.CURRENCY_STRESS += 20;
     signals.push({
       indicator: 'Inflasi YoY',
-      value:     `${cpi}%`,
+      value:     formatPercent(cpi, 2),
       verdict:   'CURRENCY_STRESS',
-      reason:    `Inflasi ${cpi}% sangat tinggi — ancaman spiral inflasi`,
+      reason:    `Inflasi ${formatNumber(cpi, 2)}% sangat tinggi — ancaman spiral inflasi`,
       color:     '#ef4444',
     });
   }
@@ -150,18 +152,18 @@ export function detectOptimalScenario(macroData) {
     scores.CURRENCY_STRESS += 15;
     signals.push({
       indicator: 'DXY Index',
-      value:     `${dxy} pts`,
+      value:     `${formatPoints(dxy)} pts`,
       verdict:   'CURRENCY_STRESS',
-      reason:    `DXY ${dxy} sangat kuat — tekanan capital outflow EM maksimal`,
+      reason:    `DXY ${formatPoints(dxy)} sangat kuat — tekanan capital outflow EM maksimal`,
       color:     '#ef4444',
     });
   } else if (dxy > 104) {
     scores.TIGHTENING += 15;
     signals.push({
       indicator: 'DXY Index',
-      value:     `${dxy} pts`,
+      value:     `${formatPoints(dxy)} pts`,
       verdict:   'TIGHTENING',
-      reason:    `DXY ${dxy} di atas netral — USD menguat, EM tertekan`,
+      reason:    `DXY ${formatPoints(dxy)} di atas netral — USD menguat, EM tertekan`,
       color:     '#f59e0b',
     });
   } else {

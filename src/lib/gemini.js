@@ -1,36 +1,16 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { buildPortfolioContext } from './portfolioContextBuilder';
 
-// Initialize the Gemini client using Vite environment variable
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-
 export async function getAlphaShieldAnalysis(userMessage, portfolioState, chatHistory = [], onChunk = null) {
-  if (!apiKey) {
-    throw new Error('API Key Gemini (VITE_GEMINI_API_KEY) tidak ditemukan di environment.');
-  }
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-  const genAI = new GoogleGenerativeAI(apiKey);
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Konfigurasi koneksi database backend (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY) tidak lengkap.');
+  }
 
   try {
     const portfolioContext = buildPortfolioContext(portfolioState);
     
-    const systemInstruction = `Anda adalah AlphaShield Quant Copilot — asisten analisis portofolio berbasis data makro Indonesia. Berikan jawaban:
-- Dalam Bahasa Indonesia yang jelas dan natural
-- Sertakan angka spesifik dari konteks portofolio
-- Referensikan kondisi makro aktual
-- Jawab pertanyaan umum keuangan dengan konteks Indonesia
-- Selalu tambahkan disclaimer singkat jika memberi rekomendasi investasi
-- Format jawaban dengan paragraf bersih, gunakan bullet points jika perlu
-
-KONTEKS PORTOFOLIO SAAT INI:
-${portfolioContext}`;
-
-    // Instantiate the model using gemini-1.5-flash-latest
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash-latest',
-      systemInstruction: systemInstruction,
-    });
-
     const cleanHistory = [];
     let expectedRole = 'user';
     
@@ -40,7 +20,7 @@ ${portfolioContext}`;
       
       const mappedRole = (msg.role === 'model' || msg.role === 'assistant' || msg.role === 'ai') ? 'model' : 'user';
       if (mappedRole === expectedRole) {
-        cleanHistory.push({ role: mappedRole, parts: [{ text: msg.text || msg.content || '' }] });
+        cleanHistory.push({ role: mappedRole, content: msg.text || msg.content || '' });
         expectedRole = expectedRole === 'user' ? 'model' : 'user';
       }
     });
@@ -49,31 +29,50 @@ ${portfolioContext}`;
     if (cleanHistory.length > 0 && cleanHistory[cleanHistory.length - 1].role === 'user') {
       cleanHistory.pop(); 
     }
-    
-    // Add debugging log
-    console.log("[AlphaShield] Sanitized History for Gemini:", cleanHistory);
 
-    // Start a chat session with strictly formatted history
-    const chat = model.startChat({
-      history: cleanHistory,
+    // Append the new incoming user message to the end of history
+    cleanHistory.push({ role: 'user', content: userMessage });
+    
+    console.log("[AlphaShield] Forwarding history to Edge Function:", cleanHistory);
+
+    // Call the Supabase Edge Function proxy
+    const response = await fetch(`${supabaseUrl}/functions/v1/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${supabaseAnonKey}`,
+      },
+      body: JSON.stringify({
+        messages: cleanHistory,
+        portfolioContext: portfolioContext,
+      }),
     });
 
-    // Send the new message using stream if callback is provided
-    if (onChunk) {
-      const result = await chat.sendMessageStream(userMessage);
-      let fullText = '';
-      for await (const chunk of result.stream) {
-        const chunkText = chunk.text();
-        fullText += chunkText;
-        onChunk(chunkText, fullText);
-      }
-      return fullText;
-    } else {
-      const result = await chat.sendMessage(userMessage);
-      return result.response.text();
+    if (!response.ok) {
+      const errorJson = await response.json().catch(() => ({}));
+      throw new Error(errorJson.error || `Server responded with status ${response.status}`);
     }
+
+    const resultData = await response.json();
+    const replyText = resultData.text || '';
+
+    // Trigger chunk callback at least once for UI compatibility
+    if (onChunk) {
+      onChunk(replyText, replyText);
+    }
+
+    return replyText;
   } catch (error) {
-    console.error('[AlphaShield] Gemini API Error:', error);
-    throw new Error("Koneksi ke jaringan AlphaShield terputus. Silakan coba beberapa saat lagi.");
+    console.error('[AlphaShield] Chat Proxy Error:', error);
+    
+    // If the error message comes from the backend proxy, propagate it directly.
+    const isFriendlyError = error.message && (
+      error.message.includes("Terlalu banyak permintaan") ||
+      error.message.includes("API Key Gemini") ||
+      error.message.includes("tidak ditemukan") ||
+      error.message.includes("tidak valid")
+    );
+    
+    throw new Error(isFriendlyError ? error.message : "Koneksi ke jaringan AlphaShield terputus. Silakan coba beberapa saat lagi.");
   }
 }

@@ -7,23 +7,23 @@ import { useRootStore } from '@/stores/rootStore';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
 import { getScenarioMismatch } from '@/lib/scenarioDetector';
 import { CheckCircle2, AlertTriangle, AlertOctagon } from 'lucide-react';
+import { formatNumber, formatIDR } from "@/utils/format";
 
 export function ScenarioIntelligence() {
   const scenarioId = useRootStore((s) => s.scenarioId);
   const setScenario = useRootStore((s) => s.setScenario);
-  const liveData    = useRootStore((s) => s.liveData);
-  const macroInputs = useRootStore((s) => s.macroInputs);
+  const macro       = useRootStore((s) => s.macro);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
 
   // Build macro data from live or fallback
   const macroData = useMemo(() => ({
-    biRate:    liveData?.bi_macro?.biRate   ?? macroInputs?.biRate    ?? 5.25,
-    cpi:       liveData?.bi_macro?.cpi      ?? macroInputs?.inflation ?? 3.48,
-    usdIdr:    liveData?.usdIdr?.v          ?? macroInputs?.usdIdr    ?? 17700,
-    ihsg:      liveData?.ihsg?.v            ?? 6170,
-    dxy:       liveData?.dxy?.v             ?? 104.5,
-  }), [liveData, macroInputs]);
+    biRate:    macro.biRate,
+    cpi:       macro.inflasi,
+    usdIdr:    macro.usdIdr,
+    ihsg:      macro.ihsg,
+    dxy:       macro.dxy,
+  }), [macro]);
 
   const mismatch = useMemo(
     () => getScenarioMismatch(scenarioId, macroData),
@@ -57,8 +57,8 @@ export function ScenarioIntelligence() {
         <span className="truncate opacity-60 hover:opacity-100 transition-opacity duration-200"
               style={{ color: 'var(--as-text-tertiary)' }}>
           <span className="font-bold text-emerald-500">SELARAS</span>
-          {' — '}{macroData.biRate}% BI Rate · IDR{' '}
-          {macroData.usdIdr.toLocaleString('id-ID')} · Skenario{' '}
+          {' — '}{formatNumber(macroData.biRate, 2)}% BI Rate · IDR{' '}
+          {formatIDR(macroData.usdIdr)} · Skenario{' '}
           <span style={{ color: activeConfig.color, fontWeight: 'bold' }}>
             {activeConfig.label}
           </span>
@@ -106,8 +106,8 @@ export function ScenarioIntelligence() {
             <span className="font-bold uppercase px-1 py-0.5 rounded" style={{ color: recommendedConfig.color, background: recommendedConfig.color + '20' }}>
               {recommendedConfig.label}
             </span>
-            {' '}(BI Rate {macroData.biRate}%, IDR{' '}
-            {macroData.usdIdr.toLocaleString('id-ID')}),
+            {' '}(BI Rate {formatNumber(macroData.biRate, 2)}%, IDR{' '}
+            {formatIDR(macroData.usdIdr)}),
             {' '}namun skenario aktif saat ini adalah{' '}
             <span className="font-bold uppercase px-1 py-0.5 rounded" style={{ color: activeConfig.color, background: activeConfig.color + '20' }}>
               {activeConfig.label}

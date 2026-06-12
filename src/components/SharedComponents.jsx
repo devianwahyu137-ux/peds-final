@@ -9,6 +9,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { GlossaryTerm } from '@/components/GlossaryTerm';
+import { formatNumber, formatIDR } from "@/utils/format";
 
 // ── ACCENT CONFIGURATION ────────────────────────────────────────────────────────
 
@@ -26,7 +27,7 @@ export const ACCENT = {
     badge: "bg-amber-500/20 text-amber-300 border border-amber-500/40", dot: "bg-amber-400"
   },
   red: {
-    neon: "#ff3c3c", glow: "rgba(255,60,60,0.2)", glowStrong: "rgba(255,60,60,0.45)",
+    neon: "#ff3c3c", glow: "rgba(255,60,60,0.25)", glowStrong: "rgba(255,60,60,0.5)",
     border: "border-red-500/40", text: "text-red-400", textBright: "text-red-300",
     bg: "bg-red-500/10", gradFrom: "from-red-900/30", gradTo: "to-red-950/10",
     badge: "bg-red-500/20 text-red-300 border border-red-500/40", dot: "bg-red-400"
@@ -50,25 +51,54 @@ export function AnimatedNumber({ value, suffix = "", prefix = "" }) {
 
   useEffect(() => {
     if (prev.current === value) return;
-    const start = Date.now();
-    const duration = 600;
-    const startVal = parseFloat(String(prev.current).replace(/[^0-9.]/g, ""));
-    const endVal = parseFloat(String(value).replace(/[^0-9.]/g, ""));
+
+    const parseIndonesianNumber = (str) => {
+      let s = String(str).trim();
+      if (s.includes(",")) {
+        s = s.replace(/\./g, "").replace(/,/g, ".");
+      } else {
+        const digitsAndDots = s.replace(/[^0-9.]/g, "");
+        if (/\d+\.\d{3}$/.test(digitsAndDots)) {
+          s = digitsAndDots.replace(/\./g, "");
+        }
+      }
+      s = s.replace(/[^0-9.-]/g, "");
+      return parseFloat(s);
+    };
+
+    const startVal = parseIndonesianNumber(prev.current);
+    const endVal = parseIndonesianNumber(value);
+
     if (isNaN(startVal) || isNaN(endVal)) {
       setDisplay(value);
       prev.current = value;
       return;
     }
 
+    const strTarget = String(value);
+    const hasComma = strTarget.includes(",");
+    const decimals = hasComma ? (strTarget.split(",")[1] || "").replace(/[^0-9]/g, "").length : 0;
+
+    const start = Date.now();
+    const duration = 600;
+
     const raf = () => {
       const elapsed = Date.now() - start;
       const progress = Math.min(elapsed / duration, 1);
       const ease = 1 - Math.pow(1 - progress, 3);
       const current = startVal + (endVal - startVal) * ease;
-      const decimals = (String(value).split(".")[1] || "").length;
-      setDisplay(current.toFixed(decimals));
-      if (progress < 1) requestAnimationFrame(raf);
-      else {
+
+      let formatted;
+      if (hasComma) {
+        formatted = formatNumber(current, decimals);
+      } else {
+        formatted = formatIDR(Math.round(current));
+      }
+      setDisplay(formatted);
+
+      if (progress < 1) {
+        requestAnimationFrame(raf);
+      } else {
         setDisplay(value);
         prev.current = value;
       }
@@ -211,10 +241,10 @@ export function DonutChart({ accentColor, hovered, setHovered, animPct, analytic
         ) : (
           <>
             <text x={cx} y={cy - 18} textAnchor="middle" fontSize="9" fill="#555" letterSpacing="2">SHARPE RATIO</text>
-            <text x={cx} y={cy - 2} textAnchor="middle" fontSize="18" fontWeight="900" fill={acc.neon}>{sharpe.toFixed(2)}</text>
+            <text x={cx} y={cy - 2} textAnchor="middle" fontSize="18" fontWeight="900" fill={acc.neon}>{formatNumber(sharpe, 2)}</text>
             <line x1={cx - 20} y1={cy + 6} x2={cx + 20} y2={cy + 6} stroke="#333" strokeWidth="0.5" />
             <text x={cx} y={cy + 18} textAnchor="middle" fontSize="9" fill="#555" letterSpacing="2">PORTFOLIO β</text>
-            <text x={cx} y={cy + 32} textAnchor="middle" fontSize="14" fontWeight="900" fill={acc.neon}>{beta.toFixed(2)}</text>
+            <text x={cx} y={cy + 32} textAnchor="middle" fontSize="14" fontWeight="900" fill={acc.neon}>{formatNumber(beta, 2)}</text>
           </>
         )}
       </svg>

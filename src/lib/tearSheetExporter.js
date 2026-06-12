@@ -4,7 +4,8 @@
 // Output: clean A4 landscape institutional financial report
 
 import jsPDF from 'jspdf';
-import { useRootStore, SCENARIOS } from '@/stores/rootStore';
+import { useRootStore, SCENARIOS, APP_VERSION } from '@/stores/rootStore';
+import { formatNumber, formatIDR, formatPoints } from '@/utils/format';
 
 // ── COLOR PALETTE ──────────────────────────────────────────────
 const C = {
@@ -167,12 +168,12 @@ export async function exportTearSheetPDF({
     const assets = ['stocks', 'bonds', 'gold', 'cash'];
 
     // Resolve macro indicators
-    const biRateVal = liveData.biRate?.v ?? macroInputs.biRate ?? FALLBACK.biRate;
-    const inflationVal = liveData.cpi?.v ?? macroInputs.inflation ?? FALLBACK.cpi;
-    const usdIdrVal = liveData.usdIdr?.v ?? macroInputs.usdIdr ?? FALLBACK.usdIdr;
-    const sbnYield10YVal = liveData.sbnYield10Y?.v ?? liveData.sbn_yields?.y10 ?? macroInputs.sbn10y ?? FALLBACK.sbn10y;
-    const gs10Val = liveData.gs10?.v ?? macroInputs.gs10 ?? FALLBACK.gs10;
-    const dxyVal = liveData.dxy?.v ?? macroInputs.dxy ?? FALLBACK.dxy;
+    const biRateVal = macroInputs.biRate ?? FALLBACK.biRate;
+    const inflationVal = macroInputs.inflation ?? FALLBACK.cpi;
+    const usdIdrVal = macroInputs.usdIdr ?? FALLBACK.usdIdr;
+    const sbnYield10YVal = macroInputs.sbn10y ?? FALLBACK.sbn10y;
+    const gs10Val = macroInputs.us10y ?? macroInputs.gs10 ?? FALLBACK.gs10;
+    const dxyVal = macroInputs.dxy ?? FALLBACK.dxy;
     const goldVal = liveData.xauUsd?.v ?? FALLBACK.gold;
     const fedFundsVal = liveData.fedFunds?.v ?? FALLBACK.fedFunds;
 
@@ -255,14 +256,14 @@ export async function exportTearSheetPDF({
     hRule(doc, contentY + 2, col1X, col1X + colW, C.lightGray);
 
     const macroData = [
-      { label: 'BI Rate',         value: `${biRateVal.toFixed(2)}%` },
-      { label: 'Inflasi',         value: `${inflationVal.toFixed(2)}%` },
-      { label: 'USD/IDR',         value: `Rp ${Math.round(usdIdrVal).toLocaleString('id-ID')}` },
-      { label: 'SBN 10Y',         value: `${sbnYield10YVal.toFixed(2)}%` },
-      { label: 'US Treasury',     value: `${gs10Val.toFixed(2)}%` },
-      { label: 'DXY',             value: `${dxyVal.toFixed(2)} pts` },
-      { label: 'Gold',            value: `USD ${Math.round(goldVal).toLocaleString('id-ID')}` },
-      { label: 'Fed Rate',        value: `${fedFundsVal.toFixed(2)}%` },
+      { label: 'BI Rate',         value: `${formatNumber(biRateVal, 2)}%` },
+      { label: 'Inflasi',         value: `${formatNumber(inflationVal, 2)}%` },
+      { label: 'USD/IDR',         value: `Rp ${formatIDR(usdIdrVal)}` },
+      { label: 'SBN 10Y',         value: `${formatNumber(sbnYield10YVal, 2)}%` },
+      { label: 'US Treasury',     value: `${formatNumber(gs10Val, 2)}%` },
+      { label: 'DXY',             value: `${formatPoints(dxyVal)} pts` },
+      { label: 'Gold',            value: `USD ${formatIDR(goldVal)}` },
+      { label: 'Fed Rate',        value: `${formatNumber(fedFundsVal, 2)}%` },
     ];
 
     let rowY = contentY + 8;
@@ -335,18 +336,18 @@ export async function exportTearSheetPDF({
     doc.setFontSize(22);
     doc.setFont('courier', 'bold');
     setTextColor(doc, meta.color);
-    doc.text(`${sharpe.toFixed(2)} σ`, col3X, mptY);
+    doc.text(`${formatNumber(sharpe, 2)} σ`, col3X, mptY);
     mptY += 3;
     hRule(doc, mptY, col3X, col3X + colW, C.lightGray);
     mptY += 6;
 
     // Other metrics in 2-column grid
     const mptMetrics = [
-      { label: 'Portfolio Beta',  value: `${beta.toFixed(2)} β`,    color: C.blue    },
-      { label: 'Max Drawdown',    value: `-${Math.abs(mdd).toFixed(1)}%`, color: C.red     },
-      { label: 'Volatilitas',     value: `${(stdDev < 1 ? stdDev * 100 : stdDev).toFixed(1)}%`, color: C.amber   },
-      { label: 'Expected Return', value: `${(eReturn < 1 ? eReturn * 100 : eReturn).toFixed(1)}%`, color: C.emerald },
-      { label: 'Risk-Free Rate',  value: `${(rf < 1 ? rf * 100 : rf).toFixed(2)}%`,  color: C.textDim  },
+      { label: 'Portfolio Beta',  value: `${formatNumber(beta, 2)} β`,    color: C.blue    },
+      { label: 'Max Drawdown',    value: `-${formatNumber(Math.abs(mdd) < 1 ? Math.abs(mdd) * 100 : Math.abs(mdd), 1)}%`, color: C.red     },
+      { label: 'Volatilitas',     value: `${formatNumber(stdDev < 1 ? stdDev * 100 : stdDev, 1)}%`, color: C.amber   },
+      { label: 'Expected Return', value: `${formatNumber(eReturn < 1 ? eReturn * 100 : eReturn, 1)}%`, color: C.emerald },
+      { label: 'Risk-Free Rate',  value: `${formatNumber(rf < 1 ? rf * 100 : rf, 2)}%`,  color: C.textDim  },
     ];
 
     mptMetrics.forEach(({ label, value, color }) => {
@@ -426,7 +427,7 @@ export async function exportTearSheetPDF({
     const footerText =
       'EDUCATIONAL SIMULATION MODEL ONLY  ·  NOT INVESTMENT ADVICE  ·  ' +
       'COMPLIANT WITH OJK SIMULATION FRAMEWORK STANDARDS  ·  ' +
-      'PEDS ALPHASHIELD ENGINE V3.0  ·  ALL DATA IS HYPOTHETICAL FOR SIMULATION DEMONSTRATION PURPOSES  ·  ' +
+      `PEDS ALPHASHIELD ENGINE ${APP_VERSION.toUpperCase()}  ·  ALL DATA IS HYPOTHETICAL FOR SIMULATION DEMONSTRATION PURPOSES  ·  ` +
       'DATA MAKRO ESTIMASI BERDASARKAN KONDISI PASAR MEI 2026  ·  ' +
       'KONSULTASIKAN KEPUTUSAN INVESTASI DENGAN ADVISOR KEUANGAN TERDAFTAR OJK';
     const footLines = wrapText(doc, footerText, CW, 5.5);

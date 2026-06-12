@@ -6,9 +6,19 @@ import { useState, useCallback } from 'react';
 import { loadThresholds, saveThresholds, ALERT_INDICATORS }
   from '@/lib/alertThresholdSystem';
 import { Bell } from 'lucide-react';
+import { useRootStore } from '@/stores/rootStore';
 
 export function AlertSettings({ isOpen, onClose }) {
   const [thresholds, setThresholds] = useState(loadThresholds);
+  const macroInputs = useRootStore(s => s.macroInputs);
+
+  const getCurrentVal = (id) => {
+    if (id === 'usdIdr') return macroInputs?.usdIdr ?? 17700;
+    if (id === 'biRate') return macroInputs?.biRate ?? 5.25;
+    if (id === 'ihsg') return macroInputs?.ihsg ?? 6170;
+    if (id === 'inflation') return macroInputs?.inflation ?? 3.48;
+    return null;
+  };
 
   const handleToggle = useCallback((id) => {
     setThresholds(prev => {
@@ -33,138 +43,155 @@ export function AlertSettings({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
+  const hasActiveAlerts = Object.values(thresholds).some(cfg => cfg.enabled);
+
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-      {/* Backdrop */}
+    <div
+      className="absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-2xl overflow-hidden shadow-2xl border"
+      style={{
+        zIndex:      999,
+        background:  'var(--as-bg-primary)',
+        borderColor: 'var(--as-border-primary)',
+        animation:   'fadeInUp 200ms ease both',
+        maxHeight:   '80vh',
+        display:     'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* Header */}
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-        onClick={onClose}
-      />
-
-      {/* Panel */}
-      <div
-        className="relative w-full max-w-md mx-4 rounded-2xl overflow-hidden
-                   shadow-2xl border"
-        style={{
-          background:  'var(--as-bg-primary)',
-          borderColor: 'var(--as-border-primary)',
-          animation:   'fadeInUp 200ms ease both',
-        }}
+        className="flex items-center justify-between p-4 border-b flex-shrink-0"
+        style={{ borderColor: 'var(--as-border-secondary)' }}
       >
-        {/* Header */}
-        <div
-          className="flex items-center justify-between p-5 border-b"
-          style={{ borderColor: 'var(--as-border-secondary)' }}
-        >
-          <div>
-            <h3
-              className="text-sm font-bold font-mono flex items-center"
-              style={{ color: 'var(--as-text-primary)' }}
-            >
-              <Bell size={16} className="text-indigo-400 mr-2" /> Alert Thresholds
-            </h3>
-            <p
-              className="text-[9px] font-mono mt-0.5"
-              style={{ color: 'var(--as-text-dim)' }}
-            >
-              Pengaturan Notifikasi Makro
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-[11px] font-mono px-2 py-1 rounded-lg
-                       cursor-pointer transition-colors"
-            style={{ color: 'var(--as-text-dim)' }}
-            onMouseOver={e =>
-              (e.currentTarget.style.color = 'var(--as-text-primary)')
-            }
-            onMouseOut={e =>
-              (e.currentTarget.style.color = 'var(--as-text-dim)')
-            }
+        <div>
+          <h3
+            className="text-xs font-bold font-mono flex items-center"
+            style={{ color: 'var(--as-text-primary)' }}
           >
-            ✕
-          </button>
+            <Bell size={14} className="text-indigo-400 mr-2" /> Alert Thresholds
+          </h3>
+          <p
+            className="text-[9px] font-mono mt-0.5"
+            style={{ color: 'var(--as-text-dim)' }}
+          >
+            Pengaturan Notifikasi Makro
+          </p>
         </div>
+        <button
+          onClick={onClose}
+          className="text-[11px] font-mono px-2 py-1 rounded-lg
+                     cursor-pointer transition-colors"
+          style={{ color: 'var(--as-text-dim)' }}
+          onMouseOver={e =>
+            (e.currentTarget.style.color = 'var(--as-text-primary)')
+          }
+          onMouseOut={e =>
+            (e.currentTarget.style.color = 'var(--as-text-dim)')
+          }
+        >
+          ✕
+        </button>
+      </div>
 
-        {/* Indicator list */}
-        <div className="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
-          {ALERT_INDICATORS.map(indicator => {
-            const cfg = thresholds[indicator.id];
-            return (
-              <div
-                key={indicator.id}
-                className="rounded-xl p-4"
-                style={{
-                  background: cfg.enabled
-                    ? 'rgba(239,68,68,0.05)'
-                    : 'var(--as-bg-tertiary)',
-                  border: `1px solid ${
-                    cfg.enabled
-                      ? 'rgba(239,68,68,0.20)'
-                      : 'var(--as-border-secondary)'
-                  }`,
-                  transition: 'all 200ms',
-                }}
-              >
-                {/* Top row: label + toggle */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-lg">{indicator.icon}</span>
-                    <div>
-                      <div
-                        className="text-[11px] font-mono font-bold"
-                        style={{ color: 'var(--as-text-primary)' }}
-                      >
-                        {indicator.label}
-                      </div>
-                      <div
-                        className="text-[8px] font-mono mt-0.5"
-                        style={{ color: 'var(--as-text-dim)' }}
-                      >
-                        {indicator.description}
-                      </div>
+      {/* Indicator list */}
+      <div className="p-4 space-y-4 overflow-y-auto flex-1">
+        {!hasActiveAlerts && (
+          <div
+            className="text-[10px] font-mono text-center p-3 rounded-lg border border-dashed"
+            style={{
+              color: 'var(--as-text-dim)',
+              borderColor: 'var(--as-border-secondary)',
+              background: 'rgba(255,255,255,0.01)',
+            }}
+          >
+            Belum ada alert aktif.
+          </div>
+        )}
+        
+        {ALERT_INDICATORS.map(indicator => {
+          const cfg = thresholds[indicator.id];
+          const currentVal = getCurrentVal(indicator.id);
+          const dirSign = indicator.direction === 'above' ? '>=' : '<=';
+          
+          return (
+            <div
+              key={indicator.id}
+              className="rounded-xl p-4"
+              style={{
+                background: cfg.enabled
+                  ? 'rgba(239,68,68,0.05)'
+                  : 'var(--as-bg-tertiary)',
+                border: `1px solid ${
+                  cfg.enabled
+                    ? 'rgba(239,68,68,0.20)'
+                    : 'var(--as-border-secondary)'
+                }`,
+                transition: 'all 200ms',
+              }}
+            >
+              {/* Top row: label + toggle */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-lg">{indicator.icon}</span>
+                  <div>
+                    <div
+                      className="text-[11px] font-mono font-bold"
+                      style={{ color: 'var(--as-text-primary)' }}
+                    >
+                      {indicator.label}
+                    </div>
+                    <div
+                      className="text-[8px] font-mono mt-0.5"
+                      style={{ color: 'var(--as-text-dim)' }}
+                    >
+                      {indicator.description} • sekarang: {indicator.format(currentVal)}{indicator.unit}
                     </div>
                   </div>
-
-                  {/* Toggle switch */}
-                  <button
-                    onClick={() => handleToggle(indicator.id)}
-                    className="relative w-10 h-5 rounded-full cursor-pointer
-                               transition-colors duration-200 flex-shrink-0"
-                    style={{
-                      background: cfg.enabled
-                        ? '#ef4444'
-                        : 'rgba(255,255,255,0.10)',
-                    }}
-                    aria-label={`Toggle ${indicator.label} alert`}
-                  >
-                    <div
-                      className="absolute top-0.5 w-4 h-4 rounded-full
-                                 bg-white shadow-sm transition-transform
-                                 duration-200"
-                      style={{
-                        transform: cfg.enabled
-                          ? 'translateX(22px)'
-                          : 'translateX(2px)',
-                      }}
-                    />
-                  </button>
                 </div>
 
-                {/* Value input — visible when enabled */}
-                {cfg.enabled && (
+                {/* Toggle switch */}
+                <button
+                  onClick={() => handleToggle(indicator.id)}
+                  className="relative w-10 h-5 rounded-full cursor-pointer
+                             transition-colors duration-200 flex-shrink-0"
+                  style={{
+                    background: cfg.enabled
+                      ? '#ef4444'
+                      : 'rgba(255,255,255,0.10)',
+                  }}
+                  aria-label={`Toggle ${indicator.label} alert`}
+                >
                   <div
-                    className="flex items-center gap-2 mt-3 pt-3 border-t"
-                    style={{ borderColor: 'rgba(239,68,68,0.15)' }}
-                  >
+                    className="absolute top-0.5 w-4 h-4 rounded-full
+                               bg-white shadow-sm transition-transform
+                               duration-200"
+                    style={{
+                      transform: cfg.enabled
+                        ? 'translateX(22px)'
+                        : 'translateX(2px)',
+                    }}
+                  />
+                </button>
+              </div>
+
+              {/* Value input — visible when enabled */}
+              {cfg.enabled && (
+                <div
+                  className="flex flex-col gap-2 mt-3 pt-3 border-t"
+                  style={{ borderColor: 'rgba(239,68,68,0.15)' }}
+                >
+                  <div className="flex justify-between items-center text-[9px] font-mono text-neutral-400">
+                    <span>sekarang: <span className="font-bold text-white">{indicator.format(currentVal)}{indicator.unit}</span></span>
+                    <span>alert jika {dirSign} <span className="font-bold text-red-400">{indicator.format(cfg.value)}{indicator.unit}</span></span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
                     <span
                       className="text-[8px] font-mono tracking-widest uppercase
                                  flex-shrink-0"
                       style={{ color: 'var(--as-text-dim)' }}
                     >
-                      {indicator.direction === 'above'
-                        ? 'Alert jika ≥'
-                        : 'Alert jika ≤'}
+                      Threshold:
                     </span>
                     <input
                       type="number"
@@ -188,25 +215,25 @@ export function AlertSettings({ isOpen, onClose }) {
                       {indicator.unit}
                     </span>
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
 
-        {/* Footer */}
-        <div
-          className="px-5 py-3 border-t"
-          style={{ borderColor: 'var(--as-border-secondary)' }}
+      {/* Footer */}
+      <div
+        className="px-4 py-3 border-t flex-shrink-0"
+        style={{ borderColor: 'var(--as-border-secondary)' }}
+      >
+        <p
+          className="text-[7px] font-mono leading-relaxed"
+          style={{ color: 'var(--as-text-dim)' }}
         >
-          <p
-            className="text-[7px] font-mono leading-relaxed"
-            style={{ color: 'var(--as-text-dim)' }}
-          >
-            Alert berbasis data estimasi/fallback. Disimpan di browser
-            localStorage. Reset saat clear browser data.
-          </p>
-        </div>
+          Alert berbasis data estimasi/fallback. Disimpan di browser
+          localStorage. Reset saat clear browser data.
+        </p>
       </div>
     </div>
   );

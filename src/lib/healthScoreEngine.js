@@ -97,11 +97,39 @@ export function computeHealthScore({ analytics, mismatch }) {
 
   const total = Object.values(scores).reduce((a, b) => a + b, 0);
 
-  const grade = total >= 85 ? { label: 'EXCELLENT', color: '#10b981' }
-              : total >= 70 ? { label: 'BAIK',      color: '#10b981' }
-              : total >= 55 ? { label: 'CUKUP',     color: '#f59e0b' }
-              : total >= 40 ? { label: 'WASPADA',   color: '#f97316' }
-              :               { label: 'KRITIS',    color: '#ef4444' };
+  const GRADES = [
+    { label: 'KRITIS',      color: '#ef4444' }, // 0
+    { label: 'WASPADA',     color: '#f97316' }, // 1
+    { label: 'CUKUP',       color: '#f59e0b' }, // 2
+    { label: 'BAIK',        color: '#10b981' }, // 3
+    { label: 'SANGAT BAIK', color: '#10b981' }  // 4
+  ];
 
-  return { scores, total, grade };
+  let baseGradeIndex = total >= 85 ? 4
+                     : total >= 70 ? 3
+                     : total >= 55 ? 2
+                     : total >= 40 ? 1
+                     : 0;
+
+  const minScore = Math.min(efisiensi, stabilitas, perlindungan, diversifikasi, skenario);
+  let capIndex = 4;
+  if (minScore <= 4) {
+    capIndex = 1;
+  } else if (minScore <= 8) {
+    capIndex = 2;
+  } else if (minScore <= 12) {
+    capIndex = 3;
+  }
+
+  const finalGradeIndex = Math.min(baseGradeIndex, capIndex);
+  const grade = GRADES[finalGradeIndex];
+
+  let cappedBy = null;
+  if (finalGradeIndex < baseGradeIndex) {
+    const weakestDimId = Object.keys(scores).find(key => scores[key] === minScore);
+    const dimMeta = HEALTH_DIMENSIONS.find(d => d.id === weakestDimId);
+    cappedBy = dimMeta ? dimMeta.label : weakestDimId;
+  }
+
+  return { scores, total, grade, cappedBy };
 }

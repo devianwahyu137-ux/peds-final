@@ -2,7 +2,7 @@ import { useRootStore } from "@/stores/rootStore";
 import { Landmark, LineChart, Wallet, TrendingUp, Coins, Flag } from "lucide-react";
 import { SPARKLINE_PRESETS } from "../../lib/historicalPresets";
 import MacroIndicatorCard from "./MacroIndicatorCard";
-import { useMarketData } from '@/contexts/MacroDataContext';
+import { formatNumber, formatPoints, formatIDR } from "@/utils/format";
 
 const MACRO_INDICATORS = [
   { id: "biRate",  label: "BI Rate",         unit: "%",   icon: <Landmark size={16} className="text-indigo-400" /> },
@@ -14,34 +14,41 @@ const MACRO_INDICATORS = [
 ];
 
 export default function MacroIndicatorCards() {
-  const { scenarioId, crisisMode, liveData } = useRootStore();
-  const { marketData, isLive } = useMarketData();
+  const { scenarioId, crisisMode, liveData, macro } = useRootStore();
 
   const effectiveScenario = crisisMode ? "CURRENCY_STRESS" : scenarioId;
   const presets = SPARKLINE_PRESETS[effectiveScenario] || SPARKLINE_PRESETS.EQUILIBRIUM;
 
   const getMarketValueFormatted = (id) => {
     switch (id) {
-      case "biRate": return marketData.macro.biRate.toFixed(2);
-      case "cpi":    return marketData.macro.inflation.toFixed(2);
-      case "usdIdr": return marketData.macro.usdIdr.toLocaleString('id-ID');
-      case "dxy":    return marketData.macro.dxy.toFixed(2);
-      case "gs10":   return marketData.macro.us10y.toFixed(2);
-      case "ihsg":   return marketData.equities.ihsg.toLocaleString('id-ID');
+      case "biRate": return formatNumber(macro.biRate || 0, 2);
+      case "cpi":    return formatNumber(macro.inflasi || 0, 2);
+      case "usdIdr": return formatIDR(macro.usdIdr || 0);
+      case "dxy":    return formatPoints(macro.dxy || 0);
+      case "gs10":   return formatNumber(macro.us10y || 0, 2);
+      case "ihsg":   return formatPoints(macro.ihsg || 0);
       default:       return "0";
     }
   };
 
   return (
     <div className="space-y-3">
-      <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-mono">
-        Macro Economic Indicators
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+        <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-mono">
+          Macro Economic Indicators
+        </div>
+        <div className="text-[9px] text-amber-500/80 uppercase font-mono tracking-wider font-bold">
+          * Data estimasi per Mei 2026, bukan data live real-time
+        </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {MACRO_INDICATORS.map((indicator) => {
           const value = getMarketValueFormatted(indicator.id);
           const sparklineData = presets[indicator.id] || [];
           const timestamp = liveData[indicator.id]?.t || null;
+          const isIndicatorLive = indicator.id === 'biRate' ? (liveData?.bi_macro?.biRate != null || liveData?.bi_macro?.v != null || liveData?.biRate?.v != null) :
+                                  indicator.id === 'cpi' ? (liveData?.bi_macro?.cpi != null || liveData?.cpi?.v != null) :
+                                  liveData[indicator.id]?.v != null;
           
           return (
             <MacroIndicatorCard
@@ -52,7 +59,7 @@ export default function MacroIndicatorCards() {
               icon={indicator.icon}
               value={value}
               timestamp={timestamp}
-              isLive={isLive}
+              isLive={isIndicatorLive}
               scenarioId={scenarioId}
               sparklineData={sparklineData}
               crisisMode={crisisMode}

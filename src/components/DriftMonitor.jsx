@@ -1,6 +1,7 @@
 import React from "react";
 import { Landmark, LineChart, Coins, Wallet, TrendingUp } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
+import { formatNumber } from "@/utils/format";
 
 const ASSET_CONFIG = {
   stocks: { label: "Equities (IDX)", icon: <TrendingUp size={16} className="text-emerald-400" />, color: "#3b82f6" },
@@ -62,7 +63,7 @@ const DriftMonitor = React.memo(function DriftMonitor() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className={`text-[7px] font-bold px-1.5 py-0.5 rounded border uppercase ${statusStyle}`}>{statusLabel}</span>
-                  <span className={`font-bold text-[11px] ${driftColor}`}>{driftSign}{delta.toFixed(1)}%</span>
+                  <span className={`font-bold text-[11px] ${driftColor}`}>{driftSign}{formatNumber(delta, 1)}%</span>
                 </div>
               </div>
 
@@ -84,8 +85,8 @@ const DriftMonitor = React.memo(function DriftMonitor() {
 
               {/* Explicit Numerical Details */}
               <div className="flex justify-between text-[9px] font-light text-[var(--as-text-tertiary)] border-t border-[var(--as-border-secondary)] pt-2">
-                <span>ACTUAL: <strong className="text-[var(--as-text-primary)] font-bold">{actual.toFixed(1)}%</strong></span>
-                <span>TARGET: <strong className="text-[var(--as-text-secondary)] font-bold">{target.toFixed(1)}%</strong></span>
+                <span>ACTUAL: <strong className="text-[var(--as-text-primary)] font-bold">{formatNumber(actual, 1)}%</strong></span>
+                <span>TARGET: <strong className="text-[var(--as-text-secondary)] font-bold">{formatNumber(target, 1)}%</strong></span>
               </div>
             </div>
           );

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRootStore } from '@/stores/rootStore';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
+import { formatNumber } from '@/utils/format';
 
 const scenarioData = {
   'TIGHTENING': {
@@ -179,7 +180,7 @@ export function PortfolioComparison() {
                       textShadow: `0 0 32px ${config.color}50`,
                     }}
                   >
-                    {data.sharpe.toFixed(2)}
+                    {formatNumber(data.sharpe, 2)}
                   </div>
                   <div
                     className="text-[9px] font-mono mt-2"
@@ -212,7 +213,7 @@ export function PortfolioComparison() {
                   className="text-[22px] font-black font-mono tabular-nums"
                   style={{ color: sharpeDiff > 0 ? '#10b981' : sharpeDiff < 0 ? '#ef4444' : '#525252' }}
                 >
-                  {sharpeDiff > 0 ? '+' : ''}{sharpeDiff.toFixed(2)} σ
+                  {sharpeDiff > 0 ? '+' : ''}{formatNumber(sharpeDiff, 2)} σ
                 </div>
               </div>
               <div
@@ -307,16 +308,16 @@ export function PortfolioComparison() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-6">
               {[
                 { label: 'Max Drawdown',
-                  left:  `${activeData.drawdown.toFixed(1)}%`,
-                  right: `${compareData.drawdown.toFixed(1)}%`,
+                  left:  `${formatNumber(activeData.drawdown, 1)}%`,
+                  right: `${formatNumber(compareData.drawdown, 1)}%`,
                   lowerIsBetter: true },
                 { label: 'Volatilitas',
-                  left:  `${activeData.volatility.toFixed(1)}%`,
-                  right: `${compareData.volatility.toFixed(1)}%`,
+                  left:  `${formatNumber(activeData.volatility, 1)}%`,
+                  right: `${formatNumber(compareData.volatility, 1)}%`,
                   lowerIsBetter: true },
                 { label: 'Beta',
-                  left:  `${activeData.beta.toFixed(2)}β`,
-                  right: `${compareData.beta.toFixed(2)}β`,
+                  left:  `${formatNumber(activeData.beta, 2)}β`,
+                  right: `${formatNumber(compareData.beta, 2)}β`,
                   lowerIsBetter: true },
               ].map((metric) => (
                 <div

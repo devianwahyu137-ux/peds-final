@@ -1,6 +1,6 @@
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Globe, Briefcase, Zap, Bell, Download, Loader2 } from "lucide-react";
-import { memo, useState, useEffect, useCallback } from "react";
-import { useRootStore } from "@/stores/rootStore";
+import { memo, useState, useEffect, useCallback, useRef } from "react";
+import { useRootStore, APP_VERSION } from "@/stores/rootStore";
 import { exportTearSheetPDF } from "@/lib/tearSheetExporter";
 import { NavHealthIndicator } from "../NavHealthIndicator";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -55,6 +55,17 @@ export const TopNavbar = memo(function TopNavbar() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportMsg,   setExportMsg]   = useState('');
   const [alertSettingsOpen, setAlertSettingsOpen] = useState(false);
+  const alertRef = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (alertRef.current && !alertRef.current.contains(e.target)) {
+        setAlertSettingsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   // Grab isDark from the global theme hook we just built
   const { isDark: isDarkMode, toggleTheme } = useTheme();
@@ -96,7 +107,7 @@ export const TopNavbar = memo(function TopNavbar() {
             <Shield className="text-indigo-400" size={24} />
           </div>
           <span className="font-bold tracking-wider text-sm uppercase hidden md:block" style={{ color: 'var(--as-text-primary)' }}>
-            AlphaShield PEDS Core System v3.8
+            AlphaShield PEDS Core System {APP_VERSION}
           </span>
         </div>
 
@@ -144,25 +155,25 @@ export const TopNavbar = memo(function TopNavbar() {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="relative" ref={alertRef}>
             <button
-              onClick={() => setAlertSettingsOpen(true)}
+              onClick={() => setAlertSettingsOpen(p => !p)}
               className="relative p-3 rounded-lg cursor-pointer transition-colors hover:text-white flex items-center justify-center min-w-[44px] min-h-[44px]"
               style={{ color: 'var(--as-text-dim)' }}
               title="Pengaturan Alert"
             >
               <Bell size={18} />
             </button>
+            <AlertSettings
+              isOpen={alertSettingsOpen}
+              onClose={() => setAlertSettingsOpen(false)}
+            />
           </div>
 
           <NavHealthIndicator />
         </div>
       </div>
 
-      <AlertSettings
-        isOpen={alertSettingsOpen}
-        onClose={() => setAlertSettingsOpen(false)}
-      />
 
       {/* Tab Navigation */}
       <div className="hidden md:flex items-stretch overflow-x-auto scrollbar-hide px-2 whitespace-nowrap md:whitespace-normal">

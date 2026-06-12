@@ -3,6 +3,7 @@
 
 import { useState, useMemo } from 'react';
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Gauge, FlaskConical, Zap } from "lucide-react";
+import { formatNumber } from "@/utils/format";
 import { useRootStore } from '@/stores/rootStore';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
 import {
@@ -22,13 +23,13 @@ const WHAT_IF_PRESETS = [
 
 function generateWhatIfImpact(currentSharpe, biRateDelta) {
   const impact      = -(biRateDelta / 100) * 0.15;
-  const newSharpe   = Math.max(0, currentSharpe + impact).toFixed(2);
+  const newSharpe   = Math.max(0, currentSharpe + impact);
   const abs         = Math.abs(biRateDelta);
   return {
-    newSharpe,
+    newSharpe: formatNumber(newSharpe, 2),
     interpretation: biRateDelta > 0
-      ? `Jika BI Rate naik ${abs}bps lagi (dari 5.25% saat ini), estimasi Sharpe turun dari ${currentSharpe?.toFixed(2)} ke ${newSharpe}. Tekanan berlanjut pada ekuitas dan obligasi jangka panjang.`
-      : `Jika BI Rate turun ${abs}bps, estimasi Sharpe naik dari ${currentSharpe?.toFixed(2)} ke ${newSharpe}. Positif untuk ekuitas dan obligasi jangka menengah.`,
+      ? `Jika BI Rate naik ${abs}bps lagi (dari 5,25% saat ini), estimasi Sharpe turun dari ${formatNumber(currentSharpe, 2)} ke ${formatNumber(newSharpe, 2)}. Tekanan berlanjut pada ekuitas dan obligasi jangka panjang.`
+      : `Jika BI Rate turun ${abs}bps, estimasi Sharpe naik dari ${formatNumber(currentSharpe, 2)} ke ${formatNumber(newSharpe, 2)}. Positif untuk ekuitas dan obligasi jangka menengah.`,
   };
 }
 
@@ -73,27 +74,27 @@ export function PortfolioStoryPanel() {
   const STORY_METRICS = [
     {
       id: 'sharpe', icon: <Zap size={16} className="text-yellow-400" />, label: 'Efisiensi Portofolio',
-      value: sharpe?.toFixed(2) ?? '—', unit: 'σ',
+      value: sharpe != null ? formatNumber(sharpe, 2) : '—', unit: 'σ',
       narrative: sharpe != null ? narrateSharpRatio(sharpe, scenarioId) : '',
     },
     {
       id: 'beta', icon: <Gauge size={16} className="text-blue-400" />, label: 'Sensitivitas Pasar',
-      value: beta?.toFixed(2) ?? '—', unit: 'β',
+      value: beta != null ? formatNumber(beta, 2) : '—', unit: 'β',
       narrative: beta != null ? narrateBeta(beta) : '',
     },
     {
       id: 'mdd', icon: <Shield size={16} className="text-blue-400" />, label: 'Risiko Penurunan Maks',
       value: estimatedMaxDrawdown != null
-        ? `-${Math.abs(estimatedMaxDrawdown).toFixed(1)}` : '—',
+        ? `-${formatNumber(Math.abs(estimatedMaxDrawdown * 100), 1)}` : '—',
       unit: '%',
       narrative: estimatedMaxDrawdown != null
-        ? narrateMaxDrawdown(estimatedMaxDrawdown) : '',
+        ? narrateMaxDrawdown(estimatedMaxDrawdown * 100) : '',
     },
     {
       id: 'vol', icon: <Activity size={16} className="text-slate-400" />, label: 'Volatilitas Portofolio',
       // Use normalized portfolioStdDev — never shows 0.0%
       value: portfolioStdDev > 0
-        ? portfolioStdDev.toFixed(1)
+        ? formatNumber(portfolioStdDev, 1)
         : '—',
       unit: '%',
       narrative: portfolioStdDev > 0
@@ -190,7 +191,7 @@ export function PortfolioWhatIfSimulator() {
             <div className="text-center">
               <div className="text-[7px] font-mono text-neutral-700 uppercase">Saat Ini</div>
               <div className="text-base font-black font-mono text-slate-700 dark:text-neutral-300">
-                {sharpe?.toFixed(2)}σ
+                {formatNumber(sharpe, 2)}σ
               </div>
             </div>
             <div className="flex-1 h-px"

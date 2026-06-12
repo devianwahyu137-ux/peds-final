@@ -4,6 +4,7 @@ import MacroTooltip from "./MacroTooltip";
 import { useRootStore } from "@/stores/rootStore";
 import { SCENARIO_CONFIG } from "@/lib/scenarioPulse";
 import { RefreshCw } from "lucide-react";
+import { formatPercent, formatNumber, formatIDR } from "@/utils/format";
 
 
 
@@ -23,8 +24,22 @@ function useCountUp(targetValue, duration = 800) {
   useEffect(() => {
     if (prevRef.current === targetValue) return;
 
-    const startVal = parseFloat(String(prevRef.current).replace(/[^0-9.-]/g, ""));
-    const endVal = parseFloat(String(targetValue).replace(/[^0-9.-]/g, ""));
+    const parseIndonesianNumber = (str) => {
+      let s = String(str).trim();
+      if (s.includes(",")) {
+        s = s.replace(/\./g, "").replace(/,/g, ".");
+      } else {
+        const digitsAndDots = s.replace(/[^0-9.]/g, "");
+        if (/\d+\.\d{3}$/.test(digitsAndDots)) {
+          s = digitsAndDots.replace(/\./g, "");
+        }
+      }
+      s = s.replace(/[^0-9.-]/g, "");
+      return parseFloat(s);
+    };
+
+    const startVal = parseIndonesianNumber(prevRef.current);
+    const endVal = parseIndonesianNumber(targetValue);
 
     if (isNaN(startVal) || isNaN(endVal)) {
       setDisplay(targetValue);
@@ -32,23 +47,25 @@ function useCountUp(targetValue, duration = 800) {
       return;
     }
 
-    // Determine decimal places from the target
     const strTarget = String(targetValue);
-    const decimals = (strTarget.split(".")[1] || "").replace(/[^0-9]/g, "").length;
-    // Extract suffix (%, pts, IDR, etc.)
-    const suffix = strTarget.replace(/[0-9.,-\s]/g, "").trim();
+    const hasComma = strTarget.includes(",");
+    const decimals = hasComma ? (strTarget.split(",")[1] || "").replace(/[^0-9]/g, "").length : 0;
 
     const startTime = performance.now();
 
     const animate = (now) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Cubic ease-out
       const ease = 1 - Math.pow(1 - progress, 3);
       const current = startVal + (endVal - startVal) * ease;
 
-      const formatted = current.toFixed(decimals);
-      setDisplay(suffix ? `${formatted}${suffix}` : formatted);
+      let formatted;
+      if (hasComma) {
+        formatted = formatNumber(current, decimals);
+      } else {
+        formatted = formatIDR(Math.round(current));
+      }
+      setDisplay(formatted);
 
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(animate);
@@ -161,18 +178,18 @@ export default function MacroIndicatorCard({
             <MacroTooltip indicatorId={id}>?</MacroTooltip>
           </div>
         </div>
-        {/* Status badge - Only show if LIVE */}
-        {isLive && (
-          <span className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5"
-                style={{ background: 'var(--as-bg-tertiary)',
-                         color: '#10b981' }}>
+        {/* Status badge - Always show as ESTIMASI */}
+        <span className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5"
+              style={isLive ? { background: 'rgba(245,158,11,0.08)', color: '#f59e0b' }
+                            : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' }}>
+          {isLive && (
             <div
               className="w-1.5 h-1.5 rounded-full"
-              style={{ backgroundColor: '#10b981', boxShadow: `0 0 4px #10b981` }}
+              style={{ backgroundColor: '#f59e0b', boxShadow: `0 0 4px #f59e0b` }}
             />
-            LIVE
-          </span>
-        )}
+          )}
+          ESTIMASI - per Mei 2026
+        </span>
       </div>
 
       {/* Main Value — Animated */}
@@ -211,7 +228,7 @@ export default function MacroIndicatorCard({
           }}
         >
           {direction === 'up' ? '▲ ' : direction === 'down' ? '▼ ' : ''}
-          {delta !== 0 ? `${delta > 0 ? '+' : ''}${delta.toFixed(2)}%` : '—'}
+          {delta !== 0 ? `${delta > 0 ? '+' : ''}${formatPercent(delta, 2)}` : '—'}
         </span>
         <div className="text-[8px] font-mono font-light text-[var(--as-text-tertiary)] flex flex-col items-end">
           <span>vs periode lalu</span>

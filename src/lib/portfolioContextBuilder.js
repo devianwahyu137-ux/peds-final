@@ -4,6 +4,7 @@
 // Called before every API request — zero external dependencies
 
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
+import { formatNumber, formatIDR, formatPoints } from '@/utils/format';
 
 const ASSET_LABELS = {
   stocks: 'Ekuitas/Saham IDX',
@@ -46,12 +47,12 @@ export function buildPortfolioContext({
     .join(', ');
 
   // Dynamic values with fallback to hardcoded actual macro values
-  const actualBiRate = 5.25;
-  const actualUsdIdr = 17700;
-  const actualIhsg = 6170;
-  const actualInflasi = 3.48;
-  const actualSbn10y = 6.71;
-  const actualDxy = 104.50;
+  const actualBiRate = macroInputs?.biRate ?? 5.25;
+  const actualUsdIdr = macroInputs?.usdIdr ?? 17700;
+  const actualIhsg = macroInputs?.ihsg ?? 6170;
+  const actualInflasi = macroInputs?.inflation ?? 3.48;
+  const actualSbn10y = macroInputs?.sbn10y ?? 6.71;
+  const actualDxy = macroInputs?.dxy ?? 104.50;
 
   return `
 KONTEKS PORTOFOLIO ALPHASHIELD — DATA REAL-TIME
@@ -64,23 +65,23 @@ ALOKASI PORTOFOLIO SAAT INI:
 ${allocationStr}
 
 ANALISIS MPT ENGINE (DARI ANALYTICS STORE):
-- Sharpe Ratio Terkini: ${sharpe.toFixed(2)}
-- Portfolio Beta: ${beta.toFixed(2)}
-- Max Drawdown: -${Math.abs(mddPct).toFixed(1)}%
-- Volatilitas (Standard Deviation): ${volatilityPct.toFixed(2)}%
-- Expected Return: ${portReturn.toFixed(2)}%
+- Sharpe Ratio Terkini: ${formatNumber(sharpe, 2)}
+- Portfolio Beta: ${formatNumber(beta, 2)}
+- Max Drawdown: -${formatNumber(Math.abs(mddPct), 1)}%
+- Volatilitas (Standard Deviation): ${formatNumber(volatilityPct, 2)}%
+- Expected Return: ${formatNumber(portReturn, 2)}%
 
 DATA MAKRO AKTUAL SAAT INI:
-- BI Rate: ${actualBiRate}%
-- USD/IDR: ${actualUsdIdr.toLocaleString('id-ID')}
-- IHSG: ${actualIhsg.toLocaleString('id-ID')}
-- Inflasi: ${actualInflasi}%
-- SBN 10Y: ${actualSbn10y}%
-- DXY: ${actualDxy.toFixed(2)}
+- BI Rate: ${formatNumber(actualBiRate, 2)}%
+- USD/IDR: Rp ${formatIDR(actualUsdIdr)}
+- IHSG: ${formatIDR(actualIhsg)}
+- Inflasi: ${formatNumber(actualInflasi, 2)}%
+- SBN 10Y: ${formatNumber(actualSbn10y, 2)}%
+- DXY: ${formatPoints(actualDxy)}
 
 INSTRUKSI UNTUK AI:
 Anda adalah AlphaShield Quant Copilot — asisten analisis portofolio berbasis data makro Indonesia. Gunakan data di atas sebagai satu-satunya sumber kebenaran data portofolio.
-Jika pengguna bertanya tentang "berapa Sharpe ratio portofoliomu?" atau metrik portofolio lainnya (Beta, Max Drawdown, Volatilitas, alokasi aset), Anda WAJIB menjawab dengan angka spesifik dari data di atas (misalnya, Sharpe Ratio: ${sharpe.toFixed(2)}). Jangan berikan jawaban generik.
+Jika pengguna bertanya tentang "berapa Sharpe ratio portofoliomu?" atau metrik portofolio lainnya (Beta, Max Drawdown, Volatilitas, alokasi aset), Anda WAJIB menjawab dengan angka spesifik dari data di atas (misalnya, Sharpe Ratio: ${formatNumber(sharpe, 2)}). Jangan berikan jawaban generik.
 Jawab dalam Bahasa Indonesia yang jelas, ringkas, dan professional. Selalu ingatkan bahwa ini adalah simulasi edukasi berbasis MPT, bukan rekomendasi investasi resmi.
 `.trim();
 }
