@@ -190,7 +190,8 @@ export const useRootStore = create(
         usdIdr: SCENARIO_DEFAULTS.TIGHTENING.usdIdr,
         dxy: SCENARIO_DEFAULTS.TIGHTENING.dxy,
         us10y: SCENARIO_DEFAULTS.TIGHTENING.us10y,
-        ihsg: SCENARIO_DEFAULTS.TIGHTENING.ihsg
+        ihsg: SCENARIO_DEFAULTS.TIGHTENING.ihsg,
+        gold: 2342
       },
 
       // ── ANALYTICS STATE ────────────────────────────────────
@@ -211,23 +212,37 @@ export const useRootStore = create(
       setScenario: (id) => {
         const defaults = SCENARIO_DEFAULTS[id];
         if (!defaults) return;
-        const newAnalytics = safeRunMPT(id, defaults, defaults.weights);
         set((state) => {
           state.scenarioId  = id;
-          state.macroInputs = defaults;
           state.weights     = defaults.weights;
           state.actualWeights = null;
           state.crisisMode  = null;
-          state.analytics   = newAnalytics;
+
+          const liveUsdIdr = state.liveData.usdIdr?.v;
+          const liveGold = state.liveData.xauUsd?.v;
+
+          state.macroInputs = {
+            ...defaults,
+            usdIdr: liveUsdIdr ?? defaults.usdIdr,
+          };
+          if (liveGold) {
+            state.macroInputs.gold = liveGold;
+          }
+
           state.macro = {
             biRate: defaults.biRate,
             inflasi: defaults.inflation,
-            usdIdr: defaults.usdIdr,
+            usdIdr: liveUsdIdr ?? defaults.usdIdr,
             dxy: defaults.dxy,
             us10y: defaults.us10y,
-            ihsg: defaults.ihsg
+            ihsg: defaults.ihsg,
+            gold: liveGold ?? 2342
           };
         });
+
+        const { scenarioId, macroInputs, weights } = get();
+        const newAnalytics = safeRunMPT(scenarioId, macroInputs, weights);
+        set((state) => { state.analytics = newAnalytics; });
       },
 
       setCrisisMode: (mode) => {
@@ -238,25 +253,30 @@ export const useRootStore = create(
           if (mode) {
             const mappedId = mode === "HYPERINFLATION" ? "HIPERINFLASI" : mode;
             defaults = SCENARIO_DEFAULTS[mappedId];
-            if (defaults) {
-              state.macroInputs = defaults;
-              state.weights     = defaults.weights;
-            }
           } else {
             defaults = SCENARIO_DEFAULTS[state.scenarioId];
-            if (defaults) {
-              state.macroInputs = defaults;
-              state.weights     = defaults.weights;
-            }
           }
           if (defaults) {
+            const liveUsdIdr = state.liveData.usdIdr?.v;
+            const liveGold = state.liveData.xauUsd?.v;
+
+            state.macroInputs = {
+              ...defaults,
+              usdIdr: liveUsdIdr ?? defaults.usdIdr,
+            };
+            if (liveGold) {
+              state.macroInputs.gold = liveGold;
+            }
+            state.weights     = defaults.weights;
+
             state.macro = {
               biRate: defaults.biRate,
               inflasi: defaults.inflation,
-              usdIdr: defaults.usdIdr,
+              usdIdr: liveUsdIdr ?? defaults.usdIdr,
               dxy: defaults.dxy,
               us10y: defaults.us10y,
-              ihsg: defaults.ihsg
+              ihsg: defaults.ihsg,
+              gold: liveGold ?? 2342
             };
           }
         });

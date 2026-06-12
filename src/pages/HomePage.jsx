@@ -79,6 +79,18 @@ const ASSET_BARS = [
   { key: "cash",   label: "Kas / USD",      icon: <Wallet size={18} className="text-emerald-400" />, color: "#34d399" },
 ];
 
+function formatTimeAgoIndonesian(timestamp) {
+  if (!timestamp) return "";
+  const delta = Date.now() - timestamp;
+  if (delta < 60000) return "baru saja";
+  const minutes = Math.floor(delta / 60000);
+  if (minutes < 60) return `${minutes}m lalu`;
+  const hours = Math.floor(delta / 3600000);
+  if (hours < 24) return `${hours}j lalu`;
+  const days = Math.floor(delta / 86400000);
+  return `${days}d lalu`;
+}
+
 export default function HomePage() {
   const scenarioId      = useRootStore((s) => s.scenarioId);
   const crisisMode      = useRootStore((s) => s.crisisMode);
@@ -116,11 +128,26 @@ export default function HomePage() {
 
   // ── GLOBAL PULSE TICKER ──
   // Updated Global Pulse Ticker data — June 2026 verified
+  const liveUsdIdr = liveData?.usdIdr?.v;
+  const liveGold = liveData?.xauUsd?.v;
+
   const GLOBAL_PULSE_DATA = [
     { label: 'IHSG',      value: '6.170',  delta: '-11,8%', dir: -1, unit: 'pts' },
     { label: 'SBN 10Y',   value: '6,71',   delta: '+0,32%', dir: 1,  unit: '%'    },
-    { label: 'USD/IDR',   value: '17.700', delta: '+9,2%',  dir: -1, unit: ''    },
-    { label: 'GOLD',      value: '2.342',  delta: '+1,15%', dir: 1,  unit: 'USD' },
+    { 
+      label: 'USD/IDR',   
+      value: liveUsdIdr ? formatIDR(Math.round(liveUsdIdr)) : '17.700', 
+      delta: liveUsdIdr ? (liveUsdIdr > 17700 ? `+${(((liveUsdIdr - 17700)/17700)*100).toFixed(2)}%` : `${(((liveUsdIdr - 17700)/17700)*100).toFixed(2)}%`) : '+9,2%',  
+      dir: liveUsdIdr ? (liveUsdIdr >= 17700 ? -1 : 1) : -1, 
+      unit: ''    
+    },
+    { 
+      label: 'GOLD',      
+      value: liveGold ? formatIDR(Math.round(liveGold)) : '2.342',  
+      delta: liveGold ? (liveGold > 2342 ? `+${(((liveGold - 2342)/2342)*100).toFixed(2)}%` : `${(((liveGold - 2342)/2342)*100).toFixed(2)}%`) : '+1,15%', 
+      dir: liveGold ? (liveGold >= 2342 ? 1 : -1) : 1,  
+      unit: 'USD' 
+    },
     { label: 'BI RATE',   value: '5,25',   delta: '+50BPS', dir: -1, unit: '%'    },
   ];
 
@@ -289,15 +316,30 @@ export default function HomePage() {
               ? (key === 'usdIdr' ? formatIDR(rawVal) : key === 'dxy' ? formatPoints(rawVal) : formatNumber(rawVal, 2)) + unit
               : '—';
 
+            const isLiveAvailableMetric = key === 'usdIdr';
+            const badgeLabel = isLiveAvailableMetric 
+              ? (isLive ? 'LIVE (delay ~15 mnt)' : 'MEMUAT...')
+              : 'ESTIMASI - per Mei 2026';
+
+            const badgeStyles = isLiveAvailableMetric
+              ? (isLive 
+                  ? { background: 'rgba(16,185,129,0.08)', color: '#10b981' } 
+                  : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' })
+              : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' };
+
             return (
               <div key={key} className="card-tier-3 card-hover-glow">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-2xl">{icon}</span>
-                  <span className={`text-[8px] font-mono px-2 py-0.5 rounded-md
-                                    ${isLive ? 'bg-amber-500/15 text-amber-500'
-                                             : 'text-neutral-600'}`}
-                        style={isLive ? {} : { background: 'var(--as-bg-tertiary)' }}>
-                    ESTIMASI - per Mei 2026
+                  <span className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5"
+                        style={badgeStyles}>
+                    {isLiveAvailableMetric && isLive && (
+                      <div
+                        className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"
+                        style={{ boxShadow: `0 0 4px #10b981` }}
+                      />
+                    )}
+                    {badgeLabel}
                   </span>
                 </div>
                 <div className="text-[10px] font-mono tracking-[0.2em] uppercase mb-2"
@@ -308,6 +350,11 @@ export default function HomePage() {
                                 leading-none text-[var(--as-text-primary)]">
                   {display}
                 </div>
+                {isLiveAvailableMetric && isLive && liveData[key]?.t && (
+                  <div className="text-[8px] font-mono text-emerald-500/80 mt-2 font-medium">
+                    Diperbarui {formatTimeAgoIndonesian(liveData[key].t)}
+                  </div>
+                )}
               </div>
             );
           })}

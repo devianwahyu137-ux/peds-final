@@ -3,7 +3,7 @@
 // Uses native browser Blob API — zero dependencies
 
 import { formatNumber, formatIDR, formatPoints } from '@/utils/format';
-import { APP_VERSION } from '@/stores/rootStore';
+import { APP_VERSION, useRootStore } from '@/stores/rootStore';
 
 /**
  * Trigger a file download using a temporary anchor element.
@@ -77,7 +77,7 @@ export function exportPortfolioCSV({ scenarioId, weights, analytics, macroInputs
     ['Indikator', 'Nilai', 'Sumber'],
     ['BI Rate',       `${formatNumber(macroInputs?.biRate ?? 5.25, 2)}%`,  'Estimasi (per Mei 2026)'],
     ['Inflasi YoY',   `${formatNumber(macroInputs?.inflation ?? 3.48, 2)}%`,  'Estimasi (per Mei 2026)'],
-    ['USD/IDR',       `Rp ${formatIDR(macroInputs?.usdIdr ?? 17700)}`,  'Estimasi (per Mei 2026)'],
+    ['USD/IDR',       `Rp ${formatIDR(macroInputs?.usdIdr ?? 17700)}`,  (useRootStore.getState().liveData?.usdIdr?.v != null) ? 'LIVE (delay ~15 mnt)' : 'Estimasi (per Mei 2026)'],
     ['SBN 10Y Yield', `${formatNumber(macroInputs?.sbn10y ?? 6.71, 2)}%`,                               'Estimasi (per Mei 2026)'],
     ['DXY Index',     `${formatPoints(macroInputs?.dxy ?? 104.50)}`,                              'Estimasi (per Mei 2026)'],
     ['', '', ''],

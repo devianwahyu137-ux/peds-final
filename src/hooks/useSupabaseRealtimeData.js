@@ -1,25 +1,12 @@
 // src/hooks/useSupabaseRealtimeData.js
-// Subscribes to Supabase Realtime for live macro data pushes
+// Subscribes to Supabase Realtime for live macro data pushes from the macro_data table
 // Falls back gracefully if Supabase is unavailable
 
 import { useEffect, useRef, useCallback } from 'react';
-import { supabase, SUPABASE_KEY_MAP } from '../lib/supabaseClient';
+import { supabase } from '../lib/supabaseClient';
 import { useRootStore } from "@/stores/rootStore";
 
-// Transform Supabase row → lean schema { v, d, t, src, ok }
-function transformSupabaseRow(row) {
-  return {
-    v:   parseFloat(row.value)   || 0,
-    d:   parseFloat(row.delta)   || 0,
-    t:   new Date(row.fetched_at).getTime(),
-    src: row.is_live ? 'supabase_live' : 'supabase_cache',
-    ok:  row.is_live === true,
-    _meta: row.metadata ?? {},
-  };
-}
-
 export function useSupabaseRealtimeData() {
-  const setLiveMetric     = useRootStore((s) => s.setLiveMetric);
   const channelRef        = useRef(null);
   const isMountedRef      = useRef(true);
 
@@ -27,107 +14,142 @@ export function useSupabaseRealtimeData() {
   const hydrateFromSupabase = useCallback(async () => {
     try {
       const { data, error } = await supabase
-        .from('macro_snapshots')
-        .select('*')
-        .order('fetched_at', { ascending: false })
-        .limit(50);
+        .from('macro_data')
+        .select('metric, value, updated_at');
 
       if (error) throw error;
       if (!data?.length) return;
 
-      // Group by key — take only the latest per key
-      const latestByKey = {};
+      // Map rows by metric
+      const metricsMap = {};
       data.forEach((row) => {
-        if (!latestByKey[row.key]) {
-          latestByKey[row.key] = row;
+        metricsMap[row.metric] = row;
+      });
+
+      useRootStore.setState((state) => {
+        const usdIdrRow = metricsMap['usd_idr'];
+        const goldRow = metricsMap['gold_usd'];
+
+        if (usdIdrRow) {
+          const usdVal = parseFloat(usdIdrRow.value);
+          const t = new Date(usdIdrRow.updated_at).getTime();
+
+          state.macro.usdIdr = usdVal;
+          state.macroInputs.usdIdr = usdVal;
+          state.liveData.usdIdr = {
+            v: usdVal,
+            t: t,
+            ok: true,
+            src: 'supabase_live'
+          };
+          state.endpointStatus.usdIdr = 'ok';
+        }
+
+        if (goldRow) {
+          const goldVal = parseFloat(goldRow.value);
+          const t = new Date(goldRow.updated_at).getTime();
+
+          state.macro.gold = goldVal;
+          if (state.macroInputs) {
+            state.macroInputs.gold = goldVal;
+          }
+          state.liveData.xauUsd = {
+            v: goldVal,
+            t: t,
+            ok: true,
+            src: 'supabase_live'
+          };
+          state.endpointStatus.xauUsd = 'ok';
         }
       });
-
-      // Special handling: merge bi_rate + cpi into bi_macro
-      const biRate = latestByKey['bi_rate'];
-      const cpi    = latestByKey['cpi'];
-      if (biRate || cpi) {
-        const merged = {
-          biRate: parseFloat(biRate?.value) || 6.0,
-          cpi:    parseFloat(cpi?.value)    || 2.84,
-          v:      parseFloat(biRate?.value) || 6.0,
-          d:      0,
-          t:      biRate ? new Date(biRate.fetched_at).getTime() : Date.now(),
-          src:    (biRate?.is_live || cpi?.is_live) ? 'supabase_live' : 'supabase_cache',
-          ok:     biRate?.is_live === true || cpi?.is_live === true,
-        };
-        if (isMountedRef.current) setLiveMetric('bi_macro', merged);
-      }
-
-      // Process other keys
-      Object.entries(latestByKey).forEach(([key, row]) => {
-        if (key === 'bi_rate' || key === 'cpi') return; // handled above
-        const storeKey = SUPABASE_KEY_MAP[key];
-        if (!storeKey || !isMountedRef.current) return;
-        setLiveMetric(storeKey, transformSupabaseRow(row));
-      });
-
     } catch (err) {
       console.warn('[useSupabaseRealtimeData] Hydration failed:', err.message);
-      // Silently fail — existing fallback data remains
+      // Fallback is handled automatically as store initial state contains estimated defaults
     }
-  }, [setLiveMetric]);
+  }, []);
 
-  // Subscribe to realtime changes
+  // Subscribe to realtime changes on the macro_data table
   const subscribeToRealtime = useCallback(() => {
     if (channelRef.current) {
       supabase.removeChannel(channelRef.current);
     }
 
     const channel = supabase
-      .channel('macro_snapshots_changes')
+      .channel('macro_data_realtime_changes')
       .on(
         'postgres_changes',
         {
-          event:  'INSERT',
+          event:  '*',
           schema: 'public',
-          table:  'macro_snapshots',
+          table:  'macro_data',
         },
         (payload) => {
           if (!isMountedRef.current) return;
-          const row      = payload.new;
-          const storeKey = SUPABASE_KEY_MAP[row.key];
+          const row = payload.new;
+          if (!row) return;
 
-          if (!storeKey) return;
+          const val = parseFloat(row.value);
+          const t = new Date(row.updated_at).getTime();
 
-          // Special merge for bi_macro
-          if (row.key === 'bi_rate' || row.key === 'cpi') {
-            // Re-hydrate to get combined state
-            hydrateFromSupabase();
-            return;
-          }
-
-          setLiveMetric(storeKey, transformSupabaseRow(row));
+          useRootStore.setState((state) => {
+            if (row.metric === 'usd_idr') {
+              state.macro.usdIdr = val;
+              state.macroInputs.usdIdr = val;
+              state.liveData.usdIdr = {
+                v: val,
+                t: t,
+                ok: true,
+                src: 'supabase_live'
+              };
+              state.endpointStatus.usdIdr = 'ok';
+            }
+            if (row.metric === 'gold_usd') {
+              state.macro.gold = val;
+              if (state.macroInputs) {
+                state.macroInputs.gold = val;
+              }
+              state.liveData.xauUsd = {
+                v: val,
+                t: t,
+                ok: true,
+                src: 'supabase_live'
+              };
+              state.endpointStatus.xauUsd = 'ok';
+            }
+          });
         }
       )
       .subscribe((status) => {
         if (!isMountedRef.current) return;
         if (status === 'SUBSCRIBED') {
-          console.info('[AlphaShield] Supabase Realtime connected ✓');
+          console.info('[AlphaShield] Supabase Realtime connected for macro_data ✓');
         } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
           console.warn('[AlphaShield] Supabase Realtime disconnected:', status);
         }
       });
 
     channelRef.current = channel;
-  }, [setLiveMetric, hydrateFromSupabase]);
+  }, []);
 
   useEffect(() => {
     isMountedRef.current = true;
 
-    // Initial data load
+    // Initial load
     hydrateFromSupabase();
 
-    // Subscribe to realtime pushes
+    // Subscribe to realtime changes
     subscribeToRealtime();
+
+    // Refresh dynamically every 5 minutes as a fallback check
+    const intervalId = setInterval(() => {
+      if (isMountedRef.current) {
+        hydrateFromSupabase();
+      }
+    }, 5 * 60 * 1000);
 
     return () => {
       isMountedRef.current = false;
+      clearInterval(intervalId);
       if (channelRef.current) {
         supabase.removeChannel(channelRef.current);
       }

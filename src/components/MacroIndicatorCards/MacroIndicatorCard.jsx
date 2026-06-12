@@ -178,17 +178,27 @@ export default function MacroIndicatorCard({
             <MacroTooltip indicatorId={id}>?</MacroTooltip>
           </div>
         </div>
-        {/* Status badge - Always show as ESTIMASI */}
+        {/* Status badge - Dynamic for LIVE and ESTIMASI indicators */}
         <span className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5"
-              style={isLive ? { background: 'rgba(245,158,11,0.08)', color: '#f59e0b' }
-                            : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' }}>
-          {isLive && (
+              style={
+                (id === "usdIdr" || id === "xauUsd")
+                  ? (isLive 
+                      ? { background: 'rgba(16,185,129,0.08)', color: '#10b981' } 
+                      : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' })
+                  : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' }
+              }>
+          {((id === "usdIdr" || id === "xauUsd") && isLive) && (
             <div
-              className="w-1.5 h-1.5 rounded-full"
-              style={{ backgroundColor: '#f59e0b', boxShadow: `0 0 4px #f59e0b` }}
+              className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"
+              style={{ boxShadow: `0 0 4px #10b981` }}
             />
           )}
-          ESTIMASI - per Mei 2026
+          {(() => {
+            if (id === "usdIdr" || id === "xauUsd") {
+              return isLive ? "LIVE (delay ~15 mnt)" : "MEMUAT...";
+            }
+            return "ESTIMASI - per Mei 2026";
+          })()}
         </span>
       </div>
 
