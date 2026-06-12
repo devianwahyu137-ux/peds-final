@@ -140,12 +140,12 @@ export function useSupabaseRealtimeData() {
     // Subscribe to realtime changes
     subscribeToRealtime();
 
-    // Refresh dynamically every 5 minutes as a fallback check
+    // Refresh dynamically every 90 seconds as a fallback check
     const intervalId = setInterval(() => {
       if (isMountedRef.current) {
         hydrateFromSupabase();
       }
-    }, 5 * 60 * 1000);
+    }, 90 * 1000);
 
     return () => {
       isMountedRef.current = false;

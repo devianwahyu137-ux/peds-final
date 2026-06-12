@@ -7,10 +7,10 @@ select cron.unschedule(jobid)
 from cron.job 
 where jobname = 'refresh-macro-cron';
 
--- Schedule the refresh-macro Edge Function to run every 15 minutes
+-- Schedule the refresh-macro Edge Function to run every 3 minutes
 select cron.schedule(
   'refresh-macro-cron',
-  '*/15 * * * *',
+  '*/3 * * * *',
   $$
   select net.http_post(
     url := 'https://sakikffbqnupswscpees.supabase.co/functions/v1/refresh-macro',

@@ -77,7 +77,7 @@ export function exportPortfolioCSV({ scenarioId, weights, analytics, macroInputs
     ['Indikator', 'Nilai', 'Sumber'],
     ['BI Rate',       `${formatNumber(macroInputs?.biRate ?? 5.50, 2)}%`,  'Estimasi (per Juni 2026)'],
     ['Inflasi YoY',   `${formatNumber(macroInputs?.inflation ?? 3.08, 2)}%`,  'Estimasi (per Juni 2026)'],
-    ['USD/IDR',       `Rp ${formatIDR(macroInputs?.usdIdr ?? 17700)}`,  (useRootStore.getState().liveData?.usdIdr?.v != null) ? 'LIVE (delay ~15 mnt)' : 'Estimasi (per Juni 2026)'],
+    ['USD/IDR',       `Rp ${formatIDR(macroInputs?.usdIdr ?? 17700)}`,  (useRootStore.getState().liveData?.usdIdr?.v != null) ? 'LIVE (delay ~3 mnt)' : 'Estimasi (per Juni 2026)'],
     ['SBN 10Y Yield', `${formatNumber(macroInputs?.sbn10y ?? 6.78, 2)}%`,                               'Estimasi (per Juni 2026)'],
     ['DXY Index',     `${formatPoints(macroInputs?.dxy ?? 104.50)}`,                              'Estimasi (per Juni 2026)'],
     ['', '', ''],

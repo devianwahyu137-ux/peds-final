@@ -195,7 +195,7 @@ export default function MacroIndicatorCard({
           )}
           {(() => {
             if (id === "usdIdr" || id === "xauUsd") {
-              return isLive ? "LIVE (delay ~15 mnt)" : "MEMUAT...";
+              return isLive ? "LIVE (delay ~3 mnt)" : "MEMUAT...";
             }
             return "ESTIMASI - per Juni 2026";
           })()}
@@ -243,30 +243,53 @@ export default function MacroIndicatorCard({
         <div className="text-[8px] font-sans font-light text-[var(--as-text-tertiary)] flex flex-col items-end">
           <span>vs periode lalu</span>
           {(() => {
-            const isStale = !timestamp || (Date.now() - timestamp) > 3600000;
+            const isLiveMetric = id === "usdIdr" || id === "xauUsd";
             const isFetching = status === "fetching";
             
-            if (isStale || isFetching) {
-              return (
-                <div className="flex items-center gap-1.5 mt-1 text-amber-500/90 font-medium">
-                  <span>Data dari cache — klik untuk refresh</span>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (triggerRefresh) triggerRefresh();
-                    }}
-                    disabled={isFetching}
-                    title={isFetching ? "Sedang menyegarkan..." : "Refresh data"}
-                    className="p-1 hover:bg-neutral-850 dark:hover:bg-neutral-800/80 rounded transition-colors duration-200 cursor-pointer flex items-center justify-center active:scale-90 disabled:opacity-50"
-                  >
-                    <RefreshCw size={10} className={isFetching ? "animate-spin text-amber-500" : "animate-pulse text-amber-500"} />
-                  </button>
-                </div>
-              );
+            if (isLiveMetric) {
+              const isStale = !timestamp || (Date.now() - timestamp) > 10 * 60 * 1000;
+              if (isStale || isFetching) {
+                return (
+                  <div className="flex items-center gap-1.5 mt-1 text-amber-500/90 font-medium">
+                    <span>Data dari cache — klik untuk refresh</span>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (triggerRefresh) triggerRefresh();
+                      }}
+                      disabled={isFetching}
+                      title={isFetching ? "Sedang menyegarkan..." : "Refresh data"}
+                      className="p-1 hover:bg-neutral-850 dark:hover:bg-neutral-800/80 rounded transition-colors duration-200 cursor-pointer flex items-center justify-center active:scale-90 disabled:opacity-50"
+                    >
+                      <RefreshCw size={10} className={isFetching ? "animate-spin text-amber-500" : "animate-pulse text-amber-500"} />
+                    </button>
+                  </div>
+                );
+              } else {
+                return (
+                  <span className="mt-1 opacity-65 text-emerald-500/80 font-medium">
+                    Diperbarui {formatTimeAgoIndonesian(timestamp)}
+                  </span>
+                );
+              }
             } else {
+              if (isFetching) {
+                return (
+                  <div className="flex items-center gap-1.5 mt-1 text-amber-500/90 font-medium">
+                    <span>Memperbarui estimasi...</span>
+                  </div>
+                );
+              }
+              if (timestamp) {
+                return (
+                  <span className="mt-1 opacity-65 text-emerald-500/80 font-medium">
+                    Diperbarui {formatTimeAgoIndonesian(timestamp)}
+                  </span>
+                );
+              }
               return (
-                <span className="mt-1 opacity-65 text-emerald-500/80 font-medium">
-                  Diperbarui {formatTimeAgoIndonesian(timestamp)}
+                <span className="mt-1 opacity-50 text-[var(--as-text-tertiary)] font-medium">
+                  Estimasi Statis
                 </span>
               );
             }

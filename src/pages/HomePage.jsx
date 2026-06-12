@@ -84,11 +84,11 @@ function formatTimeAgoIndonesian(timestamp) {
   const delta = Date.now() - timestamp;
   if (delta < 60000) return "baru saja";
   const minutes = Math.floor(delta / 60000);
-  if (minutes < 60) return `${minutes}m lalu`;
+  if (minutes < 60) return `${minutes} menit lalu`;
   const hours = Math.floor(delta / 3600000);
-  if (hours < 24) return `${hours}j lalu`;
+  if (hours < 24) return `${hours} jam lalu`;
   const days = Math.floor(delta / 86400000);
-  return `${days}d lalu`;
+  return `${days} hari lalu`;
 }
 
 export default function HomePage() {
@@ -379,7 +379,7 @@ export default function HomePage() {
 
                 const isLiveAvailableMetric = key === 'usdIdr';
                 const badgeLabel = isLiveAvailableMetric 
-                  ? (isLive ? 'LIVE' : 'LOAD')
+                  ? (isLive ? 'LIVE (delay ~3 mnt)' : 'LOAD')
                   : 'ESTIMASI';
 
                 const badgeStyles = isLiveAvailableMetric
@@ -410,6 +410,11 @@ export default function HomePage() {
                     <div className="text-sm font-black font-mono tabular-nums text-[var(--as-text-primary)]">
                       {display}
                     </div>
+                    {isLiveAvailableMetric && isLive && liveData[key]?.t && (
+                      <div className="text-[8px] font-sans font-medium text-emerald-500/80 mt-1.5 flex items-center gap-1">
+                        <span>diperbarui {formatTimeAgoIndonesian(liveData[key].t)}</span>
+                      </div>
+                    )}
                   </div>
                 );
               })}
