@@ -140,16 +140,16 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
       {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-md transition-opacity"
           onClick={onClose}
         />
       )}
 
       {/* Floating Panel Container */}
       <div
-        className={`fixed bottom-6 right-6 z-50
+        className={`fixed top-[85px] right-6 z-[100]
                     bg-black/80 backdrop-blur-md border rounded-2xl shadow-2xl flex flex-col
-                    w-[450px] h-[90vh] max-h-[90vh]
+                    w-[450px] h-[calc(100vh-110px)] max-h-[750px]
                     transition-all duration-300 ease-in-out copilot-breathing-glow ${
           isOpen ? "opacity-100 translate-y-0 scale-100 pointer-events-auto" : "opacity-0 translate-y-4 scale-95 pointer-events-none"
         }`}
@@ -212,7 +212,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
         </div>
 
         {/* Chat History Area */}
-        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+        <div className="flex-1 overflow-y-auto p-4 pt-6 flex flex-col gap-4">
 
           {/* Suggested questions — show when no user messages yet */}
           {messages.filter(m => m.role === 'user').length === 0 && !isLoading && (
