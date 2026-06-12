@@ -155,271 +155,273 @@ export default function HomePage() {
     <div className="w-full page-enter" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-xl)' }}>
       <ScenarioIntelligence />
 
-      {/* ── ZONA 1: SITUASI HARI INI ── */}
-      <div className="card-tier-1" style={{
-        background: `linear-gradient(135deg, var(--as-bg-primary), ${accent}08)`,
-        border: `1px solid ${accent}25`,
-        boxShadow: `0 0 0 1px rgba(255,255,255,0.02), 0 8px 48px rgba(0,0,0,0.50), 0 0 60px ${accent}08`,
-      }}>
-        {/* Left: text content */}
-        <div className="flex items-start justify-between gap-8 flex-wrap">
-          <div className="flex-1 min-w-0">
-            {/* Badge */}
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-[9px] font-bold tracking-[0.25em]
-                               uppercase px-3 py-1.5 rounded-full"
-                    style={{ background: accent + '18', color: accent,
-                             border: `1px solid ${accent}30` }}>
-                {narrative.riskLabel}
-              </span>
-              <span className="text-[9px] text-neutral-600 uppercase">
-                {scenarioId.replace('_', ' ')}
-              </span>
-            </div>
-
-            {/* Headline — make this much bigger */}
-            <h2 className="text-3xl font-black text-[var(--as-text-primary)]
-                           leading-tight tracking-tight mb-4">
-              {narrative.headline}
-            </h2>
-
-            {/* Body — more line height, bigger font */}
-            <p className="text-sm leading-loose max-w-2xl"
-               style={{ color: 'var(--as-text-secondary)' }}>
-              {narrative.body}
-            </p>
-          </div>
-
-          {/* Sharpe Ratio — make this the HERO NUMBER */}
-          <div className="flex-shrink-0 text-center p-7 rounded-2xl min-w-[180px]
-                          relative overflow-hidden"
-               style={{
-                 background: `radial-gradient(circle at center, ${accent}18 0%, ${accent}05 60%, transparent 100%)`,
-                 border: `1px solid ${accent}30`,
-                 boxShadow: `0 0 48px ${accent}12, inset 0 1px 0 ${accent}20`,
-               }}>
-            {/* Background glow blob */}
-            <div
-              className="absolute inset-0 rounded-2xl"
-              style={{
-                background: `radial-gradient(circle at 50% 60%, ${accent}10 0%, transparent 70%)`,
-              }}
-            />
-
-            <div className="relative">
-              <div className="text-[8px] tracking-[0.25em] uppercase mb-4"
-                   style={{ color: accent, opacity: 0.7 }}>
-                SHARPE RATIO
-              </div>
-              <div className="font-black font-mono leading-none tabular-nums mb-1 text-[38px] md:text-[58px]"
-                   style={{
-                     color: accent,
-                     textShadow: `0 0 40px ${accent}60, 0 0 80px ${accent}30`,
-                     letterSpacing: '-2px',
-                   }}>
-                {formatNumber(sharpeRatio, 2)}
-              </div>
-              <div className="text-[9px] mt-3"
-                   style={{ color: accent, opacity: 0.5 }}>
-                skor efisiensi portofolio
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── ZONA 2: REKOMENDASI UTAMA ── */}
-      <div className="card-tier-2">
-        <div className="flex items-start justify-between mb-8">
-          <div>
-            <div className="text-[9px] tracking-[0.25em] uppercase mb-2"
-                 style={{ color: 'var(--as-text-dim)' }}>
-              PANDUAN KONTEKSTUAL
-            </div>
-            <h2 className="text-lg font-bold"
-                style={{ color: 'var(--as-text-primary)' }}>
-              Rekomendasi Alokasi Saat Ini
-            </h2>
-            <p className="text-xs font-sans font-light text-[var(--as-text-tertiary)] mt-2">
-              {narrative.advice}
-            </p>
-          </div>
-          <button
-            onClick={() => setTab?.("portfolio")}
-            className="flex-shrink-0 text-[10px] font-semibold font-sans uppercase tracking-widest px-5 py-3.5 md:py-2.5 rounded-lg border
-                       border-[var(--as-border-secondary)] text-[var(--as-text-secondary)] hover:border-[var(--as-border-primary)]
-                       hover:text-[var(--as-text-primary)] transition-colors duration-200 cursor-pointer shadow-sm min-h-[44px] flex items-center justify-center"
-          >
-            Lihat Detail MPT →
-          </button>
-        </div>
-
-        <div className="space-y-5">
-          {ASSET_BARS.map(({ key, label, icon, color }) => {
-            const pct = targetWeights?.[key] ?? 0;
-            return (
-              <div key={key} className="flex items-center gap-4">
-                <span className="text-xl w-7 flex-shrink-0">{icon}</span>
-                <span className="text-[11px] font-sans w-32 flex-shrink-0"
-                      style={{ color: 'var(--as-text-secondary)' }}>
-                  {label}
-                </span>
-                <div className="flex-1 h-2 bg-[var(--as-bg-tertiary)] rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-700 ease-out"
-                    style={{
-                      width: `${pct}%`,
-                      background: `linear-gradient(90deg, ${color}80, ${color})`,
-                      boxShadow: `0 0 8px ${color}60`,
-                    }}
-                  />
-                </div>
-                <span
-                  className="text-lg font-black font-mono tabular-nums w-12 text-right flex-shrink-0"
-                  style={{ color }}
-                >
-                  {pct}%
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── ZONA 3: SINYAL PASAR CEPAT ── */}
-      <div className="w-full">
-        <div className="flex items-start justify-between mb-8">
-          <div>
-            <div className="text-[9px] font-sans tracking-[0.25em] uppercase mb-2"
-                 style={{ color: 'var(--as-text-dim)' }}>
-              MONITOR MAKRO
-            </div>
-            <h2 className="text-lg font-bold font-sans"
-                style={{ color: 'var(--as-text-primary)' }}>
-              Sinyal Pasar Terkini
-            </h2>
-            <p className="text-[10px] font-sans text-[var(--as-text-dim)] mt-1.5 uppercase tracking-wider">
-              * Seluruh indikator di bawah menggunakan data estimasi per Juni 2026, bukan data live real-time.
-            </p>
-          </div>
-        </div>
+      {/* Main asymmetric layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 stagger-children">
-          {QUICK_SIGNALS_CONFIG.map(({ key, label, unit, icon }) => {
-            const rawVal   = macro[key];
-            const isLiveVal = key === 'biRate' ? (liveData?.bi_macro?.biRate ?? liveData?.bi_macro?.v ?? liveData?.biRate?.v) :
-                             key === 'inflasi' ? (liveData?.bi_macro?.cpi ?? liveData?.cpi?.v) :
-                             (liveData[key]?.v ?? (typeof liveData[key] === 'number' ? liveData[key] : null));
-            const isLive   = isLiveVal != null;
-
-            const display = rawVal != null
-              ? (key === 'usdIdr' ? formatIDR(rawVal) : key === 'dxy' ? formatPoints(rawVal) : formatNumber(rawVal, 2)) + unit
-              : '—';
-
-            const isLiveAvailableMetric = key === 'usdIdr';
-            const badgeLabel = isLiveAvailableMetric 
-              ? (isLive ? 'LIVE (delay ~15 mnt)' : 'MEMUAT...')
-              : 'ESTIMASI - per Juni 2026';
-
-            const badgeStyles = isLiveAvailableMetric
-              ? (isLive 
-                  ? { background: 'rgba(16,185,129,0.08)', color: '#10b981' } 
-                  : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' })
-              : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' };
-
-            return (
-              <div key={key} className="card-tier-3 card-hover-glow">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-2xl">{icon}</span>
-                  <span className="text-[8px] font-sans px-2 py-0.5 rounded-md flex items-center gap-1.5"
-                        style={badgeStyles}>
-                    {isLiveAvailableMetric && isLive && (
-                      <div
-                        className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"
-                        style={{ boxShadow: `0 0 4px #10b981` }}
-                      />
-                    )}
-                    {badgeLabel}
+        {/* LEFT AREA: Primary Telemetry and Action Strategy (8-cols) */}
+        <div className="lg:col-span-8 space-y-8">
+          
+          {/* ── ZONA 1: SITUASI HARI INI ── */}
+          <div className="card-tier-1" style={{
+            background: `linear-gradient(135deg, var(--as-bg-primary), ${accent}08)`,
+            border: `1px solid ${accent}25`,
+            boxShadow: `0 0 0 1px rgba(255,255,255,0.02), 0 8px 48px rgba(0,0,0,0.50), 0 0 60px ${accent}08`,
+          }}>
+            {/* Left: text content */}
+            <div className="flex items-start justify-between gap-8 flex-wrap">
+              <div className="flex-1 min-w-0">
+                {/* Badge */}
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-[9px] font-bold tracking-[0.25em]
+                                   uppercase px-3 py-1.5 rounded-full"
+                        style={{ background: accent + '18', color: accent,
+                                 border: `1px solid ${accent}30` }}>
+                    {narrative.riskLabel}
+                  </span>
+                  <span className="text-[9px] text-neutral-600 uppercase">
+                    {scenarioId.replace('_', ' ')}
                   </span>
                 </div>
-                <div className="text-[10px] font-sans tracking-[0.2em] uppercase mb-2"
-                     style={{ color: 'var(--as-text-dim)' }}>
-                  {label}
-                </div>
-                <div className="text-xl md:text-[28px] font-black font-mono tabular-nums
-                                leading-none text-[var(--as-text-primary)]">
-                  {display}
-                </div>
-                {isLiveAvailableMetric && isLive && liveData[key]?.t && (
-                  <div className="text-[8px] font-sans text-emerald-500/80 mt-2 font-medium">
-                    Diperbarui {formatTimeAgoIndonesian(liveData[key].t)}
-                  </div>
-                )}
+
+                {/* Headline — make this much bigger */}
+                <h2 className="text-3xl font-black text-[var(--as-text-primary)]
+                               leading-tight tracking-tight mb-4">
+                  {narrative.headline}
+                </h2>
+
+                {/* Body — more line height, bigger font */}
+                <p className="text-sm leading-loose max-w-2xl"
+                   style={{ color: 'var(--as-text-secondary)' }}>
+                  {narrative.body}
+                </p>
               </div>
-            );
-          })}
-        </div>
-      </div>
 
-      {/* ── ZONA 4: ACTION CENTER / DRIFT ALERT ── */}
-      {(() => {
-        const weights = actualWeights;
-        // Execution status: based on portfolio drift
-        const maxDrift = Math.max(
-          ...Object.keys(weights).map(asset =>
-            Math.abs((weights[asset] ?? 0) - (targetWeights[asset] ?? 0))
-          )
-        );
-        const execStatus = maxDrift > 10
-          ? { label: 'REBALANCING DIPERLUKAN', color: '#ef4444', icon: <AlertTriangle size={14} className="text-red-500" /> }
-          : maxDrift > 5
-            ? { label: 'DRIFT MINOR TERDETEKSI', color: '#f59e0b', icon: <AlertCircle size={14} className="text-amber-500" /> }
-            : { label: 'EKSEKUSI SELARAS',       color: '#10b981', icon: <Check size={14} className="text-emerald-500" /> };
+              {/* Sharpe Ratio — make this the HERO NUMBER */}
+              <div className="flex-shrink-0 text-center p-7 rounded-2xl min-w-[180px]
+                              relative overflow-hidden"
+                   style={{
+                     background: `radial-gradient(circle at center, ${accent}18 0%, ${accent}05 60%, transparent 100%)`,
+                     border: `1px solid ${accent}30`,
+                     boxShadow: `0 0 48px ${accent}12, inset 0 1px 0 ${accent}20`,
+                   }}>
+                {/* Background glow blob */}
+                <div
+                  className="absolute inset-0 rounded-2xl"
+                  style={{
+                    background: `radial-gradient(circle at 50% 60%, ${accent}10 0%, transparent 70%)`,
+                  }}
+                />
 
-        // Macro status: from active scenario
-        const macroStatus = {
-          EQUILIBRIUM:     { label: 'LINGKUNGAN EKSPANSI NORMAL', color: '#10b981' },
-          TIGHTENING:      { label: 'LINGKUNGAN PENGETATAN MONETER', color: '#f59e0b' },
-          CURRENCY_STRESS: { label: 'LINGKUNGAN KRISIS NILAI TUKAR', color: '#ef4444' },
-        }[scenarioId] ?? { label: 'TIDAK DIKETAHUI', color: '#525252' };
-
-        return (
-          <div className="rounded-xl border p-8 flex items-center justify-between flex-wrap gap-8 transition-colors duration-300 shadow-lg bg-[var(--as-bg-secondary)] border-[var(--as-border-primary)]">
-            <div className="flex items-center gap-6">
-              {/* Execution Status */}
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm"
-                     style={{ backgroundColor: `${execStatus.color}20`, color: execStatus.color, border: `1px solid ${execStatus.color}40` }}>
-                  {execStatus.icon}
-                </div>
-                <div className="flex flex-col gap-1">
-                  <div className="text-xs font-sans font-bold tracking-widest uppercase" style={{ color: execStatus.color }}>
-                    {execStatus.label}
+                <div className="relative">
+                  <div className="text-[8px] tracking-[0.25em] uppercase mb-4"
+                       style={{ color: accent, opacity: 0.7 }}>
+                    SHARPE RATIO
                   </div>
-                  <div className="text-[10px] text-[var(--as-text-tertiary)] max-w-sm">
-                    {maxDrift > 10
-                      ? `Drift ${formatNumber(maxDrift, 1)}% terdeteksi — rebalancing segera disarankan.`
-                      : maxDrift > 5
-                        ? `Drift minor ${formatNumber(maxDrift, 1)}% — pantau dalam 1-2 minggu.`
-                        : 'Portofolio selaras dengan target skenario aktif.'
-                    }
+                  <div className="font-black font-mono leading-none tabular-nums mb-1 text-[38px] md:text-[58px]"
+                       style={{
+                         color: accent,
+                         textShadow: `0 0 40px ${accent}60, 0 0 80px ${accent}30`,
+                         letterSpacing: '-2px',
+                       }}>
+                    {formatNumber(sharpeRatio, 2)}
+                  </div>
+                  <div className="text-[9px] mt-3"
+                       style={{ color: accent, opacity: 0.5 }}>
+                    skor efisiensi portofolio
                   </div>
                 </div>
-              </div>
-            </div>
-            {/* Macro Environment — RIGHT side */}
-            <div className="flex flex-col gap-1 items-end">
-              <div className="text-[9px] font-sans text-[var(--as-text-tertiary)] uppercase tracking-widest">
-                LINGKUNGAN MAKRO
-              </div>
-              <div className="text-[11px] font-sans font-bold tracking-widest px-3 py-1 rounded-md"
-                   style={{ backgroundColor: `${macroStatus.color}10`, color: macroStatus.color, border: `1px solid ${macroStatus.color}30` }}>
-                {macroStatus.label}
               </div>
             </div>
           </div>
-        );
-      })()}
+
+          {/* ── ZONA 2: REKOMENDASI UTAMA ── */}
+          <div className="card-tier-2">
+            <div className="flex items-start justify-between mb-8">
+              <div>
+                <div className="text-[9px] tracking-[0.25em] uppercase mb-2"
+                     style={{ color: 'var(--as-text-dim)' }}>
+                  PANDUAN KONTEKSTUAL
+                </div>
+                <h2 className="text-lg font-bold"
+                    style={{ color: 'var(--as-text-primary)' }}>
+                  Rekomendasi Alokasi Saat Ini
+                </h2>
+                <p className="text-xs font-sans font-light text-[var(--as-text-tertiary)] mt-2">
+                  {narrative.advice}
+                </p>
+              </div>
+              <button
+                onClick={() => setTab?.("portfolio")}
+                className="flex-shrink-0 text-[10px] font-semibold font-sans uppercase tracking-widest px-5 py-3.5 md:py-2.5 rounded-lg border
+                           border-[var(--as-border-secondary)] text-[var(--as-text-secondary)] hover:border-[var(--as-border-primary)]
+                           hover:text-[var(--as-text-primary)] transition-colors duration-200 cursor-pointer shadow-sm min-h-[44px] flex items-center justify-center"
+              >
+                Lihat Detail MPT →
+              </button>
+            </div>
+
+            <div className="space-y-5">
+              {ASSET_BARS.map(({ key, label, icon, color }) => {
+                const pct = targetWeights?.[key] ?? 0;
+                return (
+                  <div key={key} className="flex items-center gap-4">
+                    <span className="text-xl w-7 flex-shrink-0">{icon}</span>
+                    <span className="text-[11px] font-sans w-32 flex-shrink-0"
+                          style={{ color: 'var(--as-text-secondary)' }}>
+                      {label}
+                    </span>
+                    <div className="flex-1 h-2 bg-[var(--as-bg-tertiary)] rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-700 ease-out"
+                        style={{
+                          width: `${pct}%`,
+                          background: `linear-gradient(90deg, ${color}80, ${color})`,
+                          boxShadow: `0 0 8px ${color}60`,
+                        }}
+                      />
+                    </div>
+                    <span
+                      className="text-lg font-black font-mono tabular-nums w-12 text-right flex-shrink-0"
+                      style={{ color }}
+                    >
+                      {pct}%
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+        </div>
+
+        {/* RIGHT AREA: Monitoring Telemetry (4-cols sidebar) */}
+        <div className="lg:col-span-4 space-y-8">
+          
+          {/* ── ZONA 4: ACTION CENTER / DRIFT ALERT ── */}
+          {(() => {
+            const weights = actualWeights;
+            const maxDrift = Math.max(
+              ...Object.keys(weights).map(asset =>
+                Math.abs((weights[asset] ?? 0) - (targetWeights[asset] ?? 0))
+              )
+            );
+            const execStatus = maxDrift > 10
+              ? { label: 'REBALANCING DIPERLUKAN', color: '#ef4444', icon: <AlertTriangle size={14} className="text-red-500" /> }
+              : maxDrift > 5
+                ? { label: 'DRIFT MINOR TERDETEKSI', color: '#f59e0b', icon: <AlertCircle size={14} className="text-amber-500" /> }
+                : { label: 'EKSEKUSI SELARAS',       color: '#10b981', icon: <Check size={14} className="text-emerald-500" /> };
+
+            const macroStatus = {
+              EQUILIBRIUM:     { label: 'EKSPANSI NORMAL', color: '#10b981' },
+              TIGHTENING:      { label: 'PENGETATAN MONETER', color: '#f59e0b' },
+              CURRENCY_STRESS: { label: 'KRISIS NILAI TUKAR', color: '#ef4444' },
+            }[scenarioId] ?? { label: 'TIDAK DIKETAHUI', color: '#525252' };
+
+            return (
+              <div className="rounded-xl border p-6 space-y-4 transition-colors duration-300 shadow-lg bg-[var(--as-bg-secondary)] border-[var(--as-border-primary)]">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm"
+                       style={{ backgroundColor: `${execStatus.color}20`, color: execStatus.color, border: `1px solid ${execStatus.color}40` }}>
+                    {execStatus.icon}
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <div className="text-[10px] font-sans font-bold tracking-widest uppercase" style={{ color: execStatus.color }}>
+                      {execStatus.label}
+                    </div>
+                    <div className="text-[9px] text-[var(--as-text-tertiary)] leading-snug">
+                      {maxDrift > 10
+                        ? `Drift ${formatNumber(maxDrift, 1)}% — rebalancing segera.`
+                        : maxDrift > 5
+                          ? `Drift minor ${formatNumber(maxDrift, 1)}% — pantau ketat.`
+                          : 'Portofolio selaras dengan target.'
+                      }
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="border-t border-[var(--as-border-secondary)] pt-3 flex flex-col gap-1">
+                  <div className="text-[8px] font-sans text-[var(--as-text-tertiary)] uppercase tracking-widest">
+                    LINGKUNGAN MAKRO
+                  </div>
+                  <div className="text-[10px] font-sans font-bold tracking-widest px-2.5 py-1 rounded-md inline-block text-center w-full"
+                       style={{ backgroundColor: `${macroStatus.color}10`, color: macroStatus.color, border: `1px solid ${macroStatus.color}30` }}>
+                    {macroStatus.label}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* ── ZONA 3: SINYAL PASAR CEPAT ── */}
+          <div className="card-tier-2">
+            <div className="mb-4">
+              <div className="text-[8px] font-sans tracking-[0.25em] uppercase mb-1"
+                   style={{ color: 'var(--as-text-dim)' }}>
+                MONITOR MAKRO
+              </div>
+              <h2 className="text-sm font-bold font-sans uppercase"
+                  style={{ color: 'var(--as-text-primary)' }}>
+                Sinyal Pasar Terkini
+              </h2>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 stagger-children">
+              {QUICK_SIGNALS_CONFIG.map(({ key, label, unit, icon }) => {
+                const rawVal   = macro[key];
+                const isLiveVal = key === 'biRate' ? (liveData?.bi_macro?.biRate ?? liveData?.bi_macro?.v ?? liveData?.biRate?.v) :
+                                 key === 'inflasi' ? (liveData?.bi_macro?.cpi ?? liveData?.cpi?.v) :
+                                 (liveData[key]?.v ?? (typeof liveData[key] === 'number' ? liveData[key] : null));
+                const isLive   = isLiveVal != null;
+
+                const display = rawVal != null
+                  ? (key === 'usdIdr' ? formatIDR(rawVal) : key === 'dxy' ? formatPoints(rawVal) : formatNumber(rawVal, 2)) + unit
+                  : '—';
+
+                const isLiveAvailableMetric = key === 'usdIdr';
+                const badgeLabel = isLiveAvailableMetric 
+                  ? (isLive ? 'LIVE' : 'LOAD')
+                  : 'ESTIMASI';
+
+                const badgeStyles = isLiveAvailableMetric
+                  ? (isLive 
+                      ? { background: 'rgba(16,185,129,0.08)', color: '#10b981' } 
+                      : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' })
+                  : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' };
+
+                return (
+                  <div key={key} className="card-tier-3 card-hover-glow p-3.5 flex flex-col justify-between">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-base">{icon}</span>
+                      <span className="text-[7px] font-sans px-1 py-0.5 rounded-md flex items-center gap-1"
+                            style={badgeStyles}>
+                        {isLiveAvailableMetric && isLive && (
+                          <div
+                            className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"
+                            style={{ boxShadow: `0 0 3px #10b981` }}
+                          />
+                        )}
+                        {badgeLabel}
+                      </span>
+                    </div>
+                    <div className="text-[8px] font-sans tracking-wide uppercase mb-1"
+                         style={{ color: 'var(--as-text-dim)' }}>
+                      {label}
+                    </div>
+                    <div className="text-sm font-black font-mono tabular-nums text-[var(--as-text-primary)]">
+                      {display}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-[7px] font-sans text-[var(--as-text-dim)] mt-3 leading-relaxed">
+              * Menggunakan estimasi per Juni 2026.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
 
       {/* ── WHAT THIS MEANS FOR YOU — Contextual Guidance ── */}
       <div className="card-tier-2 overflow-hidden">
@@ -430,7 +432,7 @@ export default function HomePage() {
               PANDUAN KONTEKSTUAL
             </div>
             <h2 className="text-lg font-bold font-sans"
-                style={{ color: 'var(--as-text-primary)' }}>
+                 style={{ color: 'var(--as-text-primary)' }}>
               Apa Yang Harus Dilakukan Sekarang?
             </h2>
           </div>
@@ -476,7 +478,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── ZONA 5: GLOBAL PULSE TICKER ── */}
+      {/* ── ZONA 6: GLOBAL PULSE TICKER ── */}
       <div 
         className="w-full bg-[var(--as-bg-card)] border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 overflow-hidden py-3 px-6 rounded-xl flex items-center transition-colors duration-300 relative"
       >
