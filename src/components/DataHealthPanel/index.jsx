@@ -94,7 +94,7 @@ export function DataHealthPanel() {
   const total     = ENDPOINT_REGISTRY.length;
   const allLive   = liveCount === total;
 
-  const statusText = `${activeCount}/${total} endpoint terhubung (Data Estimasi per Mei 2026)`;
+  const statusText = `${activeCount}/${total} endpoint terhubung (Data Estimasi per Juni 2026)`;
 
   return (
     <div className="flex items-center justify-between px-6 py-3 rounded-xl mb-8"

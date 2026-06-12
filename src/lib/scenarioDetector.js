@@ -42,10 +42,10 @@ const THRESHOLDS = {
  */
 export function detectOptimalScenario(macroData) {
   const {
-    biRate    = 5.25,
-    cpi       = 3.48,
+    biRate    = 5.50,
+    cpi       = 3.08,
     usdIdr    = 17700,
-    ihsg      = 6170,
+    ihsg      = 5886,
     dxy       = 104.5,
   } = macroData;
 

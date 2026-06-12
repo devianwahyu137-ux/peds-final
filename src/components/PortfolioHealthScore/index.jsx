@@ -39,8 +39,8 @@ export function PortfolioHealthScore() {
 
   // Build macro snapshot for mismatch detection
   const macroData = useMemo(() => ({
-    biRate: liveData?.bi_macro?.biRate  ?? macroInputs?.biRate    ?? 5.25,
-    cpi:    liveData?.bi_macro?.cpi     ?? macroInputs?.inflation ?? 3.48,
+    biRate: liveData?.bi_macro?.biRate  ?? macroInputs?.biRate    ?? 5.50,
+    cpi:    liveData?.bi_macro?.cpi     ?? macroInputs?.inflation ?? 3.08,
     usdIdr: liveData?.usdIdr?.v         ?? macroInputs?.usdIdr    ?? 17700,
     dxy:    liveData?.dxy?.v            ?? 104.5,
   }), [liveData, macroInputs]);

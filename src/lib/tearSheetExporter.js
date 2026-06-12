@@ -75,17 +75,17 @@ const ASSET_LABELS = {
 
 const SCENARIO_STRATEGY = {
   EQUILIBRIUM: 'Maintain 40% allocation to top-tier IDX banking & consumer staples (BBCA, BMRI, ICBP) for growth. Hold 30% SBN FR series for baseline yield. 10% Physical Gold as portfolio insurance. 20% Liquidity buffer for opportunistic deployment.',
-  TIGHTENING:  'Scale back equities to 15% — BI Rate 5.25% raises cost of capital. Rotate aggressively into SBN (ORI/SR/FR) to lock in risk-free yields. 15% Gold hedge against IDR pressure. 25% Cash for tactical redeployment when cycle turns.',
+  TIGHTENING:  'Scale back equities to 15% — BI Rate 5.50% raises cost of capital. Rotate aggressively into SBN (ORI/SR/FR) to lock in risk-free yields. 15% Gold hedge against IDR pressure. 25% Cash for tactical redeployment when cycle turns.',
   CURRENCY_STRESS: 'WEALTH PRESERVATION MODE: 45% Physical Gold (XAU/IDR double-return: gold price + IDR depreciation). 35% USD/hard currency liquidity. Only 5% defensive commodity-exporter equities (ADRO, PTBA). 15% short-duration SBN (<1Y).',
   HIPERINFLASI: 'HIPERINFLASI STRESS TEST: Purchasing power collapsing. Shift 60% of liquid capital into Physical Gold immediately. Avoid holding IDR cash. Target high yield and safe-haven defensive assets.',
   RUPIAH_CRASH: 'CURRENCY COLLAPSE STRESS TEST: Convert all remaining Rupiah cash into USD/hard currency and Physical Gold to survive severe devaluation. Shift to international equities and USD assets.',
 };
 
 const FALLBACK = {
-  biRate:   5.25,
-  cpi:      3.48,
+  biRate:   5.50,
+  cpi:      3.08,
   usdIdr:   17700,
-  sbn10y:   6.71,
+  sbn10y:   6.78,
   gs10:     4.40,
   dxy:      104.50,
   gold:     2342,
@@ -428,7 +428,7 @@ export async function exportTearSheetPDF({
       'EDUCATIONAL SIMULATION MODEL ONLY  ·  NOT INVESTMENT ADVICE  ·  ' +
       'COMPLIANT WITH OJK SIMULATION FRAMEWORK STANDARDS  ·  ' +
       `PEDS ALPHASHIELD ENGINE ${APP_VERSION.toUpperCase()}  ·  ALL DATA IS HYPOTHETICAL FOR SIMULATION DEMONSTRATION PURPOSES  ·  ` +
-      'DATA MAKRO ESTIMASI BERDASARKAN KONDISI PASAR MEI 2026  ·  ' +
+      'DATA MAKRO ESTIMASI BERDASARKAN KONDISI PASAR JUNI 2026  ·  ' +
       'KONSULTASIKAN KEPUTUSAN INVESTASI DENGAN ADVISOR KEUANGAN TERDAFTAR OJK';
     const footLines = wrapText(doc, footerText, CW, 5.5);
     footLines.slice(0, 2).forEach((line, i) => {

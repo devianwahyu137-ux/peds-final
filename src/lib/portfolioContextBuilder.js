@@ -47,11 +47,11 @@ export function buildPortfolioContext({
     .join(', ');
 
   // Dynamic values with fallback to hardcoded actual macro values
-  const actualBiRate = macroInputs?.biRate ?? 5.25;
+  const actualBiRate = macroInputs?.biRate ?? 5.50;
   const actualUsdIdr = macroInputs?.usdIdr ?? 17700;
-  const actualIhsg = macroInputs?.ihsg ?? 6170;
-  const actualInflasi = macroInputs?.inflation ?? 3.48;
-  const actualSbn10y = macroInputs?.sbn10y ?? 6.71;
+  const actualIhsg = macroInputs?.ihsg ?? 5886;
+  const actualInflasi = macroInputs?.inflation ?? 3.08;
+  const actualSbn10y = macroInputs?.sbn10y ?? 6.78;
   const actualDxy = macroInputs?.dxy ?? 104.50;
 
   return `
@@ -97,7 +97,7 @@ export function buildSuggestedQuestions(scenarioId, analytics) {
   const scenarioQuestions = {
     TIGHTENING: [
       "SBN tenor mana yang paling optimal sekarang?",
-      "Bagaimana dampak BI Rate 5.25% ke portofolioku?",
+      "Bagaimana dampak BI Rate 5.50% ke portofolioku?",
       "Apakah BBCA masih layak di skenario ini?"
     ],
     CURRENCY_STRESS: [

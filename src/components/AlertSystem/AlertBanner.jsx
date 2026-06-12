@@ -24,9 +24,9 @@ export function AlertBanner() {
   // Current macro values from live data or fallbacks
   const currentData = useMemo(() => ({
     usdIdr:    liveData?.usdIdr?.v        ?? macroInputs?.usdIdr    ?? 17700,
-    biRate:    liveData?.bi_macro?.biRate  ?? macroInputs?.biRate    ?? 5.25,
-    ihsg:      liveData?.ihsg?.v          ?? 6170,
-    inflation: liveData?.bi_macro?.cpi    ?? macroInputs?.inflation ?? 3.48,
+    biRate:    liveData?.bi_macro?.biRate  ?? macroInputs?.biRate    ?? 5.50,
+    ihsg:      liveData?.ihsg?.v          ?? 5886,
+    inflation: liveData?.bi_macro?.cpi    ?? macroInputs?.inflation ?? 3.08,
   }), [liveData, macroInputs]);
 
   const thresholds = useMemo(() => loadThresholds(), []);

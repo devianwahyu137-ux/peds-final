@@ -38,7 +38,7 @@ export default function MacroIndicatorCards() {
           Macro Economic Indicators
         </div>
         <div className="text-[9px] text-amber-500/80 uppercase font-mono tracking-wider font-bold">
-          * Data estimasi per Mei 2026, bukan data live real-time
+          * Data estimasi per Juni 2026, bukan data live real-time
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

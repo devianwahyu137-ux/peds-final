@@ -75,11 +75,11 @@ export function exportPortfolioCSV({ scenarioId, weights, analytics, macroInputs
 
     ['=== MAKROEKONOMI ===', '', ''],
     ['Indikator', 'Nilai', 'Sumber'],
-    ['BI Rate',       `${formatNumber(macroInputs?.biRate ?? 5.25, 2)}%`,  'Estimasi (per Mei 2026)'],
-    ['Inflasi YoY',   `${formatNumber(macroInputs?.inflation ?? 3.48, 2)}%`,  'Estimasi (per Mei 2026)'],
-    ['USD/IDR',       `Rp ${formatIDR(macroInputs?.usdIdr ?? 17700)}`,  (useRootStore.getState().liveData?.usdIdr?.v != null) ? 'LIVE (delay ~15 mnt)' : 'Estimasi (per Mei 2026)'],
-    ['SBN 10Y Yield', `${formatNumber(macroInputs?.sbn10y ?? 6.71, 2)}%`,                               'Estimasi (per Mei 2026)'],
-    ['DXY Index',     `${formatPoints(macroInputs?.dxy ?? 104.50)}`,                              'Estimasi (per Mei 2026)'],
+    ['BI Rate',       `${formatNumber(macroInputs?.biRate ?? 5.50, 2)}%`,  'Estimasi (per Juni 2026)'],
+    ['Inflasi YoY',   `${formatNumber(macroInputs?.inflation ?? 3.08, 2)}%`,  'Estimasi (per Juni 2026)'],
+    ['USD/IDR',       `Rp ${formatIDR(macroInputs?.usdIdr ?? 17700)}`,  (useRootStore.getState().liveData?.usdIdr?.v != null) ? 'LIVE (delay ~15 mnt)' : 'Estimasi (per Juni 2026)'],
+    ['SBN 10Y Yield', `${formatNumber(macroInputs?.sbn10y ?? 6.78, 2)}%`,                               'Estimasi (per Juni 2026)'],
+    ['DXY Index',     `${formatPoints(macroInputs?.dxy ?? 104.50)}`,                              'Estimasi (per Juni 2026)'],
     ['', '', ''],
 
     ['=== DISCLAIMER ===', '', ''],
@@ -122,8 +122,8 @@ export function exportPortfolioJSON({ scenarioId, weights, analytics, macroInput
     },
     scenario: {
       id:        scenarioId,
-      biRate:    macroInputs?.biRate    ?? 5.25,
-      inflation: macroInputs?.inflation ?? 3.48,
+      biRate:    macroInputs?.biRate    ?? 5.50,
+      inflation: macroInputs?.inflation ?? 3.08,
       usdIdr:    macroInputs?.usdIdr    ?? 17700,
     },
     allocation: {
@@ -141,10 +141,10 @@ export function exportPortfolioJSON({ scenarioId, weights, analytics, macroInput
       riskFreeRatePct:   Number(rf.toFixed(2)),
     },
     macroContext: {
-      biRate:  `${formatNumber(macroInputs?.biRate ?? 5.25, 2)}%`,
+      biRate:  `${formatNumber(macroInputs?.biRate ?? 5.50, 2)}%`,
       usdIdr:  `Rp ${formatIDR(macroInputs?.usdIdr ?? 17700)}`,
-      inflasi: `${formatNumber(macroInputs?.inflation ?? 3.48, 2)}% YoY`,
-      sbn10y:  `${formatNumber(macroInputs?.sbn10y ?? 6.71, 2)}%`,
+      inflasi: `${formatNumber(macroInputs?.inflation ?? 3.08, 2)}% YoY`,
+      sbn10y:  `${formatNumber(macroInputs?.sbn10y ?? 6.78, 2)}%`,
       dxy:     `${formatPoints(macroInputs?.dxy ?? 104.50)}`,
     },
   };

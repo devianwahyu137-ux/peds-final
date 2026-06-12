@@ -1,4 +1,4 @@
-import { useRootStore } from "@/stores/rootStore";
+import { useRootStore, SCENARIOS } from "@/stores/rootStore";
 import { SENTIMENT_AGGREGATE, OVERALL_STYLE } from "../components/MacroSentimentSummary";
 import { Landmark, BarChart2, ArrowRightLeft, DollarSign, TrendingUp, Gem, Wallet, AlertTriangle, Lock, AlertOctagon, Lightbulb, Target, AlertCircle, Check } from "lucide-react";
 import { ScenarioIntelligence } from '@/components/ScenarioIntelligence';
@@ -128,27 +128,27 @@ export default function HomePage() {
 
   // ── GLOBAL PULSE TICKER ──
   // Updated Global Pulse Ticker data — June 2026 verified
-  const liveUsdIdr = liveData?.usdIdr?.v;
-  const liveGold = liveData?.xauUsd?.v;
+  const usdIdrVal = macro?.usdIdr ?? 17700;
+  const goldVal = macro?.gold ?? 2342;
 
   const GLOBAL_PULSE_DATA = [
-    { label: 'IHSG',      value: '6.170',  delta: '-11,8%', dir: -1, unit: 'pts' },
-    { label: 'SBN 10Y',   value: '6,71',   delta: '+0,32%', dir: 1,  unit: '%'    },
+    { label: 'IHSG',      value: formatPoints(SCENARIOS.TIGHTENING.ihsg),  delta: '-11,8%', dir: -1, unit: 'pts' },
+    { label: 'SBN 10Y',   value: formatNumber(SCENARIOS.TIGHTENING.sbn10y, 2).replace('.', ','),   delta: '+0,32%', dir: 1,  unit: '%'    },
     { 
       label: 'USD/IDR',   
-      value: liveUsdIdr ? formatIDR(Math.round(liveUsdIdr)) : '17.700', 
-      delta: liveUsdIdr ? (liveUsdIdr > 17700 ? `+${(((liveUsdIdr - 17700)/17700)*100).toFixed(2)}%` : `${(((liveUsdIdr - 17700)/17700)*100).toFixed(2)}%`) : '+9,2%',  
-      dir: liveUsdIdr ? (liveUsdIdr >= 17700 ? -1 : 1) : -1, 
+      value: formatIDR(Math.round(usdIdrVal)), 
+      delta: usdIdrVal > 17700 ? `+${(((usdIdrVal - 17700)/17700)*100).toFixed(2)}%` : `${(((usdIdrVal - 17700)/17700)*100).toFixed(2)}%`,  
+      dir: usdIdrVal >= 17700 ? -1 : 1, 
       unit: ''    
     },
     { 
       label: 'GOLD',      
-      value: liveGold ? formatIDR(Math.round(liveGold)) : '2.342',  
-      delta: liveGold ? (liveGold > 2342 ? `+${(((liveGold - 2342)/2342)*100).toFixed(2)}%` : `${(((liveGold - 2342)/2342)*100).toFixed(2)}%`) : '+1,15%', 
-      dir: liveGold ? (liveGold >= 2342 ? 1 : -1) : 1,  
+      value: formatIDR(Math.round(goldVal)),  
+      delta: goldVal > 2342 ? `+${(((goldVal - 2342)/2342)*100).toFixed(2)}%` : `${(((goldVal - 2342)/2342)*100).toFixed(2)}%`, 
+      dir: goldVal >= 2342 ? 1 : -1,  
       unit: 'USD' 
     },
-    { label: 'BI RATE',   value: '5,25',   delta: '+50BPS', dir: -1, unit: '%'    },
+    { label: 'BI RATE',   value: formatNumber(SCENARIOS.TIGHTENING.biRate, 2).replace('.', ','),   delta: '+50BPS', dir: -1, unit: '%'    },
   ];
 
   return (
@@ -299,7 +299,7 @@ export default function HomePage() {
               Sinyal Pasar Terkini
             </h2>
             <p className="text-[10px] font-mono text-[var(--as-text-dim)] mt-1.5 uppercase tracking-wider">
-              * Seluruh indikator di bawah menggunakan data estimasi per Mei 2026, bukan data live real-time.
+              * Seluruh indikator di bawah menggunakan data estimasi per Juni 2026, bukan data live real-time.
             </p>
           </div>
         </div>
@@ -319,7 +319,7 @@ export default function HomePage() {
             const isLiveAvailableMetric = key === 'usdIdr';
             const badgeLabel = isLiveAvailableMetric 
               ? (isLive ? 'LIVE (delay ~15 mnt)' : 'MEMUAT...')
-              : 'ESTIMASI - per Mei 2026';
+              : 'ESTIMASI - per Juni 2026';
 
             const badgeStyles = isLiveAvailableMetric
               ? (isLive 
@@ -458,9 +458,9 @@ export default function HomePage() {
 
           {scenarioId === 'TIGHTENING' && (<>
             <ActionGuidanceCard icon={<AlertTriangle size={20} className="text-red-500" />} title="Kurangi Eksposur Saham" color="#ef4444"
-              body="BI Rate 5.25% menekan valuasi ekuitas. Hindari saham properti & teknologi. Fokus hanya pada saham defensif berneraca kuat." />
+              body={`BI Rate ${(SCENARIOS.TIGHTENING.biRate ?? 5.50).toFixed(2)}% menekan valuasi ekuitas. Hindari saham properti & teknologi. Fokus hanya pada saham defensif berneraca kuat.`} />
             <ActionGuidanceCard icon={<Lock size={20} className="text-purple-400" />} title="Lock-In Yield SBN" color="#a78bfa"
-              body="Manfaatkan yield SBN 6.71% sebelum siklus pengetatan berakhir. SR/ORI adalah instrumen terbaik untuk investor ritel saat ini." />
+              body={`Manfaatkan yield SBN ${(SCENARIOS.TIGHTENING.sbn10y ?? 6.78).toFixed(2)}% sebelum siklus pengetatan berakhir. SR/ORI adalah instrumen terbaik untuk investor ritel saat ini.`} />
             <ActionGuidanceCard icon={<Gem size={20} className="text-amber-400" />} title="Tambah Emas Secara Bertahap" color="#fbbf24"
               body="Rupiah mulai tertekan. Emas IDR memberikan proteksi alami. Target 15% alokasi sebagai asuransi portofolio." />
           </>)}

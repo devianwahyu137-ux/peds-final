@@ -14,8 +14,8 @@ export function MacroDataProvider({ children }) {
   const [marketData, setMarketData] = useState({
     macro: {
       usdIdr: 17879.00,
-      biRate: 5.25,
-      inflation: 3.48,
+      biRate: 5.50,
+      inflation: 3.08,
       dxy: 104.50,
       us10y: 4.40
     },

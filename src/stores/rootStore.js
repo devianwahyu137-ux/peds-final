@@ -31,7 +31,7 @@ export const SCENARIOS = {
     label: "Hawkish Rate Expansion",
     theme: "Caution",
     accent: "amber",
-    biRate: 5.25, inflation: 3.48, usdIdr: 16800, sbn10y: 6.71, dxy: 104.50, us10y: 4.40, ihsg: 6170,
+    biRate: 5.50, inflation: 3.08, usdIdr: 16800, sbn10y: 6.78, dxy: 104.50, us10y: 4.40, ihsg: 5886,
     weights: { stocks: 15, bonds: 45, gold: 15, cash: 25 },
     ledger: [
       "[⚠️] DEBT_EXPOSURE : Scale back retail equities to 15%. High capital costs squeeze corporate margins.",
@@ -191,6 +191,7 @@ export const useRootStore = create(
         dxy: SCENARIO_DEFAULTS.TIGHTENING.dxy,
         us10y: SCENARIO_DEFAULTS.TIGHTENING.us10y,
         ihsg: SCENARIO_DEFAULTS.TIGHTENING.ihsg,
+        sbn10y: SCENARIO_DEFAULTS.TIGHTENING.sbn10y,
         gold: 2342
       },
 
@@ -236,6 +237,7 @@ export const useRootStore = create(
             dxy: defaults.dxy,
             us10y: defaults.us10y,
             ihsg: defaults.ihsg,
+            sbn10y: defaults.sbn10y,
             gold: liveGold ?? 2342
           };
         });
@@ -276,6 +278,7 @@ export const useRootStore = create(
               dxy: defaults.dxy,
               us10y: defaults.us10y,
               ihsg: defaults.ihsg,
+              sbn10y: defaults.sbn10y,
               gold: liveGold ?? 2342
             };
           }

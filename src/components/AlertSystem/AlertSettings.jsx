@@ -7,16 +7,18 @@ import { loadThresholds, saveThresholds, ALERT_INDICATORS }
   from '@/lib/alertThresholdSystem';
 import { Bell } from 'lucide-react';
 import { useRootStore } from '@/stores/rootStore';
+import { useTheme } from '@/hooks/useTheme';
 
 export function AlertSettings({ isOpen, onClose }) {
   const [thresholds, setThresholds] = useState(loadThresholds);
   const macroInputs = useRootStore(s => s.macroInputs);
+  const { isDark } = useTheme();
 
   const getCurrentVal = (id) => {
     if (id === 'usdIdr') return macroInputs?.usdIdr ?? 17700;
-    if (id === 'biRate') return macroInputs?.biRate ?? 5.25;
-    if (id === 'ihsg') return macroInputs?.ihsg ?? 6170;
-    if (id === 'inflation') return macroInputs?.inflation ?? 3.48;
+    if (id === 'biRate') return macroInputs?.biRate ?? 5.50;
+    if (id === 'ihsg') return macroInputs?.ihsg ?? 5886;
+    if (id === 'inflation') return macroInputs?.inflation ?? 3.08;
     return null;
   };
 
@@ -47,11 +49,12 @@ export function AlertSettings({ isOpen, onClose }) {
 
   return (
     <div
-      className="absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-2xl overflow-hidden shadow-2xl border"
+      className="absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-2xl overflow-hidden shadow-2xl border pointer-events-auto"
       style={{
-        zIndex:      999,
-        background:  'var(--as-bg-primary)',
-        borderColor: 'var(--as-border-primary)',
+        zIndex:      9999,
+        background:  isDark ? '#0b0b0d' : '#ffffff',
+        borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+        boxShadow:   isDark ? '0 10px 30px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.05)' : '0 10px 30px rgba(0,0,0,0.06)',
         animation:   'fadeInUp 200ms ease both',
         maxHeight:   '80vh',
         display:     'flex',

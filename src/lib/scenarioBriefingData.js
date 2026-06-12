@@ -1,6 +1,8 @@
 // src/lib/scenarioBriefingData.js
 // Rich briefing content per scenario — shown on switch
 
+import { SCENARIOS } from '../stores/rootStore';
+
 export const SCENARIO_BRIEFINGS = {
   EQUILIBRIUM: {
     headline:    'Ekspansi Normal',
@@ -31,21 +33,32 @@ export const SCENARIO_BRIEFINGS = {
 
   TIGHTENING: {
     headline:    'Pengetatan Moneter',
-    subheadline: 'BI Rate 5.25% — Mode Defensif',
+    get subheadline() {
+      const t = SCENARIOS?.TIGHTENING ?? { biRate: 5.50 };
+      return `BI Rate ${(t.biRate ?? 5.50).toFixed(2)}% — Mode Defensif`;
+    },
     badge:       'WASPADA',
-    summary:
-      'BI menaikkan suku bunga 50bps ke 5.25% pada Mei 2026 sebagai respons terhadap tekanan inflasi impor dan pelemahan Rupiah akibat gejolak geopolitik Timur Tengah. Portofolio harus dirotasi ke aset defensif.',
-    macroSnapshot: [
-      { label: 'BI Rate',  value: '5.25%',  note: 'Naik 50bps Mei 2026',  trend: 'up'   },
-      { label: 'USD/IDR',  value: '17.700', note: 'Mendekati rekor lemah', trend: 'up'   },
-      { label: 'IHSG',     value: '6.170',  note: 'Turun 11.8% Mei 2026', trend: 'down' },
-      { label: 'SBN 10Y',  value: '6.71%',  note: 'Yield menarik',         trend: 'up'   },
-    ],
-    keyActions: [
-      { icon: '🏛️', action: 'Tingkatkan SBN ke 45% — lock-in yield 6.71% sebelum siklus berakhir' },
-      { icon: '📉', action: 'Kurangi ekuitas ke 15% — hanya saham defensif neraca kuat' },
-      { icon: '🥇', action: 'Tambah emas ke 15% — hedge Rupiah tertekan' },
-    ],
+    get summary() {
+      const t = SCENARIOS?.TIGHTENING ?? { biRate: 5.50 };
+      return `BI menaikkan suku bunga ke ${(t.biRate ?? 5.50).toFixed(2)}% pada Juni 2026 sebagai respons terhadap tekanan inflasi impor dan pelemahan Rupiah akibat gejolak geopolitik Timur Tengah. Portofolio harus dirotasi ke aset defensif.`;
+    },
+    get macroSnapshot() {
+      const t = SCENARIOS?.TIGHTENING ?? { biRate: 5.50, inflation: 3.08, sbn10y: 6.78, ihsg: 5886 };
+      return [
+        { label: 'BI Rate',  value: `${(t.biRate ?? 5.50).toFixed(2)}%`,  note: 'RDG 9 Juni 2026',  trend: 'up'   },
+        { label: 'USD/IDR',  value: '17.700', note: 'Mendekati rekor lemah', trend: 'up'   },
+        { label: 'IHSG',     value: (t.ihsg ?? 5886).toLocaleString('id-ID'),  note: 'Koreksi Juni 2026', trend: 'down' },
+        { label: 'SBN 10Y',  value: `${(t.sbn10y ?? 6.78).toFixed(2)}%`,  note: 'Yield menarik',         trend: 'up'   },
+      ];
+    },
+    get keyActions() {
+      const t = SCENARIOS?.TIGHTENING ?? { sbn10y: 6.78 };
+      return [
+        { icon: '🏛️', action: `Tingkatkan SBN ke 45% — lock-in yield ${(t.sbn10y ?? 6.78).toFixed(2)}% sebelum siklus berakhir` },
+        { icon: '📉', action: 'Kurangi ekuitas ke 15% — hanya saham defensif neraca kuat' },
+        { icon: '🥇', action: 'Tambah emas ke 15% — hedge Rupiah tertekan' },
+      ];
+    },
     keyRisks: [
       'Kenaikan BI Rate tambahan jika gejolak global berlanjut',
       'NPL perbankan mulai naik seiring cost of credit meningkat',

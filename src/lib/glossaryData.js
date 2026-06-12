@@ -35,7 +35,7 @@ export const GLOSSARY = {
     term:       'BI Rate (BI 7-Day RR)',
     symbol:     '%',
     definition: 'Suku bunga acuan Bank Indonesia. Saat naik, pinjaman makin mahal, saham cenderung turun, obligasi lebih menarik. Saat turun, sebaliknya.',
-    example:    'BI Rate 5.25% (naik 50bps Mei 2026) menekan IHSG dan memperkuat daya tarik SBN.',
+    example:    'BI Rate 5.50% (naik ke 5.50% di RDG 9 Juni 2026) menekan IHSG dan memperkuat daya tarik SBN.',
     learnMore:  'Ditetapkan setiap bulan dalam Rapat Dewan Gubernur (RDG) Bank Indonesia.',
   },
   mpt: {
@@ -49,7 +49,7 @@ export const GLOSSARY = {
     term:       'Surat Berharga Negara (SBN)',
     symbol:     'SBN',
     definition: 'Obligasi yang diterbitkan Pemerintah Indonesia. Dianggap paling aman karena dijamin negara. Tersedia untuk ritel melalui ORI dan SR.',
-    example:    'SBN 10Y yield 6.71% saat ini lebih tinggi dari inflasi 3.48% — artinya real yield positif.',
+    example:    'SBN 10Y yield 6.78% saat ini lebih tinggi dari inflasi 3.08% — artinya real yield positif.',
     learnMore:  'ORI (Obligasi Ritel Indonesia) dan SR (Sukuk Ritel) bisa dibeli mulai Rp 1 juta.',
   },
   efficientFrontier: {

@@ -95,11 +95,11 @@ export const TopNavbar = memo(function TopNavbar() {
   return (
     <>
     <nav
-      className="shrink-0 w-full z-40 border-b border-slate-200 dark:border-neutral-800/60 transition-colors duration-300"
+      className="shrink-0 w-full relative z-[60] border-b border-slate-200 dark:border-neutral-800/60 transition-colors duration-300"
       style={{ backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", background: "var(--as-navbar-bg)" }}
     >
       {/* Top Branding & Controls Bar */}
-      <div className="flex items-center justify-between w-full px-4 py-3 border-b" style={{ background: 'var(--as-bg-page)', borderColor: 'var(--as-border-primary)' }}>
+      <div className="flex items-center justify-between w-full px-6 py-3.5 border-b" style={{ background: 'var(--as-bg-page)', borderColor: 'var(--as-border-primary)' }}>
 
         {/* Left Section (Branding) */}
         <div className="flex items-center gap-3">

@@ -139,7 +139,7 @@ export default function App() {
   // This string will be prepended to user's prompt before sending to the future AI API
   const generateStealthContext = () => {
     const sr = targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0;
-    const rate = macroInputs?.biRate ?? 5.25;
+    const rate = macroInputs?.biRate ?? 5.50;
     return `[SYSTEM CONTEXT - DO NOT SHOW USER] Current Portfolio Status: ${scenarioIdGlobal}, BI Rate: ${rate.toFixed(2)}%, Sharpe Ratio: ${sr.toFixed(2)}`;
   };
 
@@ -166,8 +166,8 @@ export default function App() {
         <TickerBar />
       </div>
 
-      {/* Fixed top navbar — z-40, below ticker */}
-      <div className="print:hidden shrink-0">
+      {/* Fixed top navbar — z-[60], below ticker */}
+      <div className="print:hidden shrink-0 relative z-[60]">
         <TopNavbar />
       </div>
 

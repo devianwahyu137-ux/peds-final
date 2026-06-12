@@ -1,7 +1,9 @@
 // src/lib/sectorPlaybookData.js
 // Complete sector rotation dataset for all 3 macro scenarios
-// Verified context: May 2026 — BI Rate 5.25%, IDR 17.700, IHSG 6.170
+// Verified context: June 2026 — BI Rate 5.50%, IDR 17.700, IHSG 5.886
 // All tickers are real BEI-listed securities
+
+import { SCENARIOS } from '../stores/rootStore';
 
 // Stance visual config
 export const STANCE_CONFIG = {
@@ -209,8 +211,8 @@ export const SECTOR_PLAYBOOK = {
   ],
 
   // ══════════════════════════════════════════════════════════════
-  // TIGHTENING: BI Rate 5.25% — Kondisi aktual Mei 2026
-  // IHSG turun 11.8%, IDR 17.700, imported inflation rising
+  // TIGHTENING: BI Rate 5.50% — Kondisi aktual Juni 2026
+  // IHSG 5.886, IDR 17.700, imported inflation rising
   // ══════════════════════════════════════════════════════════════
   TIGHTENING: [
     {
@@ -220,12 +222,18 @@ export const SECTOR_PLAYBOOK = {
       stance:      'MAXIMUM',
       targetPct:   45,
       riskLevel:   'LOW',
-      rationale:   'BI Rate 5.25% membuat yield SBN 10Y (6.71%) menjadi sangat menarik secara absolut. Lock-in yield sekarang sebelum siklus pengetatan berakhir. Risiko duration terjaga jika fokus di tenor menengah 3-5 tahun.',
-      catalysts: [
-        'Yield SBN 6.71% jauh di atas inflasi 3.48% → real yield positif',
-        'ORI/SR tersedia untuk investor ritel dengan minimal risiko',
-        'Saat BI mulai dovish nanti, harga SBN naik (capital gain)',
-      ],
+      get rationale() {
+        const t = SCENARIOS?.TIGHTENING ?? { biRate: 5.50, sbn10y: 6.78 };
+        return `BI Rate ${(t.biRate ?? 5.50).toFixed(2)}% membuat yield SBN 10Y (${(t.sbn10y ?? 6.78).toFixed(2)}%) menjadi sangat menarik secara absolut. Lock-in yield sekarang sebelum siklus pengetatan berakhir. Risiko duration terjaga jika fokus di tenor menengah 3-5 tahun.`;
+      },
+      get catalysts() {
+        const t = SCENARIOS?.TIGHTENING ?? { sbn10y: 6.78, inflation: 3.08 };
+        return [
+          `Yield SBN ${(t.sbn10y ?? 6.78).toFixed(2)}% jauh di atas inflasi ${(t.inflation ?? 3.08).toFixed(2)}% → real yield positif`,
+          'ORI/SR tersedia untuk investor ritel dengan minimal risiko',
+          'Saat BI mulai dovish nanti, harga SBN naik (capital gain)',
+        ];
+      },
       risks: [
         'Kenaikan BI Rate tambahan akan turunkan harga SBN',
         'Capital outflow asing bisa tekan yield lebih jauh naik',
@@ -331,11 +339,14 @@ export const SECTOR_PLAYBOOK = {
       riskLevel:   'HIGH',
       rationale:   'Saham teknologi sangat sensitif terhadap kenaikan discount rate. DCF valuation langsung tertekan saat BI Rate naik. GOTO dan BUKA masih dalam fase membakar kas dengan path profitabilitas yang semakin jauh.',
       catalysts: [],
-      risks: [
-        'Higher discount rate → DCF valuation turun drastis',
-        'Burn rate belum membaik → dilusi pemegang saham terus',
-        'IHSG sudah minus 11.8%, tech lebih dalam lagi',
-      ],
+      get risks() {
+        const t = SCENARIOS?.TIGHTENING ?? { ihsg: 5886 };
+        return [
+          'Higher discount rate → DCF valuation turun drastis',
+          'Burn rate belum membaik → dilusi pemegang saham terus',
+          `IHSG sudah di level ${t.ihsg.toLocaleString('id-ID')}, tech tertekan lebih dalam lagi`,
+        ];
+      },
       tickers: [
         {
           code:   'GOTO',

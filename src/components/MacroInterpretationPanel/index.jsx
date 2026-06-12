@@ -26,18 +26,35 @@ const MACRO_INTERPRETATION = {
   TIGHTENING: [
     {
       icon: <AlertTriangle size={16} className="text-amber-500" />,
-      title: 'Kenaikan BI Rate ke 5.25% (Juni 2026)',
-      body: 'BI Rate 5.25% berarti cost of capital korporasi naik minimal 50-75bps, menekan earning growth IHSG sekitar 8-12% year-forward. Investor ritel disarankan membatasi eksposur pada emiten dengan leverage tinggi (Debt-to-Equity Ratio > 1.2x) dan beralih ke sektor yang memiliki cadangan kas kuat.',
+      get title() {
+        const t = useRootStore.getState().macro;
+        return `Kenaikan BI Rate ke ${(t?.biRate ?? 5.50).toFixed(2)}% (Juni 2026)`;
+      },
+      get body() {
+        const t = useRootStore.getState().macro;
+        return `BI Rate ${(t?.biRate ?? 5.50).toFixed(2)}% berarti cost of capital korporasi naik minimal 50-75bps, menekan earning growth IHSG sekitar 8-12% year-forward. Investor ritel disarankan membatasi eksposur pada emiten dengan leverage tinggi (Debt-to-Equity Ratio > 1.2x) dan beralih ke sektor yang memiliki cadangan kas kuat.`;
+      },
     },
     {
       icon: <Landmark size={16} className="text-indigo-400" />,
-      title: 'Rotasi Yield SBN 10Y ke Level 6.71%',
-      body: 'Kenaikan yield ke 6.71% menekan harga obligasi tenor panjang (potensi capital loss > 5-8%). Ritel sebaiknya merotasi portofolio fixed-income ke instrumen tenor pendek (SR/ORI 3 tahun) untuk mengunci yield tinggi sekaligus meminimalisir risiko durasi.',
+      get title() {
+        const t = useRootStore.getState().macro;
+        return `Rotasi Yield SBN 10Y ke Level ${(t?.sbn10y ?? 6.78).toFixed(2)}%`;
+      },
+      get body() {
+        const t = useRootStore.getState().macro;
+        return `Kenaikan yield ke ${(t?.sbn10y ?? 6.78).toFixed(2)}% menekan harga obligasi tenor panjang (potensi capital loss > 5-8%). Ritel sebaiknya merotasi portofolio fixed-income ke instrumen tenor pendek (SR/ORI 3 tahun) untuk mengunci yield tinggi sekaligus meminimalisir risiko durasi.`;
+      },
     },
     {
       icon: <TrendingDown size={16} className="text-red-400" />,
-      title: 'Konsolidasi IHSG di Level 6.000-6.500',
-      body: 'Setelah anjlok -11.8% di Mei, IHSG berkonsolidasi di rentang 6.000-6.500. Alokasikan 25-30% porsi saham ke sektor defensif seperti konsumer primer dengan Dividend Yield minimal 5-7% untuk mengamankan arus kas pasif di tengah perlambatan pasar.',
+      get title() {
+        return 'Konsolidasi IHSG di Level 5.500-6.000';
+      },
+      get body() {
+        const t = useRootStore.getState().macro;
+        return `Setelah anjlok -11.8% di Mei, IHSG berkonsolidasi di rentang 5.500-6.000 (saat ini ${t.ihsg.toLocaleString('id-ID')}). Alokasikan 25-30% porsi saham ke sektor defensif seperti konsumer primer dengan Dividend Yield minimal 5-7% untuk mengamankan arus kas pasif di tengah perlambatan pasar.`;
+      },
     },
   ],
   CURRENCY_STRESS: [

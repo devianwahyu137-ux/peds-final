@@ -4,7 +4,7 @@
 import { useState, useMemo } from 'react';
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Gauge, FlaskConical, Zap } from "lucide-react";
 import { formatNumber } from "@/utils/format";
-import { useRootStore } from '@/stores/rootStore';
+import { useRootStore, SCENARIOS } from '@/stores/rootStore';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
 import {
   narrateSharpRatio,
@@ -25,10 +25,11 @@ function generateWhatIfImpact(currentSharpe, biRateDelta) {
   const impact      = -(biRateDelta / 100) * 0.15;
   const newSharpe   = Math.max(0, currentSharpe + impact);
   const abs         = Math.abs(biRateDelta);
+  const curBiRate = SCENARIOS?.TIGHTENING?.biRate ?? 5.50;
   return {
     newSharpe: formatNumber(newSharpe, 2),
     interpretation: biRateDelta > 0
-      ? `Jika BI Rate naik ${abs}bps lagi (dari 5,25% saat ini), estimasi Sharpe turun dari ${formatNumber(currentSharpe, 2)} ke ${formatNumber(newSharpe, 2)}. Tekanan berlanjut pada ekuitas dan obligasi jangka panjang.`
+      ? `Jika BI Rate naik ${abs}bps lagi (dari ${curBiRate.toFixed(2).replace('.', ',')}% saat ini), estimasi Sharpe turun dari ${formatNumber(currentSharpe, 2)} ke ${formatNumber(newSharpe, 2)}. Tekanan berlanjut pada ekuitas dan obligasi jangka panjang.`
       : `Jika BI Rate turun ${abs}bps, estimasi Sharpe naik dari ${formatNumber(currentSharpe, 2)} ke ${formatNumber(newSharpe, 2)}. Positif untuk ekuitas dan obligasi jangka menengah.`,
   };
 }
@@ -164,7 +165,7 @@ export function PortfolioWhatIfSimulator() {
             <div className="flex items-center gap-2"><FlaskConical size={16} className="text-purple-400" /><span>Simulasi What-If — Perubahan BI Rate</span></div>
           </div>
           <div className="text-[9px] font-mono text-slate-400 dark:text-neutral-500 mt-0.5">
-            Konteks: BI Rate saat ini 5.25% (naik 50bps Mei 2026)
+            Konteks: BI Rate saat ini {SCENARIOS.TIGHTENING.biRate.toFixed(2)}% (RDG 9 Juni 2026)
           </div>
         </div>
         <div className="p-4">
@@ -209,7 +210,7 @@ export function PortfolioWhatIfSimulator() {
       <p className="text-[8px] font-mono text-neutral-700 leading-relaxed">
         * Simulasi What-If menggunakan elastisitas MPT yang disederhanakan.
         Bukan proyeksi akurat — hanya referensi edukasi.
-        Konteks aktual: BI Rate sudah naik ke 5.25% per 20 Mei 2026.
+        Konteks aktual: BI Rate sudah naik ke {SCENARIOS.TIGHTENING.biRate.toFixed(2)}% per 9 Juni 2026.
       </p>
     </div>
   );
