@@ -41,16 +41,16 @@ export default function AnalysisPage() {
   const acc = ACCENT[currentAccent] || ACCENT.emerald;
 
   return (
-    <div className="space-y-6 w-full page-enter">
+    <div className="space-y-10 w-full page-enter">
       <ScenarioIntelligence />
       {/* Header */}
-      <div className="border-b border-slate-200 dark:border-neutral-900 pb-4">
+      <div className="border-b border-slate-200 dark:border-neutral-900 pb-6">
         <h2 className="text-xl font-bold text-white tracking-wide uppercase">
           ANALISIS
           <span className="text-gray-600 mx-3 font-light">//</span>
           <span style={{ color: acc.neon }}>RISET &amp; BERITA</span>
         </h2>
-        <p className="text-[10px] font-mono text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">
+        <p className="text-[10px] font-sans text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">
           Yield curve sovereign, korelasi makro, dan sentimen pasar
         </p>
       </div>

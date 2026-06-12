@@ -47,11 +47,11 @@ class PageErrorBoundary extends Component {
       return (
         <div className="flex flex-col items-center justify-center
                         min-h-[60vh] gap-4">
-          <div className="text-[10px] font-mono text-red-500
+          <div className="text-[10px] font-sans text-red-500
                           tracking-widest uppercase">
             <AlertTriangle size={16} className="text-amber-500" /> ERROR MEMUAT HALAMAN
           </div>
-          <div className="text-[9px] font-mono text-slate-600 dark:text-neutral-400
+          <div className="text-[9px] font-sans text-slate-600 dark:text-neutral-400
                           max-w-md text-center leading-relaxed">
             {this.state.error?.message ?? 'Unknown render error'}
           </div>
@@ -60,7 +60,7 @@ class PageErrorBoundary extends Component {
               this.setState({ hasError: false, error: null });
               window.location.reload();
             }}
-            className="text-[9px] font-mono px-4 py-3 min-h-[44px] inline-flex items-center justify-center rounded-lg
+            className="text-[9px] font-sans px-4 py-3 min-h-[44px] inline-flex items-center justify-center rounded-lg
                        border border-slate-300 dark:border-neutral-700 text-slate-600 dark:text-neutral-400
                        hover:border-slate-400 dark:hover:border-neutral-500 cursor-pointer
                        transition-colors"
@@ -81,7 +81,7 @@ function PageSkeleton() {
         <div className="w-6 h-6 border border-slate-200 dark:border-neutral-700
                         border-t-emerald-500 rounded-full
                         animate-spin" />
-        <div className="text-[9px] font-mono text-slate-500 dark:text-neutral-700
+        <div className="text-[9px] font-sans text-slate-500 dark:text-neutral-700
                         tracking-widest animate-pulse">
           MEMUAT MODUL...
         </div>
@@ -172,7 +172,7 @@ export default function App() {
       </div>
 
       <main
-        className="flex-1 overflow-y-auto pb-32 md:pb-24 pt-8 w-full max-w-[1600px] mx-auto
+        className="flex-1 overflow-y-auto pb-32 md:pb-24 pt-12 w-full max-w-[1600px] mx-auto
                    overflow-x-hidden px-4 md:px-6 lg:px-8
                    print:overflow-visible print:pt-0 print:px-0 print:pb-0 print:w-full print:block"
       >

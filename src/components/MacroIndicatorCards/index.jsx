@@ -34,10 +34,10 @@ export default function MacroIndicatorCards() {
   return (
     <div className="space-y-3">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-        <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-mono">
+        <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-sans">
           Macro Economic Indicators
         </div>
-        <div className="text-[9px] text-amber-500/80 uppercase font-mono tracking-wider font-bold">
+        <div className="text-[9px] text-amber-500/80 uppercase font-sans tracking-wider font-bold">
           * Data estimasi per Juni 2026, bukan data live real-time
         </div>
       </div>

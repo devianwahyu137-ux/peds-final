@@ -151,45 +151,45 @@ const SectorRotationCards = React.memo(function SectorRotationCards() {
                 <div className="flex items-center gap-3">
                   <span className="text-lg">{card.icon}</span>
                   <div>
-                    <div className="text-xs font-semibold uppercase tracking-widest text-[var(--as-text-primary)] font-mono">{card.title}</div>
-                    <div className="text-[10px] text-[var(--as-text-dim)] font-light mt-0.5 font-mono">
-                      Target Allocation: <span style={{ color: card.color }} className="font-bold">{card.weight}%</span>
+                    <div className="text-xs font-semibold uppercase tracking-widest text-[var(--as-text-primary)] font-sans">{card.title}</div>
+                    <div className="text-[10px] text-[var(--as-text-dim)] font-light mt-0.5 font-sans">
+                      Target Allocation: <span style={{ color: card.color }} className="font-bold font-mono">{card.weight}%</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={`text-[8px] font-mono font-bold px-1.5 py-0.5 rounded border ${
+                  <span className={`text-[8px] font-sans font-bold px-1.5 py-0.5 rounded border ${
                     card.stance === "OVERWEIGHT" 
                       ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20" 
                       : card.stance === "UNDERWEIGHT" 
                       ? "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-200 dark:border-red-500/20" 
                       : "bg-slate-200 dark:bg-neutral-800 text-slate-600 dark:text-neutral-400 border-slate-300 dark:border-neutral-700/60"
                   }`}>{card.stance}</span>
-                  <span className="text-slate-400 dark:text-neutral-600 text-xs font-mono">{isOpen ? "▲" : "▼"}</span>
+                  <span className="text-slate-400 dark:text-neutral-600 text-xs font-sans">{isOpen ? "▲" : "▼"}</span>
                 </div>
               </button>
 
               {isOpen && (
-                <div className="px-4 pb-4 pt-3 border-t border-[var(--as-border-secondary)] space-y-3 font-mono text-[11px]">
+                <div className="px-4 pb-4 pt-3 border-t border-[var(--as-border-secondary)] space-y-3 font-sans text-[11px]">
                   <div className="flex flex-wrap gap-1">
                     {card.tickers.map((t) => (
-                      <span key={t} className="text-[9px] px-2 py-0.5 rounded bg-white dark:bg-neutral-900 border border-slate-300 dark:border-neutral-800 font-bold" style={{ color: card.color }}>{t}</span>
+                      <span key={t} className="text-[9px] px-2 py-0.5 rounded bg-white dark:bg-neutral-900 border border-slate-300 dark:border-neutral-800 font-bold font-mono" style={{ color: card.color }}>{t}</span>
                     ))}
                   </div>
 
                   <div className="space-y-2">
                     <div className="p-2.5 rounded border border-emerald-200 dark:border-emerald-950/40 bg-emerald-50 dark:bg-emerald-950/5">
-                      <div className="text-[8px] text-emerald-600 dark:text-emerald-500 uppercase tracking-widest font-bold mb-0.5">Overweight Sectors</div>
+                      <div className="text-[8px] text-emerald-600 dark:text-emerald-500 uppercase tracking-widest font-sans font-bold mb-0.5">Overweight Sectors</div>
                       <div className="text-slate-700 dark:text-neutral-300 leading-relaxed">{card.overweight}</div>
                     </div>
                     
                     <div className="p-2.5 rounded border border-red-200 dark:border-red-950/40 bg-red-50 dark:bg-red-950/5">
-                      <div className="text-[8px] text-red-600 dark:text-red-500 uppercase tracking-widest font-bold mb-0.5">Underweight Sectors</div>
+                      <div className="text-[8px] text-red-600 dark:text-red-500 uppercase tracking-widest font-sans font-bold mb-0.5">Underweight Sectors</div>
                       <div className="text-slate-700 dark:text-neutral-300 leading-relaxed">{card.underweight}</div>
                     </div>
 
                     <div className="p-2.5 rounded border border-[var(--as-border-primary)] bg-[var(--as-bg-secondary)] shadow-inner">
-                      <div className="text-[8px] text-[var(--as-text-dim)] uppercase tracking-widest font-semibold mb-0.5">Institutional Rationale</div>
+                      <div className="text-[8px] text-[var(--as-text-dim)] uppercase tracking-widest font-sans font-semibold mb-0.5">Institutional Rationale</div>
                       <div className="text-[10px] text-[var(--as-text-tertiary)] font-light leading-relaxed">{card.rationale}</div>
                     </div>
                   </div>

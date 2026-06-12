@@ -110,7 +110,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
   }));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Dynamic SBN vs UST Plot */}
       <div className="card-tier-1 space-y-4">
         <div className="flex items-center justify-between">
@@ -123,7 +123,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
           </div>
         </div>
 
-        <div className="w-full bg-[#121212] rounded-xl border border-white/5 p-4 overflow-hidden" style={{ minHeight: '360px' }}>
+        <div className="w-full bg-[#121212] rounded-xl border border-white/5 p-6 overflow-hidden" style={{ minHeight: '360px' }}>
           <svg width="100%" height={340} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" className="block overflow-visible">
             {/* Grid Lines */}
             {[mn, mn + (mx - mn) * 0.25, mn + (mx - mn) * 0.5, mn + (mx - mn) * 0.75, mx].map((v, i) => (
@@ -272,16 +272,16 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
           <table className="font-mono text-[11px] border-separate border-spacing-1 mx-auto">
             <thead>
               <tr>
-                <th className="p-2 w-20" />
+                <th className="p-3 w-20" />
                 {cL.map(l => (
-                  <th key={l} className="p-2 text-center text-slate-500 dark:text-neutral-400 font-bold w-20">{l}</th>
+                  <th key={l} className="p-3 text-center text-slate-500 dark:text-neutral-400 font-bold w-20">{l}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {cL.map((row, ri) => (
                 <tr key={row}>
-                  <td className="p-2 text-right text-slate-500 dark:text-neutral-400 font-bold">{row}</td>
+                  <td className="p-3 text-right text-slate-500 dark:text-neutral-400 font-bold">{row}</td>
                   {cD[ri].map((val, ci) => {
                     const ck = ri < ci ? `${ri}-${ci}` : `${ci}-${ri}`;
                     const isDiag = ri === ci;
@@ -309,7 +309,7 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
         </div>
 
         {selectedCell && cI[selectedCell] && (
-          <div className="p-4 bg-white dark:bg-neutral-900/40 border border-slate-300 dark:border-neutral-800 rounded-lg text-xs leading-relaxed text-slate-700 dark:text-neutral-300 font-mono animate-fadeIn">
+          <div className="p-6 bg-white dark:bg-neutral-900/40 border border-slate-300 dark:border-neutral-800 rounded-lg text-xs leading-relaxed text-slate-700 dark:text-neutral-300 font-mono animate-fadeIn">
             <div className="flex items-center gap-2 mb-1.5">
               <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">INTERPRETASI</span>
               <span className="text-[10px] text-slate-400 dark:text-neutral-500">Cell {selectedCell.split("-").map(i => cL[i]).join(" vs ")}</span>

@@ -57,14 +57,14 @@ export function MacroReleaseCalendar() {
     <div className="glass-card rounded-xl p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-mono font-bold">
+          <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-sans font-bold">
             Release Calendar
           </div>
-          <div className="text-[10px] text-neutral-600 font-mono mt-0.5">
+          <div className="text-[10px] text-neutral-600 font-sans mt-0.5">
             Jadwal Rilis Data Makro Kritis
           </div>
         </div>
-        <span className="text-[8px] font-mono text-neutral-700 tracking-widest">
+        <span className="text-[8px] font-sans text-neutral-700 tracking-widest">
           WIB (UTC+7)
         </span>
       </div>
@@ -109,27 +109,27 @@ export function MacroReleaseCalendar() {
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[11px] font-mono font-bold"
+                  <span className="text-[11px] font-sans font-bold"
                         style={{ color: 'var(--as-text-primary)' }}>
                     {ev.event}
                   </span>
-                  <span className={`text-[7px] font-mono font-bold px-1.5 py-0.5 rounded-md
+                  <span className={`text-[7px] font-sans font-bold px-1.5 py-0.5 rounded-md
                                     tracking-widest border ${imp.cls}`}>
                     {ev.impact}
                   </span>
                 </div>
-                <div className="text-[9px] font-mono mt-0.5" style={{ color: 'var(--as-text-dim)' }}>
+                <div className="text-[9px] font-sans mt-0.5" style={{ color: 'var(--as-text-dim)' }}>
                   {ev.note}
                 </div>
               </div>
 
               {/* Right: indicator + schedule */}
               <div className="text-right flex-shrink-0">
-                <div className="text-[10px] font-mono font-bold"
+                <div className="text-[10px] font-sans font-bold"
                      style={{ color: imp.dot }}>
                   {ev.indicator}
                 </div>
-                <div className="text-[8px] font-mono mt-0.5"
+                <div className="text-[8px] font-sans mt-0.5"
                      style={{ color: 'var(--as-text-dim)' }}>
                   {ev.date}
                 </div>

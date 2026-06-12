@@ -126,7 +126,7 @@ export const TopNavbar = memo(function TopNavbar() {
               />
             </span>
             <span
-              className="text-[10px] font-mono font-bold tracking-widest whitespace-nowrap"
+              className="text-[10px] font-sans font-bold tracking-widest whitespace-nowrap"
               style={{ color: theme.color }}
             >
               STATUS PORTOFOLIO: {theme.label}
@@ -139,7 +139,7 @@ export const TopNavbar = memo(function TopNavbar() {
             <button
               onClick={handleExport}
               disabled={isExporting}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[9px] font-mono font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer flex-shrink-0"
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[9px] font-sans font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer flex-shrink-0"
               style={{
                 background:  isExporting ? 'var(--as-bg-tertiary)' : 'rgba(16,185,129,0.10)',
                 borderColor: isExporting ? '#333' : 'rgba(16,185,129,0.40)',
@@ -150,7 +150,7 @@ export const TopNavbar = memo(function TopNavbar() {
               <span>{isExporting ? 'GENERATING...' : 'DOWNLOAD TEAR SHEET'}</span>
             </button>
             {exportMsg && (
-              <span className="text-[9px] font-mono hidden md:block" style={{ color: exportMsg.startsWith('✓') ? '#10b981' : '#ef4444' }}>
+              <span className="text-[9px] font-sans hidden md:block" style={{ color: exportMsg.startsWith('✓') ? '#10b981' : '#ef4444' }}>
                 {exportMsg}
               </span>
             )}
@@ -196,7 +196,7 @@ export const TopNavbar = memo(function TopNavbar() {
               <div className="flex items-center gap-2">
                 <span className="text-sm flex-shrink-0">{item.icon}</span>
                 <span
-                  className="text-[9px] md:text-[10px] font-mono font-bold
+                  className="text-[9px] md:text-[10px] font-sans font-bold
                              tracking-[0.1em] md:tracking-widest uppercase
                              whitespace-nowrap transition-colors duration-200"
                   style={{ color: isActive ? theme.color : 'var(--as-text-dim)' }}
@@ -204,7 +204,7 @@ export const TopNavbar = memo(function TopNavbar() {
                   {item.label}
                 </span>
               </div>
-              <span className="text-[7px] md:text-[8px] font-mono mt-0.5 hidden lg:block
+              <span className="text-[7px] md:text-[8px] font-sans mt-0.5 hidden lg:block
                                whitespace-nowrap transition-colors duration-300"
                     style={{ color: 'var(--as-text-dim)' }}>
                 {item.sublabel}
@@ -251,7 +251,7 @@ export const TopNavbar = memo(function TopNavbar() {
 
             {/* Label */}
             <span
-              className="text-[9px] font-mono font-bold tracking-wider truncate max-w-full px-0.5 block text-center"
+              className="text-[9px] font-sans font-bold tracking-wider truncate max-w-full px-0.5 block text-center"
               style={{ color: isActive ? theme.color : 'var(--as-text-dim)' }}
             >
               {item.label}

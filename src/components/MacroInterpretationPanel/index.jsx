@@ -83,11 +83,11 @@ export function MacroInterpretationPanel() {
   return (
     <div className="card-tier-1">
       <div className="mb-6">
-        <div className="text-[9px] font-mono tracking-[0.25em] uppercase mb-2"
+        <div className="text-[9px] font-sans tracking-[0.25em] uppercase mb-2"
              style={{ color: 'var(--as-text-dim)' }}>
           INTERPRETASI MAKRO
         </div>
-        <h2 className="text-lg font-bold font-mono"
+        <h2 className="text-lg font-bold font-sans"
             style={{ color: 'var(--as-text-primary)' }}>
           Implikasi Kondisi Saat Ini
         </h2>
@@ -98,10 +98,10 @@ export function MacroInterpretationPanel() {
           <div key={i} className="card-tier-3 flex gap-4">
             <span className="text-xl flex-shrink-0 mt-0.5">{pt.icon}</span>
             <div className="min-w-0">
-              <div className="text-sm font-bold font-mono text-[var(--as-text-primary)] mb-2">
+              <div className="text-sm font-bold font-sans text-[var(--as-text-primary)] mb-2">
                 {pt.title}
               </div>
-              <div className="text-xs font-mono text-[var(--as-text-secondary)] leading-relaxed">
+              <div className="text-xs font-sans text-[var(--as-text-secondary)] leading-relaxed">
                 {pt.body}
               </div>
             </div>

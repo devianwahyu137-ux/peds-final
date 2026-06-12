@@ -47,16 +47,16 @@ export function NavHealthIndicator() {
 
       {/* Score text */}
       <div className="flex flex-col">
-        <div className="flex items-baseline gap-1 font-mono">
-          <span className="text-sm font-bold tracking-tight" style={{ color: health.color }}>
+        <div className="flex items-baseline gap-1">
+          <span className="text-sm font-bold tracking-tight font-mono" style={{ color: health.color }}>
             {health.score}/100
           </span>
-          <span className="text-[10px] font-semibold tracking-wider uppercase opacity-70" style={{ color: health.color }}>
+          <span className="text-[10px] font-semibold tracking-wider uppercase opacity-70 font-sans" style={{ color: health.color }}>
             Estimasi
           </span>
         </div>
-        <span className="text-[11px] font-mono text-neutral-500 whitespace-nowrap mt-0.5">
-          {counts.live}/{counts.total} sumber aktif
+        <span className="text-[11px] font-sans text-neutral-500 whitespace-nowrap mt-0.5">
+          <span className="font-mono">{counts.live}/{counts.total}</span> sumber aktif
         </span>
       </div>
     </div>

@@ -74,13 +74,13 @@ export function PortfolioHealthScore() {
         }}
       >
         <div
-          className="text-[9px] font-mono tracking-[0.25em] uppercase mb-1.5"
+          className="text-[9px] font-sans tracking-[0.25em] uppercase mb-1.5"
           style={{ color: 'var(--as-text-dim)' }}
         >
           COMPOSITE RISK ASSESSMENT
         </div>
         <h3
-          className="text-base font-bold font-mono"
+          className="text-base font-bold font-sans"
           style={{ color: 'var(--as-text-primary)' }}
         >
           Skor Kesehatan Portofolio
@@ -96,7 +96,7 @@ export function PortfolioHealthScore() {
             <ArcGauge score={total} color={config.color} />
             <div className="text-center -mt-2">
               <span
-                className="text-[11px] font-mono font-bold px-3 py-1
+                className="text-[11px] font-sans font-bold px-3 py-1
                            rounded-full tracking-widest"
                 style={{
                   background: config.color + '18',
@@ -108,7 +108,7 @@ export function PortfolioHealthScore() {
               </span>
               {cappedBy && (
                 <div
-                  className="text-[9px] font-mono mt-3 uppercase tracking-wider"
+                  className="text-[9px] font-sans mt-3 uppercase tracking-wider"
                   style={{ color: 'var(--as-text-dim)' }}
                 >
                   Dibatasi oleh: <span className="font-bold" style={{ color: config.color }}>{cappedBy}</span>
@@ -133,7 +133,7 @@ export function PortfolioHealthScore() {
                     <div className="flex items-center gap-2">
                       <span className="flex-shrink-0 flex items-center">{DIMENSION_ICONS[dim.id] || dim.icon}</span>
                       <span
-                        className="text-[10px] font-mono font-bold uppercase
+                        className="text-[10px] font-sans font-bold uppercase
                                    tracking-wider"
                         style={{ color: 'var(--as-text-secondary)' }}
                       >
@@ -193,7 +193,7 @@ export function PortfolioHealthScore() {
                 />
                 <div className="mb-1.5 flex justify-center">{DIMENSION_ICONS_LARGE[dim.id] || dim.icon}</div>
                 <div
-                  className="text-[8px] font-mono leading-snug"
+                  className="text-[8px] font-sans leading-snug"
                   style={{ color: 'var(--as-text-dim)' }}
                 >
                   {dim.description}

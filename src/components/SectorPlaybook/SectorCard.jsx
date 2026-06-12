@@ -42,15 +42,15 @@ export function SectorCard({ sector }) {
                 {sector.sector}
               </span>
               <span
-                className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border uppercase flex items-center gap-1 shrink-0"
+                className="text-[9px] font-sans font-bold px-1.5 py-0.5 rounded border uppercase flex items-center gap-1 shrink-0"
                 style={{ color: stanceConf.color, backgroundColor: stanceConf.bg, borderColor: stanceConf.border }}
               >
                 <span>{stanceConf.icon}</span> <span>{stanceConf.label}</span>
               </span>
             </div>
             
-            <div className="flex items-center gap-3 mt-1 text-[10px] text-slate-500 dark:text-neutral-500 uppercase tracking-widest font-mono min-w-0">
-              <span className="truncate">Target Alokasi: <span className="font-bold text-slate-700 dark:text-neutral-300">{sector.targetPct}%</span></span>
+            <div className="flex items-center gap-3 mt-1 text-[10px] text-slate-500 dark:text-neutral-500 uppercase tracking-widest font-sans min-w-0">
+              <span className="truncate">Target Alokasi: <span className="font-bold font-mono text-slate-700 dark:text-neutral-300">{sector.targetPct}%</span></span>
               <span className="shrink-0">•</span>
               <span className="shrink-0" style={{ color: riskConf.color }}>{riskConf.label}</span>
             </div>
@@ -58,7 +58,7 @@ export function SectorCard({ sector }) {
         </div>
 
         {/* Ticker count + expand chevron */}
-        <div className="flex items-center gap-4 ml-13 md:ml-0 text-xs font-mono text-slate-400 dark:text-neutral-500 shrink-0">
+        <div className="flex items-center gap-4 ml-13 md:ml-0 text-xs font-sans text-slate-400 dark:text-neutral-500 shrink-0">
           <span>{sector.tickers.length} instrumen</span>
           {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </div>
@@ -69,7 +69,7 @@ export function SectorCard({ sector }) {
         <div className="p-4 border-t border-slate-200 dark:border-neutral-800 bg-slate-50/50 dark:bg-neutral-900/10 space-y-5 animate-fadeIn">
           {/* Rationale */}
           <div>
-            <div className="text-[10px] font-mono font-bold text-slate-400 dark:text-neutral-500 mb-2 tracking-widest uppercase">
+            <div className="text-[10px] font-sans font-bold text-slate-400 dark:text-neutral-500 mb-2 tracking-widest uppercase">
               RATIONALE
             </div>
             <p className="text-sm text-slate-700 dark:text-neutral-300 leading-relaxed">
@@ -83,7 +83,7 @@ export function SectorCard({ sector }) {
               {/* Catalysts */}
               {sector.catalysts.length > 0 && (
                 <div className="p-3 rounded-lg border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-500/5">
-                  <div className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 mb-2 flex items-center gap-1">
+                  <div className="text-[10px] font-sans font-bold text-emerald-600 dark:text-emerald-400 mb-2 flex items-center gap-1">
                     ▲ KATALIS
                   </div>
                   <ul className="space-y-1.5">
@@ -100,7 +100,7 @@ export function SectorCard({ sector }) {
               {/* Risks */}
               {sector.risks.length > 0 && (
                 <div className="p-3 rounded-lg border border-red-200 dark:border-red-500/20 bg-red-50/50 dark:bg-red-500/5">
-                  <div className="text-[10px] font-mono font-bold text-red-600 dark:text-red-400 mb-2 flex items-center gap-1">
+                  <div className="text-[10px] font-sans font-bold text-red-600 dark:text-red-400 mb-2 flex items-center gap-1">
                     ▼ RISIKO
                   </div>
                   <ul className="space-y-1.5">
@@ -118,7 +118,7 @@ export function SectorCard({ sector }) {
 
           {/* Ticker grid */}
           <div>
-            <div className="text-[10px] font-mono font-bold text-slate-400 dark:text-neutral-500 mb-3 tracking-widest uppercase">
+            <div className="text-[10px] font-sans font-bold text-slate-400 dark:text-neutral-500 mb-3 tracking-widest uppercase">
               INSTRUMEN REPRESENTATIF
             </div>
             <div className="flex flex-col gap-3">
@@ -137,7 +137,7 @@ export function SectorCard({ sector }) {
                       <div className="font-bold text-sm text-slate-800 dark:text-neutral-200 truncate">
                         {ticker.name}
                       </div>
-                      <div className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20 whitespace-nowrap">
+                      <div className="text-[9px] font-sans font-bold px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20 whitespace-nowrap">
                         {ticker.weight}
                       </div>
                     </div>
@@ -145,8 +145,8 @@ export function SectorCard({ sector }) {
                       {ticker.note}
                     </div>
                     {ticker.marketCap && (
-                      <div className="text-[10px] font-mono text-slate-400 dark:text-neutral-500 pt-1">
-                        Cap/Min: {ticker.marketCap}
+                      <div className="text-[10px] font-sans text-slate-400 dark:text-neutral-500 pt-1">
+                        Cap/Min: <span className="font-mono">{ticker.marketCap}</span>
                       </div>
                     )}
                   </div>

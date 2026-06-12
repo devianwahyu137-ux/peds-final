@@ -108,11 +108,11 @@ export function DataHealthPanel() {
           <span className="relative inline-flex rounded-full h-2 w-2"
                 style={{ backgroundColor: '#f59e0b' }} />
         </span>
-        <span className="text-[10px] font-mono font-bold tracking-widest"
+        <span className="text-[10px] font-sans font-bold tracking-widest"
               style={{ color: 'var(--as-text-secondary)' }}>
           STATUS SUMBER DATA
         </span>
-        <span className="text-[10px] font-mono"
+        <span className="text-[10px] font-sans"
               style={{ color: 'var(--as-text-dim)' }}>
           {statusText}
         </span>
@@ -125,7 +125,7 @@ export function DataHealthPanel() {
           const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.idle;
           return (
             <span key={ep.key}
-                  className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5 border"
+                  className="text-[8px] font-sans px-2 py-0.5 rounded-md flex items-center gap-1.5 border"
                   style={{
                     background:  cfg.bg,
                     color:       cfg.labelColor,

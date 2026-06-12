@@ -135,7 +135,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
 
 
   return (
-    <div className="card-tier-2 space-y-5 font-mono transition-colors duration-300">
+    <div className="card-tier-2 space-y-5 font-sans transition-colors duration-300">
       <div>
         <h3 className="flex flex-row items-center gap-2 text-sm font-bold text-slate-900 dark:text-white"><Settings2 size={16} className="text-slate-400" /> REBALANCING_CALCULATOR</h3>
         <p className="text-[10px] text-slate-500 dark:text-neutral-500 mt-1 uppercase tracking-wider">Dynamic order calculation & trade delta sheets</p>
@@ -143,7 +143,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
 
       <div className="space-y-3.5">
         <div>
-          <label className="block text-[9px] text-[var(--as-text-dim)] uppercase tracking-[0.2em] mb-1.5 font-mono">
+          <label className="block text-[9px] text-[var(--as-text-dim)] uppercase tracking-[0.2em] mb-1.5 font-sans">
             Total Capital Value (IDR)
           </label>
           <input
@@ -155,8 +155,8 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
         </div>
 
         <div>
-          <label className="block text-[9px] text-[var(--as-text-dim)] uppercase tracking-[0.2em] mb-1.5 font-mono">
-            Current Equities Actual Weight: {Math.round(localStocks || 0)}%
+          <label className="block text-[9px] text-[var(--as-text-dim)] uppercase tracking-[0.2em] mb-1.5 font-sans">
+            Current Equities Actual Weight: <span className="font-mono">{Math.round(localStocks || 0)}%</span>
           </label>
           <input
             type="range"
@@ -180,11 +180,11 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
         <table className="w-full text-[10px] text-left border-collapse">
           <thead>
             <tr className="bg-slate-50 dark:bg-neutral-900/60 text-slate-600 dark:text-neutral-400 border-b border-slate-200 dark:border-neutral-800">
-              <th className="p-2">Asset</th>
-              <th className="p-2 text-right">Actual</th>
-              <th className="p-2 text-right">Target</th>
-              <th className="p-2 text-right">Delta</th>
-              <th className="p-2 text-center">Action</th>
+              <th className="p-3">Asset</th>
+              <th className="p-3 text-right">Actual</th>
+              <th className="p-3 text-right">Target</th>
+              <th className="p-3 text-right">Delta</th>
+              <th className="p-3 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -193,22 +193,22 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
               const isZero = row.action === "HOLD";
               return (
                 <tr key={row.asset} className="border-b border-slate-200 dark:border-neutral-900/60 hover:bg-slate-50 dark:hover:bg-white dark:bg-neutral-900/10">
-                  <td className={`p-2 font-bold ${ASSET_COLORS[row.asset]}`}>
+                  <td className={`p-3 font-bold ${ASSET_COLORS[row.asset]}`}>
                     {ASSET_LABELS[row.asset]}
                   </td>
-                  <td className="p-2 text-right tabular-nums text-slate-700 dark:text-neutral-300">
+                  <td className="p-3 text-right tabular-nums font-mono text-slate-700 dark:text-neutral-300">
                     {Math.round(row.actualPct)}%
                   </td>
-                  <td className="p-2 text-right tabular-nums text-slate-700 dark:text-neutral-300">
+                  <td className="p-3 text-right tabular-nums font-mono text-slate-700 dark:text-neutral-300">
                     {Math.round(row.targetPct)}%
                   </td>
-                  <td className={`p-2 text-right font-bold tabular-nums ${
+                  <td className={`p-3 text-right font-bold tabular-nums font-mono ${
                     isZero ? "text-slate-400 dark:text-neutral-600" : isBuy ? "text-emerald-500 dark:text-emerald-400" : "text-red-500 dark:text-red-400"
                   }`}>
                     {isZero ? "—" : `${isBuy ? "+" : "-"}Rp ${formatIDR(Math.abs(row.deltaIDR))}`}
                   </td>
-                  <td className="p-2 text-center">
-                    <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${
+                  <td className="p-3 text-center">
+                    <span className={`text-[8px] font-sans font-bold px-1.5 py-0.5 rounded border ${
                       isZero 
                         ? "bg-slate-100 dark:bg-neutral-800/40 text-slate-500 dark:text-neutral-400 border-slate-200 dark:border-neutral-850" 
                         : isBuy 
@@ -223,10 +223,10 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
         </table>
       </div>
 
-      <div className="flex flex-col gap-1 text-[9px] text-slate-500 dark:text-neutral-500 border-t border-slate-200 dark:border-neutral-900/60 pt-3">
+      <div className="flex flex-col gap-1 text-[9px] text-slate-500 dark:text-neutral-500 border-t border-slate-200 dark:border-neutral-900/60 pt-3 font-sans">
         <div className="flex justify-between">
           <span>Broker Commission Fee (0.20%):</span>
-          <span className="font-bold text-slate-700 dark:text-neutral-300">Rp {formatIDR(totalFee)}</span>
+          <span className="font-bold font-mono text-slate-700 dark:text-neutral-300">Rp {formatIDR(totalFee)}</span>
         </div>
         <div className="flex justify-between">
           <span>Trading Execution Strategy:</span>
@@ -241,7 +241,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
           {activeOrders.length > 0 && (
             <button
               onClick={handleCopyOrders}
-              className="text-[9px] px-3.5 py-2.5 md:px-2.5 md:py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-neutral-900 dark:hover:bg-neutral-800 text-slate-600 dark:text-neutral-400 border border-slate-200 dark:border-neutral-800 rounded transition-colors min-h-[44px] flex items-center justify-center"
+              className="text-[9px] px-3.5 py-2.5 md:px-2.5 md:py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-neutral-900 dark:hover:bg-neutral-800 text-slate-600 dark:text-neutral-400 border border-slate-200 dark:border-neutral-800 rounded transition-colors min-h-[44px] flex items-center justify-center font-sans"
             >
               [ COPY ORDERS ]
             </button>
@@ -249,7 +249,7 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
         </div>
         
         {activeOrders.length === 0 ? (
-          <div className="text-[10px] text-slate-500 dark:text-neutral-600 bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-neutral-900/50 rounded-lg p-4 text-center">
+          <div className="text-[10px] text-slate-500 dark:text-neutral-600 bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-neutral-900/50 rounded-lg p-4 text-center font-sans">
             Portofolio seimbang. Tidak ada aksi rebalancing yang diperlukan.
           </div>
         ) : (
@@ -259,12 +259,12 @@ const RebalancingCalculator = React.memo(function RebalancingCalculator() {
               return (
               <div key={order.asset} className="flex justify-between items-center bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-neutral-900/50 rounded-xl p-5">
                   <div className="flex items-center gap-3">
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded border font-sans ${
                       isBuy ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20" : "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-200 dark:border-red-500/20"
                     }`}>
                       {order.action}
                     </span>
-                    <span className="text-xs text-slate-700 dark:text-neutral-300 font-bold">{ASSET_LABELS[order.asset]}</span>
+                    <span className="text-xs text-slate-700 dark:text-neutral-300 font-bold font-sans">{ASSET_LABELS[order.asset]}</span>
                   </div>
                   <span className={`text-2xl font-mono font-bold tracking-tighter tabular-nums ${isBuy ? "text-emerald-500 dark:text-emerald-400" : "text-red-500 dark:text-red-400"}`}>
                     Rp {formatIDR(Math.abs(order.deltaIDR))}

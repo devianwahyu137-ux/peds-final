@@ -55,15 +55,15 @@ const DriftMonitor = React.memo(function DriftMonitor() {
           const isUnder = delta < 0;
           
           return (
-            <div key={asset} className="card-tier-3 space-y-3 font-mono transition-colors duration-300">
+            <div key={asset} className="card-tier-3 space-y-3 font-sans transition-colors duration-300">
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <span>{cfg.icon}</span>
-                  <span className="font-semibold text-[var(--as-text-secondary)] text-[11px]">{cfg.label}</span>
+                  <span className="font-semibold text-[var(--as-text-secondary)] text-[11px] font-sans">{cfg.label}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={`text-[7px] font-bold px-1.5 py-0.5 rounded border uppercase ${statusStyle}`}>{statusLabel}</span>
-                  <span className={`font-bold text-[11px] ${driftColor}`}>{driftSign}{formatNumber(delta, 1)}%</span>
+                  <span className={`text-[7px] font-bold px-1.5 py-0.5 rounded border uppercase font-sans ${statusStyle}`}>{statusLabel}</span>
+                  <span className={`font-bold text-[11px] font-mono tabular-nums ${driftColor}`}>{driftSign}{formatNumber(delta, 1)}%</span>
                 </div>
               </div>
 
@@ -76,7 +76,7 @@ const DriftMonitor = React.memo(function DriftMonitor() {
                     style={isUnder ? { right: '50%', width: `${fillWidth}%` } : { left: '50%', width: `${fillWidth}%` }}
                   />
                 </div>
-                <div className="flex justify-between items-center w-full text-[10px] font-mono text-neutral-500 uppercase tracking-wider">
+                <div className="flex justify-between items-center w-full text-[10px] font-sans text-neutral-500 uppercase tracking-wider">
                   <span>-25% Under</span>
                   <span>Target</span>
                   <span>+25% Over</span>
@@ -84,9 +84,9 @@ const DriftMonitor = React.memo(function DriftMonitor() {
               </div>
 
               {/* Explicit Numerical Details */}
-              <div className="flex justify-between text-[9px] font-light text-[var(--as-text-tertiary)] border-t border-[var(--as-border-secondary)] pt-2">
-                <span>ACTUAL: <strong className="text-[var(--as-text-primary)] font-bold">{formatNumber(actual, 1)}%</strong></span>
-                <span>TARGET: <strong className="text-[var(--as-text-secondary)] font-bold">{formatNumber(target, 1)}%</strong></span>
+              <div className="flex justify-between text-[9px] font-light text-[var(--as-text-tertiary)] border-t border-[var(--as-border-secondary)] pt-2 font-sans">
+                <span>ACTUAL: <strong className="text-[var(--as-text-primary)] font-bold font-mono tabular-nums">{formatNumber(actual, 1)}%</strong></span>
+                <span>TARGET: <strong className="text-[var(--as-text-secondary)] font-bold font-mono tabular-nums">{formatNumber(target, 1)}%</strong></span>
               </div>
             </div>
           );

@@ -114,7 +114,7 @@ export function AnimatedNumber({ value, suffix = "", prefix = "" }) {
 export function AllocationRow({ assetKey, pct }) {
   const cfg = ASSET_CONFIG[assetKey];
   return (
-    <div className="flex items-center gap-4 w-full font-mono text-xs">
+    <div className="flex items-center gap-4 w-full font-sans text-xs">
       <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-base" style={{ background: cfg.colorDim, border: `1px solid ${cfg.color}33` }}>
         {cfg.icon}
       </div>
@@ -124,7 +124,7 @@ export function AllocationRow({ assetKey, pct }) {
             <span className="text-[10px] font-bold tracking-widest" style={{ color: cfg.color }}>{cfg.label}</span>
             <span className="text-[10px] text-neutral-600 ml-2">{cfg.sublabel}</span>
           </div>
-          <span className="text-sm font-bold tabular-nums" style={{ color: cfg.color }}>{pct}%</span>
+          <span className="text-sm font-bold font-mono tabular-nums" style={{ color: cfg.color }}>{pct}%</span>
         </div>
         <div className="h-3 w-full rounded-full bg-[var(--as-bg-tertiary)] overflow-hidden">
           <div className="h-full rounded-full transition-all duration-700 ease-out" style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${cfg.color}80, ${cfg.color})` }} />
@@ -139,15 +139,15 @@ export function ScenarioButton({ scenario, isActive, onClick }) {
   const acc = ACCENT[scenario.accent];
   return (
     <button onClick={onClick} className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 cursor-pointer min-h-[44px] ${isActive ? `${acc.bg} ${acc.border} ring-1 ring-${scenario.accent}-500/20` : "border-white/5 bg-neutral-900/20 hover:bg-neutral-900/40 text-neutral-400"}`}>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between font-sans">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: isActive ? acc.neon : "#444" }} />
           <div>
-            <div className={`text-xs font-mono tracking-widest uppercase font-bold ${isActive ? acc.text : "text-slate-400 dark:text-neutral-500"}`}>{scenario.id}</div>
+            <div className={`text-xs tracking-widest uppercase font-bold ${isActive ? acc.text : "text-slate-400 dark:text-neutral-500"}`}>{scenario.id}</div>
             <div className={`text-[11px] mt-0.5 ${isActive ? acc.textBright : "text-neutral-600"}`}>{scenario.label}</div>
           </div>
         </div>
-        <div className={`text-[10px] font-mono px-2 py-0.5 rounded border ${isActive ? acc.badge : "border-neutral-700/40 text-neutral-600"}`}>
+        <div className={`text-[10px] px-2 py-0.5 rounded border ${isActive ? acc.badge : "border-neutral-700/40 text-neutral-600"}`}>
           {scenario.theme}
         </div>
       </div>
@@ -160,7 +160,7 @@ export function ScenarioButton({ scenario, isActive, onClick }) {
 export function DonutChart({ accentColor, hovered, setHovered, animPct, analytics, isComputing }) {
   if (isComputing) {
     return (
-      <div className="relative flex flex-col items-center justify-center font-mono w-full max-w-[260px] mx-auto h-[260px]">
+      <div className="relative flex flex-col items-center justify-center font-sans w-full max-w-[260px] mx-auto h-[260px]">
         <div className="relative w-48 h-48 rounded-full shimmer flex items-center justify-center">
           <div className="w-32 h-32 rounded-full bg-[var(--as-bg-secondary)] flex flex-col items-center justify-center border border-white/5 shadow-inner">
             <span className="text-[9px] text-[var(--as-text-dim)] tracking-widest uppercase animate-pulse">OPTIMASI</span>
@@ -207,7 +207,7 @@ export function DonutChart({ accentColor, hovered, setHovered, animPct, analytic
   const beta = analytics?.portfolioBeta ?? 0;
 
   return (
-    <div className="relative flex flex-col items-center justify-center font-mono w-full max-w-[260px] mx-auto">
+    <div className="relative flex flex-col items-center justify-center font-sans w-full max-w-[260px] mx-auto">
       <svg viewBox={`0 0 ${size} ${size}`} className="w-full h-auto overflow-visible">
         <circle cx={cx} cy={cy} r={(R + r) / 2} fill="none" stroke="#ffffff08" strokeWidth={R - r} />
         {arcs.map(({ key, cfg, path, isHov, pct, lx, ly }) =>
@@ -225,7 +225,7 @@ export function DonutChart({ accentColor, hovered, setHovered, animPct, analytic
             >
               <path d={path} fill={cfg.color} fillOpacity={isHov ? "1" : "0.8"} stroke="#000" strokeWidth="2" />
               {pct >= 10 && (
-                <text x={lx} y={ly + 3} textAnchor="middle" fontSize="10" fontWeight="700" fill="#fff" style={{ pointerEvents: "none" }}>{Math.round(pct)}%</text>
+                <text x={lx} y={ly + 3} textAnchor="middle" fontSize="10" fontWeight="700" fill="#fff" className="font-mono" style={{ pointerEvents: "none" }}>{Math.round(pct)}%</text>
               )}
             </g>
           ) : null
@@ -236,15 +236,15 @@ export function DonutChart({ accentColor, hovered, setHovered, animPct, analytic
         {hovered ? (
           <>
             <text x={cx} y={cy - 12} textAnchor="middle" fontSize="9" fill="#888" letterSpacing="1" style={{ transition: "opacity 150ms ease" }}>{ASSET_CONFIG[hovered].label}</text>
-            <text x={cx} y={cy + 8} textAnchor="middle" fontSize="20" fontWeight="900" fill={ASSET_CONFIG[hovered].color} style={{ transition: "opacity 150ms ease" }}>{Math.round(animPct[hovered])}%</text>
+            <text x={cx} y={cy + 8} textAnchor="middle" fontSize="20" fontWeight="900" fill={ASSET_CONFIG[hovered].color} className="font-mono" style={{ transition: "opacity 150ms ease" }}>{Math.round(animPct[hovered])}%</text>
           </>
         ) : (
           <>
             <text x={cx} y={cy - 18} textAnchor="middle" fontSize="9" fill="#555" letterSpacing="2">SHARPE RATIO</text>
-            <text x={cx} y={cy - 2} textAnchor="middle" fontSize="18" fontWeight="900" fill={acc.neon}>{formatNumber(sharpe, 2)}</text>
+            <text x={cx} y={cy - 2} textAnchor="middle" fontSize="18" fontWeight="900" fill={acc.neon} className="font-mono">{formatNumber(sharpe, 2)}</text>
             <line x1={cx - 20} y1={cy + 6} x2={cx + 20} y2={cy + 6} stroke="#333" strokeWidth="0.5" />
             <text x={cx} y={cy + 18} textAnchor="middle" fontSize="9" fill="#555" letterSpacing="2">PORTFOLIO β</text>
-            <text x={cx} y={cy + 32} textAnchor="middle" fontSize="14" fontWeight="900" fill={acc.neon}>{formatNumber(beta, 2)}</text>
+            <text x={cx} y={cy + 32} textAnchor="middle" fontSize="14" fontWeight="900" fill={acc.neon} className="font-mono">{formatNumber(beta, 2)}</text>
           </>
         )}
       </svg>
@@ -269,14 +269,14 @@ export function MetricWithContext({ label, value, unit, interpretation, color })
   const glossaryId = LABEL_TO_GLOSSARY[label];
 
   return (
-    <div className="border border-slate-200 dark:border-neutral-900 p-3 rounded-lg bg-slate-50 dark:bg-black/20 font-mono space-y-1">
+    <div className="border border-slate-200 dark:border-neutral-900 p-3 rounded-lg bg-slate-50 dark:bg-black/20 font-sans space-y-1">
       <div className="text-[8px] text-neutral-600 uppercase tracking-widest">
         {glossaryId
           ? <GlossaryTerm termId={glossaryId}>{label}</GlossaryTerm>
           : label
         }
       </div>
-      <div className="text-xl font-black tabular-nums" style={{ color }}>
+      <div className="text-xl font-black font-mono tabular-nums" style={{ color }}>
         {value}{unit}
       </div>
       <div className="text-[9px] text-neutral-600 leading-relaxed">

@@ -52,26 +52,26 @@ export function HistoricalBacktest() {
       >
         <div>
           <div
-            className="text-[9px] font-mono tracking-[0.25em] uppercase mb-1.5"
+            className="text-[9px] font-sans tracking-[0.25em] uppercase mb-1.5"
             style={{ color: 'var(--as-text-dim)' }}
           >
             HISTORICAL BACKTESTING
           </div>
           <h3
-            className="text-base font-bold font-mono"
+            className="text-base font-bold font-sans"
             style={{ color: 'var(--as-text-primary)' }}
           >
             Simulasi Krisis Historis Indonesia
           </h3>
           <p
-            className="text-[10px] font-mono mt-1"
+            className="text-[10px] font-sans mt-1"
             style={{ color: 'var(--as-text-tertiary)' }}
           >
             Estimasi performa portofolio di 4 periode krisis — data edukatif, bukan backtesting akurat
           </p>
         </div>
         <div
-          className="text-[8px] font-mono px-2.5 py-1.5 rounded-lg"
+          className="text-[8px] font-sans px-2.5 py-1.5 rounded-lg"
           style={{
             background: config.color + '15',
             color:      config.color,
@@ -108,11 +108,11 @@ export function HistoricalBacktest() {
               <div className="w-6 h-6 rounded-full flex items-center justify-center mb-2" style={{ backgroundColor: crisis.severityColor + '20' }}>
                 <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: crisis.severityColor }} />
               </div>
-              <div className="text-[9px] font-mono font-bold uppercase tracking-widest mb-1"
+              <div className="text-[9px] font-sans font-bold uppercase tracking-widest mb-1"
                    style={{ color: isActive ? crisis.severityColor : 'var(--as-text-dim)' }}>
                 {crisis.severity}
               </div>
-              <div className="text-[10px] font-mono mb-2"
+              <div className="text-[10px] font-sans mb-2"
                    style={{ color: 'var(--as-text-secondary)' }}>
                 {crisis.period}
               </div>
@@ -132,13 +132,13 @@ export function HistoricalBacktest() {
         {/* Crisis context */}
         <div>
           <h4
-            className="text-sm font-bold font-mono mb-3"
+            className="text-sm font-bold font-sans mb-3"
             style={{ color: 'var(--as-text-primary)' }}
           >
             {activeCrisis.name}
           </h4>
           <p
-            className="text-[11px] font-mono leading-loose"
+            className="text-[11px] font-sans leading-loose"
             style={{ color: 'var(--as-text-secondary)' }}
           >
             {activeCrisis.context}
@@ -153,13 +153,13 @@ export function HistoricalBacktest() {
                 style={{ background: 'var(--as-bg-tertiary)' }}
               >
                 <div
-                  className="text-[8px] font-mono tracking-widest uppercase mb-1.5"
+                  className="text-[8px] font-sans tracking-widest uppercase mb-1.5"
                   style={{ color: 'var(--as-text-dim)' }}
                 >
                   {key}
                 </div>
                 <div
-                  className="text-[12px] font-bold font-mono"
+                  className="text-[12px] font-bold font-sans"
                   style={{ color: 'var(--as-text-primary)' }}
                 >
                   {val}
@@ -172,7 +172,7 @@ export function HistoricalBacktest() {
         {/* Asset class performance */}
         <div>
           <div
-            className="text-[9px] font-mono tracking-[0.2em] uppercase mb-4"
+            className="text-[9px] font-sans tracking-[0.2em] uppercase mb-4"
             style={{ color: 'var(--as-text-dim)' }}
           >
             PERFORMA PER KELAS ASET
@@ -191,13 +191,13 @@ export function HistoricalBacktest() {
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full flex-shrink-0"
                            style={{ backgroundColor: ASSET_COLORS[asset] }} />
-                      <span className="text-[10px] font-mono"
+                      <span className="text-[10px] font-sans"
                             style={{ color: 'var(--as-text-secondary)' }}>
                         {ASSET_LABELS[asset]}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono"
+                      <span className="text-[10px] font-sans"
                             style={{ color: 'var(--as-text-dim)' }}>
                         {perf.note}
                       </span>
@@ -246,7 +246,7 @@ export function HistoricalBacktest() {
             }}
           >
             <div
-              className="text-[9px] font-mono tracking-[0.2em] uppercase mb-3 flex items-center gap-1"
+              className="text-[9px] font-sans tracking-[0.2em] uppercase mb-3 flex items-center gap-1"
               style={{ color: 'var(--as-text-dim)' }}
             >
               <BarChart3 size={11} className="text-indigo-400" /> ESTIMASI PORTOFOLIO KAMU ({scenarioId})
@@ -254,7 +254,7 @@ export function HistoricalBacktest() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <div
-                  className="text-[11px] font-mono mb-1"
+                  className="text-[11px] font-sans mb-1"
                   style={{ color: 'var(--as-text-secondary)' }}
                 >
                   {myOutcome.label}
@@ -268,14 +268,14 @@ export function HistoricalBacktest() {
               </div>
               <div className="text-right">
                 <div
-                  className="text-[9px] font-mono uppercase tracking-widest mb-1"
+                  className="text-[9px] font-sans uppercase tracking-widest mb-1"
                   style={{ color: 'var(--as-text-dim)' }}
                 >
                   vs Krisis {activeCrisis.period}
                 </div>
                 {activeCrisis.portfolioOutcomes.CURRENCY_STRESS && (
                   <div
-                    className="text-[10px] font-mono"
+                    className="text-[10px] font-sans"
                     style={{ color: 'var(--as-text-tertiary)' }}
                   >
                     Alokasi terbaik:{' '}
@@ -301,7 +301,7 @@ export function HistoricalBacktest() {
         >
           <Lightbulb size={16} className="text-yellow-400 flex-shrink-0 mt-0.5" />
           <p
-            className="text-[10px] font-mono leading-loose"
+            className="text-[10px] font-sans leading-loose"
             style={{ color: 'var(--as-text-secondary)' }}
           >
             <span className="font-bold" style={{ color: config.color }}>
@@ -313,7 +313,7 @@ export function HistoricalBacktest() {
 
         {/* Disclaimer */}
         <p
-          className="text-[8px] font-mono leading-relaxed"
+          className="text-[8px] font-sans leading-relaxed"
           style={{ color: 'var(--as-text-dim)' }}
         >
           * Angka return bersifat estimasi berdasarkan data historis publik yang tersedia.

@@ -76,7 +76,7 @@ export function GlossaryTerm({ termId, children, className = '' }) {
             {/* Term header */}
             <div className="flex items-center gap-2">
               <span
-                className="text-[9px] font-mono font-black px-1.5 py-0.5
+                className="text-[9px] font-sans font-black px-1.5 py-0.5
                            rounded-md tracking-wider"
                 style={{
                   background: 'rgba(99,102,241,0.15)',
@@ -87,7 +87,7 @@ export function GlossaryTerm({ termId, children, className = '' }) {
                 {term.symbol}
               </span>
               <span
-                className="text-[11px] font-mono font-bold"
+                className="text-[11px] font-sans font-bold"
                 style={{ color: '#e2e8f0' }}
               >
                 {term.term}
@@ -111,13 +111,13 @@ export function GlossaryTerm({ termId, children, className = '' }) {
               }}
             >
               <div
-                className="text-[8px] font-mono tracking-widest uppercase mb-1"
+                className="text-[8px] font-sans tracking-widest uppercase mb-1"
                 style={{ color: 'rgba(255,255,255,0.35)' }}
               >
                 CONTOH
               </div>
               <p
-                className="text-[9px] font-mono leading-relaxed"
+                className="text-[9px] font-sans leading-relaxed"
                 style={{ color: 'rgba(255,255,255,0.55)' }}
               >
                 {term.example}
@@ -126,7 +126,7 @@ export function GlossaryTerm({ termId, children, className = '' }) {
 
             {/* Learn more */}
             <p
-              className="text-[8px] font-mono italic flex items-center gap-1"
+              className="text-[8px] font-sans italic flex items-center gap-1"
               style={{ color: 'rgba(255,255,255,0.30)' }}
             >
               <Lightbulb size={9} className="text-yellow-400" /> {term.learnMore}

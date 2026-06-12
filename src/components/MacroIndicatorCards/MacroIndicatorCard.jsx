@@ -171,7 +171,7 @@ export default function MacroIndicatorCard({
         <div className="flex items-center gap-3">
           <span className="text-2xl">{icon}</span>
           <div className="flex items-center gap-2">
-            <div className="text-[9px] font-mono tracking-[0.2em] uppercase"
+            <div className="text-[9px] font-sans tracking-[0.2em] uppercase"
                  style={{ color: 'var(--as-text-dim)' }}>
               {label}
             </div>
@@ -179,10 +179,10 @@ export default function MacroIndicatorCard({
           </div>
         </div>
         {/* Status badge - Dynamic for LIVE and ESTIMASI indicators */}
-        <span className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5"
+        <span className="text-[8px] font-sans px-2 py-0.5 rounded-md flex items-center gap-1.5"
               style={
                 (id === "usdIdr" || id === "xauUsd")
-                  ? (isLive 
+                   ? (isLive 
                       ? { background: 'rgba(16,185,129,0.08)', color: '#10b981' } 
                       : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' })
                   : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' }
@@ -211,7 +211,7 @@ export default function MacroIndicatorCard({
       </div>
 
       {/* Unit label */}
-      <div className="text-[9px] font-mono mb-6 relative z-10" style={{ color: 'var(--as-text-dim)' }}>
+      <div className="text-[9px] font-sans mb-6 relative z-10" style={{ color: 'var(--as-text-dim)' }}>
         {unit}
       </div>
 
@@ -240,7 +240,7 @@ export default function MacroIndicatorCard({
           {direction === 'up' ? '▲ ' : direction === 'down' ? '▼ ' : ''}
           {delta !== 0 ? `${delta > 0 ? '+' : ''}${formatPercent(delta, 2)}` : '—'}
         </span>
-        <div className="text-[8px] font-mono font-light text-[var(--as-text-tertiary)] flex flex-col items-end">
+        <div className="text-[8px] font-sans font-light text-[var(--as-text-tertiary)] flex flex-col items-end">
           <span>vs periode lalu</span>
           {(() => {
             const isStale = !timestamp || (Date.now() - timestamp) > 3600000;

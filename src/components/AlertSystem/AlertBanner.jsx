@@ -80,13 +80,13 @@ export function AlertBanner() {
           {/* Alert text */}
           <div className="flex-1 min-w-0">
             <div
-              className="text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1"
+              className="text-[10px] font-sans font-bold tracking-widest uppercase flex items-center gap-1"
               style={{ color: '#ef4444' }}
             >
               <AlertTriangle size={12} className="text-red-500" /> ALERT: {alert.label}
             </div>
             <div
-              className="text-[9px] font-mono mt-0.5"
+              className="text-[9px] font-sans mt-0.5"
               style={{ color: 'var(--as-text-secondary)' }}
             >
               {alert.direction === 'above' ? 'Melampaui' : 'Jatuh di bawah'} batas{' '}
@@ -103,7 +103,7 @@ export function AlertBanner() {
           {/* Dismiss */}
           <button
             onClick={() => dismiss(alert.id)}
-            className="text-[11px] font-mono cursor-pointer flex-shrink-0
+            className="text-[11px] font-sans cursor-pointer flex-shrink-0
                        transition-colors px-2 py-1 rounded-lg"
             style={{ color: 'var(--as-text-dim)' }}
             onMouseOver={e => (e.currentTarget.style.color = '#ef4444')}

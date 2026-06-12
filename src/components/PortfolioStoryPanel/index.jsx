@@ -110,7 +110,7 @@ export function PortfolioStoryPanel() {
     <div className="card-tier-2 space-y-4">
       <div className="flex items-center gap-2 mb-1">
         <div className="w-1 h-5 rounded-full" style={{ background: config.color }} />
-        <div className="text-xs font-bold font-mono text-slate-900 dark:text-white">
+        <div className="text-xs font-bold font-sans text-slate-900 dark:text-white">
           Narasi Portofolio
         </div>
       </div>
@@ -125,13 +125,13 @@ export function PortfolioStoryPanel() {
                   style={{ color: config.color }}>
               {m.value}
             </span>
-            <span className="text-xs font-mono text-neutral-600">{m.unit}</span>
-            <span className="text-[9px] font-mono text-neutral-600 uppercase
+            <span className="text-xs font-sans text-neutral-600">{m.unit}</span>
+            <span className="text-[9px] font-sans text-neutral-600 uppercase
                              tracking-widest ml-auto">
               {m.label}
             </span>
           </div>
-          <p className="text-[10px] font-mono text-slate-500 dark:text-neutral-400 leading-relaxed">
+          <p className="text-[10px] font-sans text-slate-500 dark:text-neutral-400 leading-relaxed">
             {m.narrative}
           </p>
         </div>
@@ -160,11 +160,11 @@ export function PortfolioWhatIfSimulator() {
       <div className="rounded-xl border overflow-hidden"
            style={{ borderColor: config.color + '30', background: config.color + '08' }}>
         <div className="px-4 py-3 border-b" style={{ borderColor: config.color + '20' }}>
-          <div className="text-[9px] font-mono font-bold tracking-widest uppercase"
+          <div className="text-[9px] font-sans font-bold tracking-widest uppercase"
                style={{ color: config.color }}>
             <div className="flex items-center gap-2"><FlaskConical size={16} className="text-purple-400" /><span>Simulasi What-If — Perubahan BI Rate</span></div>
           </div>
-          <div className="text-[9px] font-mono text-slate-400 dark:text-neutral-500 mt-0.5">
+          <div className="text-[9px] font-sans text-slate-400 dark:text-neutral-500 mt-0.5">
             Konteks: BI Rate saat ini {SCENARIOS.TIGHTENING.biRate.toFixed(2)}% (RDG 9 Juni 2026)
           </div>
         </div>
@@ -172,7 +172,7 @@ export function PortfolioWhatIfSimulator() {
           <div className="flex flex-wrap gap-2 mb-4">
             {WHAT_IF_PRESETS.map((p) => (
               <button key={p.label} onClick={() => setSelectedDelta(p.delta)}
-                      className="text-[9px] font-mono px-2.5 py-1.5 rounded-lg border
+                      className="text-[9px] font-sans px-2.5 py-1.5 rounded-lg border
                                  transition-all duration-150 cursor-pointer"
                       style={{
                         background:  selectedDelta === p.delta ? config.color + '20' : 'var(--as-bg-tertiary)',
@@ -184,13 +184,13 @@ export function PortfolioWhatIfSimulator() {
             ))}
           </div>
           {whatIf && (
-            <p className="text-[10px] font-mono text-slate-700 dark:text-neutral-300 leading-relaxed">
+            <p className="text-[10px] font-sans text-slate-700 dark:text-neutral-300 leading-relaxed">
               {whatIf.interpretation}
             </p>
           )}
           <div className="flex items-center gap-3 mt-3">
             <div className="text-center">
-              <div className="text-[7px] font-mono text-neutral-700 uppercase">Saat Ini</div>
+              <div className="text-[7px] font-sans text-neutral-700 uppercase">Saat Ini</div>
               <div className="text-base font-black font-mono text-slate-700 dark:text-neutral-300">
                 {formatNumber(sharpe, 2)}σ
               </div>
@@ -198,7 +198,7 @@ export function PortfolioWhatIfSimulator() {
             <div className="flex-1 h-px"
                  style={{ background: `linear-gradient(90deg, ${config.color}40, ${config.color})` }} />
             <div className="text-center">
-              <div className="text-[7px] font-mono text-neutral-700 uppercase">Estimasi Baru</div>
+              <div className="text-[7px] font-sans text-neutral-700 uppercase">Estimasi Baru</div>
               <div className="text-base font-black font-mono" style={{ color: config.color }}>
                 {whatIf?.newSharpe}σ
               </div>
@@ -207,7 +207,7 @@ export function PortfolioWhatIfSimulator() {
         </div>
       </div>
 
-      <p className="text-[8px] font-mono text-neutral-700 leading-relaxed">
+      <p className="text-[8px] font-sans text-neutral-700 leading-relaxed">
         * Simulasi What-If menggunakan elastisitas MPT yang disederhanakan.
         Bukan proyeksi akurat — hanya referensi edukasi.
         Konteks aktual: BI Rate sudah naik ke {SCENARIOS.TIGHTENING.biRate.toFixed(2)}% per 9 Juni 2026.

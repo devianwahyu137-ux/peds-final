@@ -40,7 +40,7 @@ export function ScenarioIntelligence() {
   if (mismatch.isAligned) {
     return (
       <div
-        className="flex items-center gap-2 px-3 h-8 rounded-lg mb-4 text-[9px] font-mono"
+        className="flex items-center gap-2 px-3 h-8 rounded-lg mb-4 text-[9px] font-sans"
         style={{
           background: 'rgba(16,185,129,0.02)',
           border:     '1px solid rgba(16,185,129,0.06)',
@@ -57,14 +57,14 @@ export function ScenarioIntelligence() {
         <span className="truncate opacity-60 hover:opacity-100 transition-opacity duration-200"
               style={{ color: 'var(--as-text-tertiary)' }}>
           <span className="font-bold text-emerald-500">SELARAS</span>
-          {' — '}{formatNumber(macroData.biRate, 2)}% BI Rate · IDR{' '}
-          {formatIDR(macroData.usdIdr)} · Skenario{' '}
+          {' — '}<span className="font-mono">{formatNumber(macroData.biRate, 2)}%</span> BI Rate · IDR{' '}
+          <span className="font-mono">{formatIDR(macroData.usdIdr)}</span> · Skenario{' '}
           <span style={{ color: activeConfig.color, fontWeight: 'bold' }}>
             {activeConfig.label}
           </span>
         </span>
 
-        <span className="ml-auto flex-shrink-0 text-[8px] opacity-50 text-emerald-500">
+        <span className="ml-auto flex-shrink-0 text-[8px] opacity-50 text-emerald-500 font-mono">
           {mismatch.confidence}% confidence
         </span>
       </div>
@@ -91,12 +91,12 @@ export function ScenarioIntelligence() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 space-y-3 font-mono">
+        <div className="flex-1 space-y-3 font-sans">
           <div className="flex items-center gap-3">
             <span className="font-bold tracking-widest text-sm" style={{ color: accentColor }}>
               {isWarning ? 'PERINGATAN SKENARIO' : 'KETIDAKSESUAIAN SKENARIO'}
             </span>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: accentColor, color: '#fff' }}>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full font-mono" style={{ background: accentColor, color: '#fff' }}>
               Confidence: {mismatch.confidence}%
             </span>
           </div>
@@ -106,8 +106,8 @@ export function ScenarioIntelligence() {
             <span className="font-bold uppercase px-1 py-0.5 rounded" style={{ color: recommendedConfig.color, background: recommendedConfig.color + '20' }}>
               {recommendedConfig.label}
             </span>
-            {' '}(BI Rate {formatNumber(macroData.biRate, 2)}%, IDR{' '}
-            {formatIDR(macroData.usdIdr)}),
+            {' '}(BI Rate <span className="font-mono">{formatNumber(macroData.biRate, 2)}%</span>, IDR{' '}
+            <span className="font-mono">{formatIDR(macroData.usdIdr)}</span>),
             {' '}namun skenario aktif saat ini adalah{' '}
             <span className="font-bold uppercase px-1 py-0.5 rounded" style={{ color: activeConfig.color, background: activeConfig.color + '20' }}>
               {activeConfig.label}
@@ -119,7 +119,7 @@ export function ScenarioIntelligence() {
           <div className="flex flex-wrap items-center gap-3 pt-1">
             <button
               onClick={() => setScenario(mismatch.recommended)}
-              className="text-[9px] font-mono font-bold px-3 py-1.5 rounded-lg cursor-pointer transition-all duration-150 uppercase tracking-widest"
+              className="text-[9px] font-sans font-bold px-3 py-1.5 rounded-lg cursor-pointer transition-all duration-150 uppercase tracking-widest"
               style={{
                 background:  recommendedConfig.color + '18',
                 border:      `1px solid ${recommendedConfig.color}40`,
@@ -130,14 +130,14 @@ export function ScenarioIntelligence() {
             </button>
             <button
               onClick={() => setIsExpanded(p => !p)}
-              className="text-[9px] font-mono cursor-pointer transition-colors uppercase tracking-widest"
+              className="text-[9px] font-sans cursor-pointer transition-colors uppercase tracking-widest"
               style={{ color: 'var(--as-text-dim)' }}
             >
               {isExpanded ? 'Sembunyikan sinyal ▲' : 'Lihat sinyal detail ▼'}
             </button>
             <button
               onClick={() => setIsDismissed(true)}
-              className="text-[9px] font-mono md:ml-auto cursor-pointer transition-colors hover:text-neutral-400 uppercase tracking-widest"
+              className="text-[9px] font-sans md:ml-auto cursor-pointer transition-colors hover:text-neutral-400 uppercase tracking-widest"
               style={{ color: 'var(--as-text-dim)' }}
             >
               Abaikan ✕
@@ -149,9 +149,9 @@ export function ScenarioIntelligence() {
       {/* Expanded signal detail */}
       {isExpanded && (
         <div className="p-4 bg-slate-50/50 dark:bg-black/20 border-t" style={{ borderColor: accentBorder }}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-mono">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-sans">
             <div>
-              <div className="text-[10px] font-bold tracking-widest text-slate-500 dark:text-neutral-400 mb-3">
+              <div className="text-[10px] font-bold tracking-widest text-slate-500 dark:text-neutral-400 mb-3 font-sans">
                 SINYAL DETEKSI OTOMATIS
               </div>
               <div className="space-y-2">
@@ -161,7 +161,7 @@ export function ScenarioIntelligence() {
                     <div className="flex-1">
                       <div className="flex justify-between items-center mb-1">
                         <span className="font-bold text-slate-700 dark:text-neutral-300">{sig.indicator}</span>
-                        <span className="font-bold" style={{ color: sig.color }}>{sig.value}</span>
+                        <span className="font-bold font-mono" style={{ color: sig.color }}>{sig.value}</span>
                       </div>
                       <div className="text-slate-500 dark:text-neutral-400 leading-snug">
                         {sig.reason}
@@ -174,7 +174,7 @@ export function ScenarioIntelligence() {
 
             {/* Score breakdown */}
             <div>
-              <div className="text-[10px] font-bold tracking-widest text-slate-500 dark:text-neutral-400 mb-3">
+              <div className="text-[10px] font-bold tracking-widest text-slate-500 dark:text-neutral-400 mb-3 font-sans">
                 SKOR PER SKENARIO
               </div>
               <div className="space-y-4">
@@ -186,7 +186,7 @@ export function ScenarioIntelligence() {
                       <div key={scenario}>
                         <div className="flex justify-between text-[10px] font-bold mb-1.5 uppercase">
                           <span style={{ color: conf.color }}>{conf.label}</span>
-                          <span className="text-slate-600 dark:text-neutral-400">{score}%</span>
+                          <span className="text-slate-600 dark:text-neutral-400 font-mono">{score}%</span>
                         </div>
                         <div className="h-1.5 rounded-full bg-slate-200 dark:bg-neutral-800 overflow-hidden">
                           <div

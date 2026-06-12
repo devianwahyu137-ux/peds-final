@@ -61,15 +61,15 @@ export function MacroSentimentSummary() {
     <div className="card-tier-2 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-mono font-bold">
+          <div className="text-[9px] text-slate-400 dark:text-neutral-500 uppercase tracking-widest font-sans font-bold">
             Agregat Sentimen Pasar
           </div>
-          <div className="text-[10px] text-neutral-600 font-mono mt-0.5">
+          <div className="text-[10px] text-neutral-600 font-sans mt-0.5">
             Market Bias Indicator
           </div>
         </div>
         <span
-          className="text-[9px] font-mono font-black px-2.5 py-1 rounded-lg border"
+          className="text-[9px] font-sans font-black px-2.5 py-1 rounded-lg border"
           style={{ color: style.color, borderColor: `${style.color}40`, background: style.bg }}
         >
           {data.overall}
@@ -85,7 +85,7 @@ export function MacroSentimentSummary() {
             { label: 'NEUTRAL',  pct: data.neutPct, color: '#94a3b8' },
           ].map(({ label, pct, color }) => (
             <div key={label} className="flex items-center gap-3">
-              <span className="text-[8px] font-mono text-slate-400 dark:text-neutral-500 w-14 text-right uppercase tracking-wider">
+              <span className="text-[8px] font-sans text-slate-400 dark:text-neutral-500 w-14 text-right uppercase tracking-wider">
                 {label}
               </span>
               <div className="flex-1 h-2 bg-neutral-800/70 rounded-full overflow-hidden">
@@ -102,7 +102,7 @@ export function MacroSentimentSummary() {
         </div>
 
         {/* Summary text */}
-        <div className="text-[10px] font-mono text-slate-500 dark:text-neutral-400 leading-relaxed p-3 rounded-lg bg-white dark:bg-neutral-900/50 border border-slate-300 dark:border-neutral-800/40">
+        <div className="text-[10px] font-sans text-slate-500 dark:text-neutral-400 leading-relaxed p-3 rounded-lg bg-white dark:bg-neutral-900/50 border border-slate-300 dark:border-neutral-800/40">
           {data.summary}
         </div>
 
@@ -110,7 +110,7 @@ export function MacroSentimentSummary() {
         <div className="grid grid-cols-2 gap-3">
           {data.signals.map((sig, i) => (
             <div key={i} className="card-tier-3 flex items-center justify-between">
-              <span className="text-[9px] font-mono text-slate-400 dark:text-neutral-500">
+              <span className="text-[9px] font-sans text-slate-400 dark:text-neutral-500">
                 {sig.label}
               </span>
               <div className="flex items-center gap-1">

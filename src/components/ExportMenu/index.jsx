@@ -67,7 +67,7 @@ export function ExportMenu() {
       <button
         onClick={() => setIsOpen(p => !p)}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border
-                   text-[9px] font-mono font-bold tracking-widest uppercase
+                   text-[9px] font-sans font-bold tracking-widest uppercase
                    cursor-pointer transition-all duration-150"
         style={{
           background:  isOpen ? 'rgba(255,255,255,0.08)' : 'var(--as-bg-tertiary)',
@@ -118,13 +118,13 @@ export function ExportMenu() {
                 </span>
                 <div>
                   <div
-                    className="text-[10px] font-mono font-bold"
+                    className="text-[10px] font-sans font-bold"
                     style={{ color: 'var(--as-text-primary)' }}
                   >
                     {opt.label}
                   </div>
                   <div
-                    className="text-[8px] font-mono mt-0.5"
+                    className="text-[8px] font-sans mt-0.5"
                     style={{ color: 'var(--as-text-dim)' }}
                   >
                     {opt.subLabel}
@@ -140,7 +140,7 @@ export function ExportMenu() {
             style={{ borderColor: 'var(--as-border-secondary)' }}
           >
             <div
-              className="text-[7px] font-mono leading-relaxed"
+              className="text-[7px] font-sans leading-relaxed"
               style={{ color: 'var(--as-text-dim)' }}
             >
               Data: alokasi, MPT analytics, kondisi makro aktif
@@ -153,7 +153,7 @@ export function ExportMenu() {
       {status && (
         <div
           className="absolute right-0 top-full mt-2 px-3 py-2
-                     rounded-xl text-[9px] font-mono z-50 whitespace-nowrap"
+                     rounded-xl text-[9px] font-sans z-50 whitespace-nowrap"
           style={{
             background: status === 'success'
               ? 'rgba(16,185,129,0.15)'

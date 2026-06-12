@@ -190,7 +190,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
             </h2>
             {/* Provider badge */}
             <span
-              className="text-[8px] font-mono px-1.5 py-0.5 rounded-md
+              className="text-[8px] font-sans px-1.5 py-0.5 rounded-md
                          tracking-widest uppercase"
               style={{
                 background: 'var(--as-bg-tertiary)',
@@ -216,7 +216,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
 
           {/* Suggested questions — show when no user messages yet */}
           {messages.filter(m => m.role === 'user').length === 0 && !isLoading && (
-            <div className="space-y-4 mb-4 font-mono">
+            <div className="space-y-4 mb-4 font-sans">
               <div className="p-4 rounded-xl border border-[var(--as-border-primary)] bg-slate-500/[0.01] space-y-3">
                 <div className="flex items-center gap-2 text-indigo-400">
                   <Sparkles size={16} />
@@ -231,7 +231,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
               </div>
 
               <div
-                className="text-[9px] font-mono tracking-widest uppercase mb-2"
+                className="text-[9px] font-sans tracking-widest uppercase mb-2"
                 style={{ color: 'var(--as-text-dim)' }}
               >
                 PERTANYAAN DISARANKAN
@@ -240,7 +240,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
                 <button
                   key={i}
                   onClick={() => handleLocalSubmit(q)}
-                  className="w-full text-left text-[10px] font-mono px-3 py-2.5
+                  className="w-full text-left text-[10px] font-sans px-3 py-2.5
                              rounded-xl cursor-pointer transition-all duration-150 min-h-[44px] flex items-center"
                   style={{
                     background: 'var(--as-bg-tertiary)',
@@ -334,7 +334,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
                 }}
               >
                 <Sparkles size={14} className="text-indigo-400 animate-pulse" />
-                <span className="text-[11px] font-mono animate-pulse">
+                <span className="text-[11px] font-sans animate-pulse">
                   AI sedang berpikir...
                 </span>
                 <div className="flex gap-1.5 items-center ml-2">
@@ -357,7 +357,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
           {/* Error state */}
           {error && (
             <div
-              className="mx-1 px-4 py-3 rounded-xl text-[11px] font-mono flex flex-col gap-2"
+              className="mx-1 px-4 py-3 rounded-xl text-[11px] font-sans flex flex-col gap-2"
               style={{
                 background: 'rgba(239,68,68,0.10)',
                 color: '#ef4444',

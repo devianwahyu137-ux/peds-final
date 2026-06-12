@@ -18,24 +18,24 @@ export default function StrategyPage() {
   const acc = ACCENT[currentAccent] || ACCENT.emerald;
 
   return (
-    <div className="space-y-6 w-full page-enter">
+    <div className="space-y-8 w-full page-enter">
       {/* Header */}
-      <div className="border-b border-[var(--as-border-secondary)] pb-4">
+      <div className="border-b border-[var(--as-border-secondary)] pb-6">
         <h2 className="text-xl font-bold text-white tracking-wide uppercase">
           STRATEGI
           <span className="text-gray-600 mx-3 font-light">//</span>
           <span style={{ color: acc.neon }}>REBALANCING</span>
         </h2>
-        <p className="text-[10px] font-mono font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">
+        <p className="text-[10px] font-sans font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">
           Kalkulator penyesuaian portofolio dan rotasi sektoral
         </p>
       </div>
 
       {/* Main 3-column grid — correct proportions */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 w-full overflow-x-hidden">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 w-full overflow-x-hidden">
 
         {/* LEFT: Rotation Tactics Playbook — col-span-4 */}
-        <div className="col-span-1 xl:col-span-4 min-w-0 overflow-hidden">
+        <div className="col-span-1 xl:col-span-4 min-w-0 overflow-hidden space-y-6">
           <ScenarioIntelligence />
           <div className="overflow-hidden">
             <SectorPlaybook />

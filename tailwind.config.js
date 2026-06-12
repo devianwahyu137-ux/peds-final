@@ -7,6 +7,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        mono: ['monospace'],
+      },
       colors: {
         'as-bg': {
           page:      'var(--as-bg-page)',

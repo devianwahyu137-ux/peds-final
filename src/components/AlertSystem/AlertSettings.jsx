@@ -68,13 +68,13 @@ export function AlertSettings({ isOpen, onClose }) {
       >
         <div>
           <h3
-            className="text-xs font-bold font-mono flex items-center"
+            className="text-xs font-bold font-sans flex items-center"
             style={{ color: 'var(--as-text-primary)' }}
           >
             <Bell size={14} className="text-indigo-400 mr-2" /> Alert Thresholds
           </h3>
           <p
-            className="text-[9px] font-mono mt-0.5"
+            className="text-[9px] font-sans mt-0.5"
             style={{ color: 'var(--as-text-dim)' }}
           >
             Pengaturan Notifikasi Makro
@@ -82,7 +82,7 @@ export function AlertSettings({ isOpen, onClose }) {
         </div>
         <button
           onClick={onClose}
-          className="text-[11px] font-mono px-2 py-1 rounded-lg
+          className="text-[11px] font-sans px-2 py-1 rounded-lg
                      cursor-pointer transition-colors"
           style={{ color: 'var(--as-text-dim)' }}
           onMouseOver={e =>
@@ -100,7 +100,7 @@ export function AlertSettings({ isOpen, onClose }) {
       <div className="p-4 space-y-4 overflow-y-auto flex-1">
         {!hasActiveAlerts && (
           <div
-            className="text-[10px] font-mono text-center p-3 rounded-lg border border-dashed"
+            className="text-[10px] font-sans text-center p-3 rounded-lg border border-dashed"
             style={{
               color: 'var(--as-text-dim)',
               borderColor: 'var(--as-border-secondary)',
@@ -138,13 +138,13 @@ export function AlertSettings({ isOpen, onClose }) {
                   <span className="text-lg">{indicator.icon}</span>
                   <div>
                     <div
-                      className="text-[11px] font-mono font-bold"
+                      className="text-[11px] font-sans font-bold"
                       style={{ color: 'var(--as-text-primary)' }}
                     >
                       {indicator.label}
                     </div>
                     <div
-                      className="text-[8px] font-mono mt-0.5"
+                      className="text-[8px] font-sans mt-0.5"
                       style={{ color: 'var(--as-text-dim)' }}
                     >
                       {indicator.description} • sekarang: {indicator.format(currentVal)}{indicator.unit}
@@ -190,7 +190,7 @@ export function AlertSettings({ isOpen, onClose }) {
 
                   <div className="flex items-center gap-2">
                     <span
-                      className="text-[8px] font-mono tracking-widest uppercase
+                      className="text-[8px] font-sans tracking-widest uppercase
                                  flex-shrink-0"
                       style={{ color: 'var(--as-text-dim)' }}
                     >
@@ -212,7 +212,7 @@ export function AlertSettings({ isOpen, onClose }) {
                       }}
                     />
                     <span
-                      className="text-[9px] font-mono font-bold flex-shrink-0"
+                      className="text-[9px] font-sans font-bold flex-shrink-0"
                       style={{ color: 'var(--as-text-dim)' }}
                     >
                       {indicator.unit}
@@ -231,7 +231,7 @@ export function AlertSettings({ isOpen, onClose }) {
         style={{ borderColor: 'var(--as-border-secondary)' }}
       >
         <p
-          className="text-[7px] font-mono leading-relaxed"
+          className="text-[7px] font-sans leading-relaxed"
           style={{ color: 'var(--as-text-dim)' }}
         >
           Alert berbasis data estimasi/fallback. Disimpan di browser

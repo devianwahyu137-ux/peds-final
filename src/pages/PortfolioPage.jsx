@@ -23,7 +23,7 @@ function LedgerRow({ line }) {
   const match = line.match(/^\[(.*?)\]\s+([A-Z_]+)\s+:\s+(.*)$/);
   if (!match) {
     return (
-      <div className="border-l-2 border-[var(--as-border-secondary)] pl-3 text-slate-500 dark:text-neutral-400 font-light">
+      <div className="border-l-2 border-[var(--as-border-secondary)] pl-3 text-slate-500 dark:text-neutral-400 font-mono font-light">
         {line}
       </div>
     );
@@ -45,7 +45,7 @@ function LedgerRow({ line }) {
   const formattedKey = key.split('_').map(word => word.charAt(0) + word.slice(1).toLowerCase()).join(' ');
 
   return (
-    <div className="flex items-start gap-3 border-l-2 border-[var(--as-border-secondary)] pl-3">
+    <div className="flex items-start gap-3 border-l-2 border-[var(--as-border-secondary)] pl-3 font-mono">
       <Icon size={16} className={iconClass} />
       <p className="text-sm text-neutral-400 font-light">
         <span className="font-semibold text-neutral-200">{formattedKey}</span> : {text}
@@ -88,17 +88,17 @@ export default function PortfolioPage() {
   }, [targetWeights]);
 
   return (
-    <div className="space-y-6 w-full page-enter">
+    <div className="space-y-10 w-full page-enter">
       <ScenarioIntelligence />
       {/* Header */}
-      <div className="border-b border-[var(--as-border-secondary)] pb-4 flex items-start justify-between gap-4">
+      <div className="border-b border-[var(--as-border-secondary)] pb-6 flex items-start justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-white tracking-wide uppercase">
             PORTOFOLIOMU
             <span className="text-gray-600 mx-3 font-light">//</span>
             <span style={{ color: acc.neon }}>ALOKASI ASET</span>
           </h2>
-          <p className="text-[10px] font-mono font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">
+          <p className="text-[10px] font-sans font-light text-[var(--as-text-tertiary)] mt-1 uppercase tracking-widest">
             Distribusi optimal berdasarkan skenario {scenarioId}
           </p>
         </div>
@@ -106,11 +106,11 @@ export default function PortfolioPage() {
       </div>
 
       {/* ROW 1 (TOP SECTION) */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
         {/* Left: Donut + Asset Bars */}
         <div className="xl:col-span-7 space-y-4">
           <div className="card-tier-2 overflow-visible h-full">
-            <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-4 font-mono">
+            <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-4 font-sans">
               Asset Allocation Matrix
             </div>
             <div className="flex flex-col md:flex-row items-center gap-8">
@@ -133,19 +133,19 @@ export default function PortfolioPage() {
         </div>
 
         {/* Right: MPT Analytics with interpretations */}
-        <div className="xl:col-span-5 space-y-4">
+        <div className="xl:col-span-5 space-y-6">
           <div className="card-tier-2 h-full">
-            <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-3 font-mono">
+            <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-3 font-sans">
               Analisis <GlossaryTerm termId="mpt">MPT</GlossaryTerm> — dengan Interpretasi
             </div>
             {isComputing ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {[1, 2, 3, 4].map((i) => (
                   <div key={i} className="shimmer h-[98px] rounded-xl" />
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 [&>*]:stat-hover">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 [&>*]:stat-hover">
                 <MetricWithContext
                   label="Sharpe Ratio"
                   value={formatNumber(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0, 2)}
@@ -181,12 +181,12 @@ export default function PortfolioPage() {
       </div>
 
       {/* ROW 2 (BOTTOM SECTION - THE ALIGNMENT FIX) */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
         {/* Left Side: Ledger + What If */}
-        <div className="xl:col-span-7 flex flex-col gap-6">
+        <div className="xl:col-span-7 flex flex-col gap-8">
           {/* Technical Execution Ledger */}
-          <div className="card-tier-3 font-mono text-[11px] space-y-2">
-            <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-1">
+          <div className="card-tier-3 p-6 text-[11px] space-y-3">
+            <div className="text-[9px] text-[var(--as-text-dim)] font-semibold uppercase tracking-widest mb-1 font-sans">
               Technical Execution Ledger
             </div>
             {baseScenario.ledger.map((ledgerLine, ledgerIndex) => (
@@ -199,19 +199,19 @@ export default function PortfolioPage() {
         </div>
 
         {/* Right Side: Tema Risiko + Narasi */}
-        <div className="xl:col-span-5 flex flex-col gap-6">
+        <div className="xl:col-span-5 flex flex-col gap-8">
           {/* Risk Theme badge */}
           <div className="card-tier-3 flex flex-col items-center text-center">
-            <span className="text-[8px] text-[var(--as-text-dim)] font-semibold uppercase font-mono tracking-widest">
+            <span className="text-[8px] text-[var(--as-text-dim)] font-semibold uppercase font-sans tracking-widest">
               Tema Risiko Aktif
             </span>
             <span
-              className="text-sm font-black mt-2 uppercase font-mono"
+              className="text-sm font-black mt-2 uppercase font-sans"
               style={{ color: acc.neon }}
             >
               {currentTheme}
             </span>
-            <span className="text-[9px] text-[var(--as-text-tertiary)] font-light mt-1 font-mono">
+            <span className="text-[9px] text-[var(--as-text-tertiary)] font-light mt-1 font-sans">
               Skenario: {scenarioId}
             </span>
           </div>

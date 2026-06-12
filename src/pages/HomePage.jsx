@@ -166,25 +166,25 @@ export default function HomePage() {
           <div className="flex-1 min-w-0">
             {/* Badge */}
             <div className="flex items-center gap-3 mb-6">
-              <span className="text-[9px] font-mono font-bold tracking-[0.25em]
+              <span className="text-[9px] font-bold tracking-[0.25em]
                                uppercase px-3 py-1.5 rounded-full"
                     style={{ background: accent + '18', color: accent,
                              border: `1px solid ${accent}30` }}>
                 {narrative.riskLabel}
               </span>
-              <span className="text-[9px] font-mono text-neutral-600 uppercase">
+              <span className="text-[9px] text-neutral-600 uppercase">
                 {scenarioId.replace('_', ' ')}
               </span>
             </div>
 
             {/* Headline — make this much bigger */}
-            <h2 className="text-3xl font-black font-mono text-[var(--as-text-primary)]
+            <h2 className="text-3xl font-black text-[var(--as-text-primary)]
                            leading-tight tracking-tight mb-4">
               {narrative.headline}
             </h2>
 
             {/* Body — more line height, bigger font */}
-            <p className="text-sm font-mono leading-loose max-w-2xl"
+            <p className="text-sm leading-loose max-w-2xl"
                style={{ color: 'var(--as-text-secondary)' }}>
               {narrative.body}
             </p>
@@ -207,7 +207,7 @@ export default function HomePage() {
             />
 
             <div className="relative">
-              <div className="text-[8px] font-mono tracking-[0.25em] uppercase mb-4"
+              <div className="text-[8px] tracking-[0.25em] uppercase mb-4"
                    style={{ color: accent, opacity: 0.7 }}>
                 SHARPE RATIO
               </div>
@@ -219,7 +219,7 @@ export default function HomePage() {
                    }}>
                 {formatNumber(sharpeRatio, 2)}
               </div>
-              <div className="text-[9px] font-mono mt-3"
+              <div className="text-[9px] mt-3"
                    style={{ color: accent, opacity: 0.5 }}>
                 skor efisiensi portofolio
               </div>
@@ -232,11 +232,11 @@ export default function HomePage() {
       <div className="card-tier-2">
         <div className="flex items-start justify-between mb-8">
           <div>
-            <div className="text-[9px] font-mono tracking-[0.25em] uppercase mb-2"
+            <div className="text-[9px] tracking-[0.25em] uppercase mb-2"
                  style={{ color: 'var(--as-text-dim)' }}>
               PANDUAN KONTEKSTUAL
             </div>
-            <h2 className="text-lg font-bold font-mono"
+            <h2 className="text-lg font-bold"
                 style={{ color: 'var(--as-text-primary)' }}>
               Rekomendasi Alokasi Saat Ini
             </h2>
@@ -260,7 +260,7 @@ export default function HomePage() {
             return (
               <div key={key} className="flex items-center gap-4">
                 <span className="text-xl w-7 flex-shrink-0">{icon}</span>
-                <span className="text-[11px] font-mono w-32 flex-shrink-0"
+                <span className="text-[11px] font-sans w-32 flex-shrink-0"
                       style={{ color: 'var(--as-text-secondary)' }}>
                   {label}
                 </span>
@@ -290,21 +290,21 @@ export default function HomePage() {
       <div className="w-full">
         <div className="flex items-start justify-between mb-8">
           <div>
-            <div className="text-[9px] font-mono tracking-[0.25em] uppercase mb-2"
+            <div className="text-[9px] font-sans tracking-[0.25em] uppercase mb-2"
                  style={{ color: 'var(--as-text-dim)' }}>
               MONITOR MAKRO
             </div>
-            <h2 className="text-lg font-bold font-mono"
+            <h2 className="text-lg font-bold font-sans"
                 style={{ color: 'var(--as-text-primary)' }}>
               Sinyal Pasar Terkini
             </h2>
-            <p className="text-[10px] font-mono text-[var(--as-text-dim)] mt-1.5 uppercase tracking-wider">
+            <p className="text-[10px] font-sans text-[var(--as-text-dim)] mt-1.5 uppercase tracking-wider">
               * Seluruh indikator di bawah menggunakan data estimasi per Juni 2026, bukan data live real-time.
             </p>
           </div>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 stagger-children">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 stagger-children">
           {QUICK_SIGNALS_CONFIG.map(({ key, label, unit, icon }) => {
             const rawVal   = macro[key];
             const isLiveVal = key === 'biRate' ? (liveData?.bi_macro?.biRate ?? liveData?.bi_macro?.v ?? liveData?.biRate?.v) :
@@ -331,7 +331,7 @@ export default function HomePage() {
               <div key={key} className="card-tier-3 card-hover-glow">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-2xl">{icon}</span>
-                  <span className="text-[8px] font-mono px-2 py-0.5 rounded-md flex items-center gap-1.5"
+                  <span className="text-[8px] font-sans px-2 py-0.5 rounded-md flex items-center gap-1.5"
                         style={badgeStyles}>
                     {isLiveAvailableMetric && isLive && (
                       <div
@@ -342,7 +342,7 @@ export default function HomePage() {
                     {badgeLabel}
                   </span>
                 </div>
-                <div className="text-[10px] font-mono tracking-[0.2em] uppercase mb-2"
+                <div className="text-[10px] font-sans tracking-[0.2em] uppercase mb-2"
                      style={{ color: 'var(--as-text-dim)' }}>
                   {label}
                 </div>
@@ -351,7 +351,7 @@ export default function HomePage() {
                   {display}
                 </div>
                 {isLiveAvailableMetric && isLive && liveData[key]?.t && (
-                  <div className="text-[8px] font-mono text-emerald-500/80 mt-2 font-medium">
+                  <div className="text-[8px] font-sans text-emerald-500/80 mt-2 font-medium">
                     Diperbarui {formatTimeAgoIndonesian(liveData[key].t)}
                   </div>
                 )}
@@ -384,7 +384,7 @@ export default function HomePage() {
         }[scenarioId] ?? { label: 'TIDAK DIKETAHUI', color: '#525252' };
 
         return (
-          <div className="rounded-xl border p-6 flex items-center justify-between flex-wrap gap-6 transition-colors duration-300 shadow-lg bg-[var(--as-bg-secondary)] border-[var(--as-border-primary)]">
+          <div className="rounded-xl border p-8 flex items-center justify-between flex-wrap gap-8 transition-colors duration-300 shadow-lg bg-[var(--as-bg-secondary)] border-[var(--as-border-primary)]">
             <div className="flex items-center gap-6">
               {/* Execution Status */}
               <div className="flex items-center gap-3">
@@ -393,7 +393,7 @@ export default function HomePage() {
                   {execStatus.icon}
                 </div>
                 <div className="flex flex-col gap-1">
-                  <div className="text-xs font-mono font-bold tracking-widest uppercase" style={{ color: execStatus.color }}>
+                  <div className="text-xs font-sans font-bold tracking-widest uppercase" style={{ color: execStatus.color }}>
                     {execStatus.label}
                   </div>
                   <div className="text-[10px] text-[var(--as-text-tertiary)] max-w-sm">
@@ -409,10 +409,10 @@ export default function HomePage() {
             </div>
             {/* Macro Environment — RIGHT side */}
             <div className="flex flex-col gap-1 items-end">
-              <div className="text-[9px] font-mono text-[var(--as-text-tertiary)] uppercase tracking-widest">
+              <div className="text-[9px] font-sans text-[var(--as-text-tertiary)] uppercase tracking-widest">
                 LINGKUNGAN MAKRO
               </div>
-              <div className="text-[11px] font-mono font-bold tracking-widest px-3 py-1 rounded-md"
+              <div className="text-[11px] font-sans font-bold tracking-widest px-3 py-1 rounded-md"
                    style={{ backgroundColor: `${macroStatus.color}10`, color: macroStatus.color, border: `1px solid ${macroStatus.color}30` }}>
                 {macroStatus.label}
               </div>
@@ -425,17 +425,17 @@ export default function HomePage() {
       <div className="card-tier-2 overflow-hidden">
         <div className="flex items-start justify-between mb-8">
           <div>
-            <div className="text-[9px] font-mono tracking-[0.25em] uppercase mb-2"
+            <div className="text-[9px] font-sans tracking-[0.25em] uppercase mb-2"
                  style={{ color: 'var(--as-text-dim)' }}>
               PANDUAN KONTEKSTUAL
             </div>
-            <h2 className="text-lg font-bold font-mono"
+            <h2 className="text-lg font-bold font-sans"
                 style={{ color: 'var(--as-text-primary)' }}>
               Apa Yang Harus Dilakukan Sekarang?
             </h2>
           </div>
           <span
-            className="flex-shrink-0 px-4 py-1.5 rounded-lg text-[10px] font-bold font-mono uppercase tracking-widest"
+            className="flex-shrink-0 px-4 py-1.5 rounded-lg text-[10px] font-bold font-sans uppercase tracking-widest"
             style={{
               color:       accent,
               border:      `1px solid ${accent}30`,
@@ -446,7 +446,7 @@ export default function HomePage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {scenarioId === 'EQUILIBRIUM' && (<>
             <ActionGuidanceCard icon={<TrendingUp size={20} className="text-blue-500" />} title="Pertahankan Ekuitas" color="#3b82f6"
               body="Pasar modal domestik mendukung. Saham banking & consumer staples menawarkan return optimal. Hindari rotasi prematur ke aset defensif." />
@@ -533,7 +533,7 @@ function ActionGuidanceCard({ icon, title, body, color }) {
   return (
     <div className="card-tier-3 card-hover flex flex-col justify-start transition-colors duration-300">
       <div className="mb-4 flex items-center">{icon}</div>
-      <div className="text-[10px] font-bold font-mono uppercase tracking-widest mb-3" style={{ color }}>
+      <div className="text-[10px] font-bold font-sans uppercase tracking-widest mb-3" style={{ color }}>
         {title}
       </div>
       <p className="text-xs font-sans font-light text-[var(--as-text-tertiary)] leading-relaxed">
