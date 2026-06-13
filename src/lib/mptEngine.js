@@ -1,4 +1,4 @@
-// Quantitative portfolio optimization engine for AlphaShield
+// Quantitative portfolio optimization engine for Macroscope
 
 // Empirical volatilities (scale 0-1)
 export const ASSET_VOL = {

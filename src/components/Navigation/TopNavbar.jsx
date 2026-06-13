@@ -1,5 +1,7 @@
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Globe, Briefcase, Zap, Bell, Download, Loader2 } from "lucide-react";
 import { memo, useState, useEffect, useCallback, useRef, useMemo } from "react";
+import logo from "@/assets/logo_macroscope.png";
+
 import { useRootStore, APP_VERSION } from "@/stores/rootStore";
 import { exportTearSheetPDF } from "@/lib/tearSheetExporter";
 import { NavHealthIndicator } from "../NavHealthIndicator";
@@ -126,11 +128,11 @@ export const TopNavbar = memo(function TopNavbar() {
 
         {/* Left Section (Branding) */}
         <div className="flex items-center gap-3">
-          <div className="p-1.5 bg-indigo-500/10 rounded-md border border-indigo-500/20">
-            <Shield className="text-indigo-400" size={24} />
+          <div className="w-8 h-8 flex items-center justify-center">
+            <img src={logo} alt="Macroscope Logo" className="w-full h-full object-contain" />
           </div>
-          <span className="font-bold tracking-wider text-sm uppercase hidden md:block" style={{ color: 'var(--as-text-primary)' }}>
-            AlphaShield PEDS Core System {APP_VERSION}
+          <span className="font-extrabold tracking-widest text-sm uppercase hidden md:block font-sans" style={{ color: 'var(--as-text-primary)', fontFamily: "'Sora', 'Inter', sans-serif" }}>
+            MACROSCOPE
           </span>
         </div>
 

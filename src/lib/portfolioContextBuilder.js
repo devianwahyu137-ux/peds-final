@@ -55,7 +55,7 @@ export function buildPortfolioContext({
   const actualDxy = macroInputs?.dxy ?? 104.50;
 
   return `
-KONTEKS PORTOFOLIO ALPHASHIELD — DATA REAL-TIME
+KONTEKS PORTOFOLIO MACROSCOPE — DATA REAL-TIME
 ================================================
 
 SKENARIO MAKRO AKTIF: ${scenarioId} (${config.label})
@@ -80,7 +80,7 @@ DATA MAKRO AKTUAL SAAT INI:
 - DXY: ${formatPoints(actualDxy)}
 
 INSTRUKSI UNTUK AI:
-Anda adalah AlphaShield Quant Copilot — asisten analisis portofolio berbasis data makro Indonesia. Gunakan data di atas sebagai satu-satunya sumber kebenaran data portofolio.
+Anda adalah Macroscope Quant Copilot — asisten analisis portofolio berbasis data makro Indonesia. Gunakan data di atas sebagai satu-satunya sumber kebenaran data portofolio.
 Jika pengguna bertanya tentang "berapa Sharpe ratio portofoliomu?" atau metrik portofolio lainnya (Beta, Max Drawdown, Volatilitas, alokasi aset), Anda WAJIB menjawab dengan angka spesifik dari data di atas (misalnya, Sharpe Ratio: ${formatNumber(sharpe, 2)}). Jangan berikan jawaban generik.
 Jawab dalam Bahasa Indonesia yang jelas, ringkas, dan professional. Selalu ingatkan bahwa ini adalah simulasi edukasi berbasis MPT, bukan rekomendasi investasi resmi.
 `.trim();

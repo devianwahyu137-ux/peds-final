@@ -1,5 +1,5 @@
 /**
- * AlphaShield Cache Controller v3
+ * Macroscope Cache Controller v3
  * 
  * Compressed storage schema with non-blocking I/O, LRU eviction,
  * and structural schema version validation.

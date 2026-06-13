@@ -303,7 +303,7 @@ export async function exportTearSheetPDF({
       doc.setFontSize(7);
       doc.setFont('courier', 'normal');
       setTextColor(doc, C.textDim);
-      doc.text('ALPHASHIELD · PEDS CORE SYSTEM', ML, 8);
+      doc.text('MACROSCOPE', ML, 8);
 
       doc.setFontSize(16);
       doc.setFont('courier', 'bold');
@@ -345,7 +345,7 @@ export async function exportTearSheetPDF({
       const footerText =
         'EDUCATIONAL SIMULATION MODEL ONLY  ·  NOT INVESTMENT ADVICE  ·  ' +
         'INDEPENDENT EDUCATIONAL SIMULATION  ·  NOT AN OJK-REGISTERED OR OJK-SUPERVISED PRODUCT  ·  ' +
-        `PEDS ALPHASHIELD ENGINE ${APP_VERSION.toUpperCase()}  ·  ALL DATA IS HYPOTHETICAL FOR SIMULATION DEMONSTRATION PURPOSES  ·  ` +
+        `MACROSCOPE v${APP_VERSION}  ·  ALL DATA IS HYPOTHETICAL FOR SIMULATION DEMONSTRATION PURPOSES  ·  ` +
         'DATA MAKRO ESTIMASI BERDASARKAN KONDISI PASAR JUNI 2026  ·  ' +
         'KONSULTASIKAN KEPUTUSAN INVESTASI DENGAN ADVISOR KEUANGAN TERDAFTAR OJK';
       const footLines = wrapText(doc, footerText, CW, 5.5);
@@ -748,7 +748,7 @@ export async function exportTearSheetPDF({
 
     // ── SAVE ──────────────────────────────────────────────────
     const stamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
-    doc.save(`AlphaShield_TearSheet_${stamp}.pdf`);
+    doc.save(`Macroscope_TearSheet_${stamp}.pdf`);
 
     onDone();
   } catch (err) {

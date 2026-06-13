@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { X, Sparkles, Send, AlertCircle } from "lucide-react";
 import { buildSuggestedQuestions } from '@/lib/portfolioContextBuilder';
-import { getAlphaShieldAnalysis } from '@/lib/gemini';
+import { getMacroscopeAnalysis } from '@/lib/gemini';
 import { useRootStore, SCENARIOS } from '@/stores/rootStore';
 import { SCENARIO_CONFIG } from '@/lib/scenarioPulse';
 import { ACCENT } from './SharedComponents';
@@ -98,7 +98,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
 
     try {
       // Execute the real API call waiting for the promise to resolve
-      const aiResponseText = await getAlphaShieldAnalysis(
+      const aiResponseText = await getMacroscopeAnalysis(
         msg,
         portfolioState,
         messages,
@@ -112,7 +112,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
         { role: 'ai', content: aiResponseText },
       ]);
     } catch (err) {
-      console.error('[AlphaShield] AI API error:', err);
+      console.error('[Macroscope] AI API error:', err);
       setError(err.message || "Terjadi kesalahan saat menghubungi layanan AI.");
     } finally {
       setIsLoading(false);
@@ -186,7 +186,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
               className="text-sm font-semibold tracking-wide font-sans"
               style={{ color: 'var(--as-text-primary)' }}
             >
-              AlphaShield Quant Copilot
+              Macroscope Quant Copilot
             </h2>
             {/* Provider badge */}
             <span
@@ -223,7 +223,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
                   <span className="text-xs font-bold uppercase tracking-wider">Selamat Datang</span>
                 </div>
                 <p className="text-xs text-[var(--as-text-secondary)] leading-relaxed">
-                  Halo! Saya adalah <strong>AlphaShield Quant Copilot</strong>. Saya siap membantu Anda menganalisis alokasi aset, risiko krisis eksternal, dan efisiensi portofolio di bawah skenario aktif <strong>{config.label}</strong>.
+                  Halo! Saya adalah <strong>Macroscope Quant Copilot</strong>. Saya siap membantu Anda menganalisis alokasi aset, risiko krisis eksternal, dan efisiensi portofolio di bawah skenario aktif <strong>{config.label}</strong>.
                 </p>
                 <p className="text-[10px] text-[var(--as-text-tertiary)]">
                   Gunakan kolom obrolan di bawah untuk bertanya, atau pilih salah satu topik diskusi yang disarankan berikut:

@@ -1,5 +1,5 @@
 /**
- * AlphaShield Release Windows — System Context Module
+ * Macroscope Release Windows — System Context Module
  * 
  * Determines the optimal polling interval based on the current WIB time
  * and known economic data release windows (BI Rate, US Macro, BPS CPI).

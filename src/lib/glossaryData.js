@@ -42,7 +42,7 @@ export const GLOSSARY = {
     term:       'Modern Portfolio Theory',
     symbol:     'MPT',
     definition: 'Teori yang dikembangkan Harry Markowitz (1952) — membuktikan bahwa diversifikasi aset dapat mengoptimalkan return untuk tingkat risiko tertentu. Fondasi dari alokasi aset modern.',
-    example:    'AlphaShield menggunakan MPT untuk menghitung alokasi optimal antara saham, obligasi, emas, dan kas.',
+    example:    'Macroscope menggunakan MPT untuk menghitung alokasi optimal antara saham, obligasi, emas, dan kas.',
     learnMore:  'Harry Markowitz memenangkan Nobel Economics 1990 untuk teori ini.',
   },
   sbn: {
@@ -63,7 +63,7 @@ export const GLOSSARY = {
     term:       'Simulasi Monte Carlo',
     symbol:     'MC',
     definition: 'Metode komputasi yang menjalankan ribuan skenario acak untuk memprediksi distribusi kemungkinan hasil di masa depan. Bukan prediksi pasti — distribusi probabilitas.',
-    example:    'AlphaShield menjalankan 1.000 simulasi × 252 hari untuk menghasilkan range median/best/worst case.',
+    example:    'Macroscope menjalankan 1.000 simulasi × 252 hari untuk menghasilkan range median/best/worst case.',
     learnMore:  'Dinamakan dari kasino Monte Carlo karena menggunakan prinsip keacakan.',
   },
   xauIdr: {

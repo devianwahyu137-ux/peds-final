@@ -25,7 +25,7 @@ export default function MacroNewsCards() {
             CATATAN RISET MAKRO // INSIGHT SKENARIO
           </div>
           <div className="text-[8px] text-neutral-500 font-sans uppercase mt-0.5 tracking-wider">
-            INTERPRETASI EDUKATIF · BUKAN BERITA · DISUSUN OLEH MODEL ALPHASHIELD
+            INTERPRETASI EDUKATIF · BUKAN BERITA · DISUSUN OLEH MODEL MACROSCOPE
           </div>
         </div>
         <div className="text-[8px] px-2.5 py-0.5 rounded border border-amber-500/20 bg-amber-500/5 text-amber-500 uppercase font-mono tracking-widest font-bold">

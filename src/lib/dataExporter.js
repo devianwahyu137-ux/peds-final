@@ -47,7 +47,7 @@ export function exportPortfolioCSV({ scenarioId, weights, analytics, macroInputs
   const rf      = rfRaw < 1 && rfRaw > 0 ? rfRaw * 100 : rfRaw;
 
   const rows = [
-    ['ALPHASHIELD PORTFOLIO EXPORT', '', ''],
+    ['MACROSCOPE PORTFOLIO EXPORT', '', ''],
     ['Generated', new Date().toLocaleString('id-ID'), ''],
     ['', '', ''],
 
@@ -94,7 +94,7 @@ export function exportPortfolioCSV({ scenarioId, weights, analytics, macroInputs
     row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
   ).join('\r\n');
 
-  downloadFile(csv, `AlphaShield_Portfolio_${ts}.csv`, 'text/csv;charset=utf-8;');
+  downloadFile(csv, `Macroscope_Portfolio_${ts}.csv`, 'text/csv;charset=utf-8;');
 }
 
 /**
@@ -116,7 +116,7 @@ export function exportPortfolioJSON({ scenarioId, weights, analytics, macroInput
 
   const payload = {
     meta: {
-      platform:   `AlphaShield PEDS Core System ${APP_VERSION}`,
+      platform:   `Macroscope v${APP_VERSION}`,
       exportedAt: new Date().toISOString(),
       disclaimer: 'Educational simulation only. Not investment advice.',
     },
@@ -151,7 +151,7 @@ export function exportPortfolioJSON({ scenarioId, weights, analytics, macroInput
 
   downloadFile(
     JSON.stringify(payload, null, 2),
-    `AlphaShield_Portfolio_${ts}.json`,
+    `Macroscope_Portfolio_${ts}.json`,
     'application/json'
   );
 }

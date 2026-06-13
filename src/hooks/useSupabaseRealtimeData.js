@@ -122,9 +122,9 @@ export function useSupabaseRealtimeData() {
       .subscribe((status) => {
         if (!isMountedRef.current) return;
         if (status === 'SUBSCRIBED') {
-          console.info('[AlphaShield] Supabase Realtime connected for macro_data ✓');
+          console.info('[Macroscope] Supabase Realtime connected for macro_data ✓');
         } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
-          console.warn('[AlphaShield] Supabase Realtime disconnected:', status);
+          console.warn('[Macroscope] Supabase Realtime disconnected:', status);
         }
       });
 

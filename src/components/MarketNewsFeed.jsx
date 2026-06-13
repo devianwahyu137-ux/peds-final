@@ -7,7 +7,7 @@ const STATIC_NEWS_FALLBACK = [
     title: "Global Macro Pulse: USD Strength Triggers Emerging Markets Capital Reallocation",
     summary: "As the Dollar Index (DXY) rises past 106, international capital managers are rotating out of high-beta emerging equities into sovereign cash reserves.",
     url: "https://www.alphavantage.co",
-    source: "AlphaShield Macro Intelligence",
+    source: "Macroscope Macro Intelligence",
     overall_sentiment_label: "Bearish",
     time_published: "20260521T080000"
   },

@@ -1,6 +1,6 @@
 import { buildPortfolioContext } from './portfolioContextBuilder';
 
-export async function getAlphaShieldAnalysis(userMessage, portfolioState, chatHistory = [], onChunk = null) {
+export async function getMacroscopeAnalysis(userMessage, portfolioState, chatHistory = [], onChunk = null) {
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
   const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
@@ -33,7 +33,7 @@ export async function getAlphaShieldAnalysis(userMessage, portfolioState, chatHi
     // Append the new incoming user message to the end of history
     cleanHistory.push({ role: 'user', content: userMessage });
     
-    console.log("[AlphaShield] Forwarding history to Edge Function:", cleanHistory);
+    console.log("[Macroscope] Forwarding history to Edge Function:", cleanHistory);
 
     // Call the Supabase Edge Function proxy
     const response = await fetch(`${supabaseUrl}/functions/v1/chat`, {
@@ -63,7 +63,7 @@ export async function getAlphaShieldAnalysis(userMessage, portfolioState, chatHi
 
     return replyText;
   } catch (error) {
-    console.error('[AlphaShield] Chat Proxy Error:', error);
+    console.error('[Macroscope] Chat Proxy Error:', error);
     
     // If the error message comes from the backend proxy, propagate it directly.
     const isFriendlyError = error.message && (
@@ -73,6 +73,6 @@ export async function getAlphaShieldAnalysis(userMessage, portfolioState, chatHi
       error.message.includes("tidak valid")
     );
     
-    throw new Error(isFriendlyError ? error.message : "Koneksi ke jaringan AlphaShield terputus. Silakan coba beberapa saat lagi.");
+    throw new Error(isFriendlyError ? error.message : "Koneksi ke jaringan Macroscope terputus. Silakan coba beberapa saat lagi.");
   }
 }

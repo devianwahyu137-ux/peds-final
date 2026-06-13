@@ -1,5 +1,5 @@
 /**
- * AlphaShield Live Market Data Hook
+ * Macroscope Live Market Data Hook
  * 
  * Re-engineered with:
  * - Recursive setTimeout lifecycle (no setInterval)
@@ -246,7 +246,7 @@ export function useLiveMarketData() {
         });
       }
     } catch (err) {
-      console.error('[AlphaShield] Live MPT recalc error:', err.message);
+      console.error('[Macroscope] Live MPT recalc error:', err.message);
     }
   }, [liveData, scenarioId, weights, macroInputs]);
 

@@ -1,5 +1,5 @@
 /**
- * AlphaShield Schema Validator
+ * Macroscope Schema Validator
  *
  * Universal Schema Validator — transforms API response variations
  * into a lean unified format { v, d, t, src, ok }

@@ -40,7 +40,7 @@ class PageErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
-    console.error('[AlphaShield] Page render error:', error, info);
+    console.error('[Macroscope] Page render error:', error, info);
   }
 
   render() {
@@ -100,7 +100,7 @@ export default function App() {
   
   // Initialize mock chat history
   const [chatMessages, setChatMessages] = useState([
-    { role: 'ai', content: 'Halo! Saya AlphaShield Quant Copilot. Ada yang bisa saya bantu terkait analisis portofolio atau simulasi makro saat ini?' }
+    { role: 'ai', content: 'Halo! Saya Macroscope Quant Copilot. Ada yang bisa saya bantu terkait analisis portofolio atau simulasi makro saat ini?' }
   ]);
 
   const activeTab = useRootStore((s) => s.activeTab);

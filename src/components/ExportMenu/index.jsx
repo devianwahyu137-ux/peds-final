@@ -55,7 +55,7 @@ export function ExportMenu() {
       setIsOpen(false);
       setTimeout(() => setStatus(null), 3000);
     } catch (err) {
-      console.error('[AlphaShield] Export error:', err);
+      console.error('[Macroscope] Export error:', err);
       setStatus('error');
       setTimeout(() => setStatus(null), 3000);
     }
