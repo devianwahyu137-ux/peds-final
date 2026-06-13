@@ -702,3 +702,8 @@ svg * {
     transform: none !important;
   }
 }
+
+/* ── FREEZE DASHBOARD ANIMATIONS WHEN COPILOT IS OPEN ── */
+.copilot-open *:not(.copilot-drawer):not(.copilot-drawer *) {
+  animation-play-state: paused !important;
+}

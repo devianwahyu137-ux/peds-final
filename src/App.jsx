@@ -177,7 +177,7 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-[var(--as-bg-secondary)] dark:text-neutral-100 overflow-hidden transition-colors duration-300">
+    <div className={`h-screen w-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-[var(--as-bg-secondary)] dark:text-neutral-100 overflow-hidden transition-colors duration-300 ${isCopilotOpen ? 'copilot-open' : ''}`}>
 
 
 

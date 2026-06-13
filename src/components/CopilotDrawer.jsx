@@ -140,7 +140,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
       {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-md transition-opacity"
+          className="fixed inset-0 z-[90] bg-black/85 backdrop-blur-xl transition-opacity pointer-events-auto cursor-pointer"
           onClick={onClose}
         />
       )}
@@ -150,7 +150,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
         className={`fixed top-[85px] right-6 z-[100]
                     bg-black/80 backdrop-blur-md border rounded-2xl shadow-2xl flex flex-col
                     w-[450px] h-[calc(100vh-110px)] max-h-[750px]
-                    transition-all duration-300 ease-in-out copilot-breathing-glow ${
+                    transition-all duration-300 ease-in-out copilot-breathing-glow copilot-drawer ${
           isOpen ? "opacity-100 translate-y-0 scale-100 pointer-events-auto" : "opacity-0 translate-y-4 scale-95 pointer-events-none"
         }`}
         style={{
