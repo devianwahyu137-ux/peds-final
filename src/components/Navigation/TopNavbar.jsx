@@ -5,7 +5,6 @@ import logo from "@/assets/logo_macroscope.png";
 import { useRootStore, APP_VERSION } from "@/stores/rootStore";
 import { exportTearSheetPDF } from "@/lib/tearSheetExporter";
 import { NavHealthIndicator } from "../NavHealthIndicator";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { AlertSettings } from "@/components/AlertSystem/AlertSettings";
 import { useTheme } from "@/hooks/useTheme";
 import { SCENARIO_CONFIG } from "@/lib/scenarioPulse";
@@ -124,54 +123,59 @@ export const TopNavbar = memo(function TopNavbar() {
       style={{ backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", background: "var(--as-navbar-bg)" }}
     >
       {/* Top Branding & Controls Bar */}
-      <div className="flex items-center justify-between w-full px-6 py-3.5 border-b" style={{ background: 'var(--as-bg-page)', borderColor: 'var(--as-border-primary)' }}>
+      <div className="flex items-center justify-between w-full px-6 py-3 border-b" style={{ background: 'var(--as-bg-page)', borderColor: 'var(--as-border-primary)' }}>
 
-        {/* Left Section (Branding) */}
+        {/* Left Section (Branding Lockup) */}
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 flex items-center justify-center">
             <img src={logo} alt="Macroscope Logo" className="w-full h-full object-contain" />
           </div>
-          <span className="font-extrabold tracking-widest text-sm uppercase hidden md:block font-sans" style={{ color: 'var(--as-text-primary)', fontFamily: "'Sora', 'Inter', sans-serif" }}>
-            MACROSCOPE
-          </span>
+          <div className="flex flex-col">
+            <span className="font-extrabold tracking-widest text-sm uppercase font-sans leading-none" style={{ color: 'var(--as-text-primary)', fontFamily: "'Sora', 'Inter', sans-serif" }}>
+              MACROSCOPE
+            </span>
+            <span className="text-[8px] font-semibold tracking-wider text-neutral-500 uppercase font-sans mt-0.5 hidden sm:block">
+              Macro Scenario Simulator
+            </span>
+          </div>
         </div>
 
-        {/* Right Section (Controls & Status) */}
-        <div className="flex items-center gap-6">
-          {/* Status Portfolio */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="relative flex h-2 w-2">
+        {/* Right Section (Controls & Status Action Lockup) */}
+        <div className="flex items-center gap-5 flex-shrink-0">
+          
+          {/* 1. Status Portofolio */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neutral-900/40 border border-neutral-800/80">
+            <span className="relative flex h-1.5 w-1.5">
               <span
                 className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50"
                 style={{ backgroundColor: portfolioHealth.grade.color }}
               />
               <span
-                className="relative inline-flex rounded-full h-2 w-2"
+                className="relative inline-flex rounded-full h-1.5 w-1.5"
                 style={{ backgroundColor: portfolioHealth.grade.color }}
               />
             </span>
             <span
-              className="text-[10px] font-sans font-bold tracking-widest whitespace-nowrap"
+              className="text-[9px] font-sans font-extrabold tracking-widest whitespace-nowrap uppercase"
               style={{ color: portfolioHealth.grade.color }}
             >
-              STATUS PORTOFOLIO: {portfolioHealth.grade.label}
+              STATUS: {portfolioHealth.grade.label}
             </span>
           </div>
 
-          <ThemeToggle />
-
+          {/* 2. Download Tear Sheet */}
           <div className="flex items-center gap-2">
             <button
               onClick={handleExport}
               disabled={isExporting}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[9px] font-sans font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer flex-shrink-0"
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[9px] font-sans font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer flex-shrink-0 active:scale-[0.98]"
               style={{
-                background:  isExporting ? 'var(--as-bg-tertiary)' : 'rgba(16,185,129,0.10)',
-                borderColor: isExporting ? '#333' : 'rgba(16,185,129,0.40)',
+                background:  isExporting ? 'var(--as-bg-tertiary)' : 'rgba(16,185,129,0.06)',
+                borderColor: isExporting ? 'var(--as-border-primary)' : 'rgba(16,185,129,0.30)',
                 color:       isExporting ? 'var(--as-text-tertiary)' : '#10b981',
               }}
             >
-              <span className="flex items-center justify-center">{isExporting ? <Loader2 className="animate-spin" size={12} /> : <Download size={12} />}</span>
+              <span className="flex items-center justify-center">{isExporting ? <Loader2 className="animate-spin" size={10} /> : <Download size={10} />}</span>
               <span>{isExporting ? 'GENERATING...' : 'DOWNLOAD TEAR SHEET'}</span>
             </button>
             {exportMsg && (
@@ -180,14 +184,19 @@ export const TopNavbar = memo(function TopNavbar() {
               </span>
             )}
           </div>
+
+          {/* Vertical Divider */}
+          <div className="h-4 w-px bg-neutral-800 hidden md:block" />
+
+          {/* 3. Notification Settings (Bell) */}
           <div className="relative" ref={alertRef}>
             <button
               onClick={() => setAlertSettingsOpen(p => !p)}
-              className="relative p-3 rounded-lg cursor-pointer transition-colors hover:text-white flex items-center justify-center min-w-[44px] min-h-[44px]"
+              className="p-2 rounded-lg cursor-pointer transition-all duration-200 hover:text-white hover:bg-neutral-900/60 flex items-center justify-center min-w-[36px] min-h-[36px] border border-transparent hover:border-neutral-855 active:scale-[0.95]"
               style={{ color: 'var(--as-text-dim)' }}
               title="Pengaturan Alert"
             >
-              <Bell size={18} />
+              <Bell size={16} />
             </button>
             <AlertSettings
               isOpen={alertSettingsOpen}
@@ -195,6 +204,10 @@ export const TopNavbar = memo(function TopNavbar() {
             />
           </div>
 
+          {/* Vertical Divider */}
+          <div className="h-4 w-px bg-neutral-800" />
+
+          {/* 4. Data-Health Indicator Gauge */}
           <NavHealthIndicator />
         </div>
       </div>

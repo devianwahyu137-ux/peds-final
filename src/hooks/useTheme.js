@@ -1,47 +1,28 @@
-// src/hooks/useTheme.js
-// Theme management hook — persists preference to localStorage
-// Toggles data-theme attribute on document.documentElement
-// All components use this hook to read/toggle theme
-
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 
 const STORAGE_KEY = 'alphashield_theme';
-const VALID_THEMES = ['dark', 'light'];
-
-function getInitialTheme() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved && VALID_THEMES.includes(saved)) return saved;
-  } catch {}
-  // Default to dark — matches the finance terminal aesthetic
-  return 'dark';
-}
-
-function applyTheme(theme) {
-  const root = document.documentElement;
-  if (theme === 'light') {
-    root.setAttribute('data-theme', 'light');
-  } else {
-    root.removeAttribute('data-theme'); // dark is the :root default
-  }
-}
 
 export function useTheme() {
-  const [theme, setThemeState] = useState(getInitialTheme);
+  const theme = 'dark';
+  const isDark = true;
 
-  // Apply on mount and changes
+  // Apply default dark theme on mount and keep local storage synced
   useEffect(() => {
-    applyTheme(theme);
-    try { localStorage.setItem(STORAGE_KEY, theme); } catch {}
-  }, [theme]);
+    const root = document.documentElement;
+    root.removeAttribute('data-theme'); // default is dark theme
+    try {
+      localStorage.setItem(STORAGE_KEY, 'dark');
+    } catch {}
+  }, []);
 
-  const setTheme = useCallback((newTheme) => {
-    if (VALID_THEMES.includes(newTheme)) setThemeState(newTheme);
+  const setTheme = useCallback(() => {
+    // No-op to prevent light mode activation
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setThemeState((prev) => prev === 'dark' ? 'light' : 'dark');
+    // No-op to prevent light mode activation
   }, []);
 
-  return { theme, setTheme, toggleTheme, isDark: theme === 'dark' };
+  return { theme, setTheme, toggleTheme, isDark };
 }
+
