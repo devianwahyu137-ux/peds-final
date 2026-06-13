@@ -8,6 +8,7 @@ import { EfficientFrontierChart } from './EfficientFrontierChart';
 import { GlossaryTerm } from '@/components/GlossaryTerm';
 import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
 import { formatNumber, formatIDR } from "@/utils/format";
+import MonteCarloWorker from '../../workers/monteCarloWorker?worker';
 
 const CAPITAL_PRESETS = [
   { label: '10 Juta',  value: 10_000_000  },
@@ -134,7 +135,7 @@ export function MonteCarloPanel() {
     }
 
     // Instantiate Web Worker directly
-    const worker = new Worker(new URL('../../workers/monteCarloWorker.js', import.meta.url), { type: 'module' });
+    const worker = new MonteCarloWorker();
     workerRef.current = worker;
 
     worker.onmessage = (e) => {
