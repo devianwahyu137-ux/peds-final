@@ -19,6 +19,7 @@ import { useTheme } from '@/hooks/useTheme';
 import FloatingCopilotTrigger from '@/components/FloatingCopilotTrigger';
 import CopilotDrawer from '@/components/CopilotDrawer';
 import { AlertBanner } from '@/components/AlertSystem/AlertBanner';
+import CoverPage from '@/components/CoverPage';
 
 // Lazy load all pages
 const HomePage      = lazy(() => import('@/pages/HomePage'));
@@ -123,6 +124,23 @@ export default function App() {
     dismissBanner,
     clearSession,
   } = usePortfolioPersistence();
+
+  // --- LOCALSTORAGE FLAG CHECK FOR COVER PAGE ---
+  // To keep the cover page always visible during demos/presentations, change this check to:
+  // const [showCover, setShowCover] = useState(true);
+  const [showCover, setShowCover] = useState(() => {
+    const dismissed = localStorage.getItem('macroscope_cover_dismissed');
+    return dismissed !== 'true';
+  });
+
+  const handleEnterDashboard = () => {
+    localStorage.setItem('macroscope_cover_dismissed', 'true');
+    setShowCover(false);
+  };
+
+  if (showCover) {
+    return <CoverPage onEnter={handleEnterDashboard} />;
+  }
 
   // Tab → Component mapping
   const PAGE_MAP = {
