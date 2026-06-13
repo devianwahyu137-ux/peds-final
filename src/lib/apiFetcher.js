@@ -79,6 +79,12 @@ export async function fetchWithTimeout(url, options = {}, timeoutMs = 8000, exte
  * Tiered fetch with fallback: Cache → Network → Stale Cache → Static Fallback
  */
 export async function fetchWithFallback(cacheKey, url, transformer, ttlMs = 60000, staticFallback = null, externalSignal = null) {
+  // Pure static endpoints (no network fetch allowed)
+  if (!url || cacheKey === "gs10" || cacheKey === "dxy" || cacheKey === "fedFunds" || cacheKey === "sbnYield10Y" || cacheKey === "inflasiTrend" || cacheKey === "emasTrend") {
+    const fallbackValue = staticFallback !== null ? staticFallback : STATIC_FALLBACK[cacheKey];
+    return { data: fallbackValue, status: "ok" };
+  }
+
   // Tier 1: Fresh cache check
   const cached = safeCacheRead(cacheKey);
   if (cached && !cached.isStale) {
@@ -166,6 +172,25 @@ export async function fetchSequentialWithAbort(signal, setLiveMetric, setEndpoin
     if (signal.aborted) return;
     try {
       setEndpointStatus(key, "fetching");
+      
+      // Bypassing network fetch for static metrics:
+      if (!url || key === "gs10" || key === "dxy" || key === "fedFunds") {
+        const val = STATIC_FALLBACK[key];
+        const ts = null; // No timestamp -> displays "Estimasi Statis" cleanly
+        const deltaInfo = computeDelta(key, val, Date.now());
+        const payload = {
+          v: val,
+          t: ts,
+          ok: true,
+          src: "static_fallback",
+          d: deltaInfo.delta,
+          _dir: deltaInfo.direction
+        };
+        setLiveMetric(key, payload);
+        setEndpointStatus(key, "ok");
+        return;
+      }
+
       const res = await fetchWithFallback(key, url, transformer, ttlMs, null, signal);
       if (signal.aborted) return;
       
@@ -243,9 +268,9 @@ export async function fetchSequentialWithAbort(signal, setLiveMetric, setEndpoin
   // ── FRED Block (0s delay) ────────────────────────────
   if (signal.aborted) return;
   await Promise.all([
-    fetchAndStore("gs10", "https://api.stlouisfed.org/fred/series/observations?series_id=GS10&api_key=demo&file_type=json", transformers.fred, 900000),
-    fetchAndStore("dxy", "https://api.stlouisfed.org/fred/series/observations?series_id=DTWEXBGS&api_key=demo&file_type=json", transformers.fred, 900000),
-    fetchAndStore("fedFunds", "https://api.stlouisfed.org/fred/series/observations?series_id=FEDFUNDS&api_key=demo&file_type=json", transformers.fred, 900000),
+    fetchAndStore("gs10", "", null, 900000),
+    fetchAndStore("dxy", "", null, 900000),
+    fetchAndStore("fedFunds", "", null, 900000),
   ]);
 
   // ── Exit gate: Check abort before IHSG ────────────────
