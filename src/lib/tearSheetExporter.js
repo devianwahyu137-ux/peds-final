@@ -388,11 +388,12 @@ export async function exportTearSheetPDF({
     const contentY = 60;
 
     // ── COL 1 (LEFT): Macro Indicators ──
+    let rowY = contentY;
     doc.setFontSize(7.5);
     doc.setFont('courier', 'bold');
     setTextColor(doc, C.textDim);
-    doc.text('MACRO TELEMETRY INDICATORS', col1X, contentY);
-    hRule(doc, contentY + 2.5, col1X, col1X + colW, C.lightGray);
+    doc.text('MACRO TELEMETRY INDICATORS', col1X, rowY);
+    hRule(doc, rowY + 2.5, col1X, col1X + colW, C.lightGray);
 
     const macroData = [
       { label: 'BI Rate',         value: `${formatNumber(biRateVal, 2)}%` },
@@ -405,7 +406,7 @@ export async function exportTearSheetPDF({
       { label: 'Fed Funds Rate',  value: `${formatNumber(fedFundsVal, 2)}%` },
     ];
 
-    let rowY = contentY + 8;
+    rowY += 8;
     macroData.forEach(({ label, value }) => {
       doc.setFontSize(7.5);
       doc.setFont('courier', 'normal');
@@ -421,7 +422,8 @@ export async function exportTearSheetPDF({
     });
 
     // ── COL 1 (LEFT): Asset Allocation Matrix ──
-    const allocY = 117;
+    // Position dynamically under the macro indicators with a safe gap
+    const allocY = rowY + 5.5;
     doc.setFontSize(7.5);
     doc.setFont('courier', 'bold');
     setTextColor(doc, C.textDim);
@@ -664,8 +666,8 @@ export async function exportTearSheetPDF({
     doc.setFont('courier', 'bold');
     setTextColor(doc, C.textDim);
     doc.text('PERIODE / KRISIS', col2X, thY);
-    doc.text('SEVERITY', col2X + 60, thY);
-    doc.text('MARKET', col2X + 90, thY, { align: 'right' });
+    doc.text('SEVERITY', col2X + 52, thY);
+    doc.text('MARKET', col2X + 102, thY, { align: 'right' });
     doc.text('EST. RETURN', col2X + colW, thY, { align: 'right' });
     hRule(doc, thY + 2, col2X, col2X + colW, C.lightGray);
 
@@ -675,30 +677,41 @@ export async function exportTearSheetPDF({
       const isPositive = outcome.returnPct > 0;
       const perfColor = isPositive ? C.emerald : outcome.returnPct > -10 ? C.amber : C.red;
 
+      // Wrap period/crisis name to prevent truncation
       doc.setFontSize(7);
       doc.setFont('courier', 'bold');
       setTextColor(doc, C.textPrimary);
-      doc.text(crisis.name.length > 30 ? crisis.name.slice(0, 27) + '...' : crisis.name, col2X, trY);
+      const nameLines = doc.splitTextToSize(crisis.name, 48);
+      nameLines.forEach((line, index) => {
+        doc.text(line, col2X, trY + index * 3.5);
+      });
       
+      // Draw period details below wrapped name lines
       doc.setFont('courier', 'normal');
       setTextColor(doc, C.textSecond);
-      doc.text(crisis.period, col2X, trY + 3.5);
+      const periodY = trY + nameLines.length * 3.5;
+      doc.text(crisis.period, col2X, periodY);
 
+      // Severity Column (X = col2X + 52)
       setTextColor(doc, crisis.severityColor === '#ef4444' ? C.red : C.amber);
       doc.setFont('courier', 'bold');
-      doc.text(crisis.severity, col2X + 60, trY);
+      doc.text(crisis.severity, col2X + 52, trY);
 
+      // Market Conditions Column (X = col2X + 102, Right-aligned)
       doc.setFont('courier', 'normal');
       setTextColor(doc, C.textSecond);
-      const declVal = crisis.macroConditions['IHSG Decline'] ?? crisis.macroConditions['MTD Decline'] ?? 'N/A';
-      doc.text(declVal, col2X + 90, trY, { align: 'right' });
+      const declVal = crisis.macroConditions['IHSG Decline'] ?? crisis.macroConditions['MTD Decline'] ?? crisis.macroConditions['IHSG MTD Mei'] ?? 'N/A';
+      doc.text(declVal, col2X + 102, trY, { align: 'right' });
 
+      // Expected Return Column (X = col2X + colW, Right-aligned)
       doc.setFont('courier', 'bold');
       setTextColor(doc, perfColor);
       doc.text(`${isPositive ? '+' : ''}${outcome.returnPct}%`, col2X + colW, trY, { align: 'right' });
 
-      hRule(doc, trY + 5.5, col2X, col2X + colW, [22, 22, 22]);
-      trY += 9.5;
+      // Dynamically calculate row height based on text wrapping lines
+      const rowHeight = (nameLines.length + 1) * 3.5 + 2.5;
+      hRule(doc, trY + rowHeight - 2, col2X, col2X + colW, [22, 22, 22]);
+      trY += rowHeight;
     });
 
     // Glossary

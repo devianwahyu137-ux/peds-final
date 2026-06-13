@@ -2,7 +2,7 @@
 import { lazy, Suspense, Component, useState } from 'react';
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare } from "lucide-react";
 import { useRootStore } from '@/stores/rootStore';
-import { TickerBar }    from '@/components/Navigation/TickerBar';
+
 import { TopNavbar }    from '@/components/Navigation/TopNavbar';
 import { ScenarioBriefingOverlay }
   from '@/components/ScenarioBriefingOverlay';
@@ -161,10 +161,7 @@ export default function App() {
   return (
     <div className="h-screen w-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-[var(--as-bg-secondary)] dark:text-neutral-100 overflow-hidden transition-colors duration-300">
 
-      {/* Fixed ticker bar — z-50 */}
-      <div className="print:hidden shrink-0">
-        <TickerBar />
-      </div>
+
 
       {/* Fixed top navbar — z-[60], below ticker */}
       <div className="print:hidden shrink-0 relative z-[60]">
