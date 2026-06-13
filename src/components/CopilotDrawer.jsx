@@ -147,10 +147,13 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
 
       {/* Floating Panel Container */}
       <div
-        className={`fixed top-[85px] right-6 z-[100]
-                    bg-black/80 backdrop-blur-md border rounded-2xl shadow-2xl flex flex-col
-                    w-[450px] h-[calc(100vh-110px)] max-h-[750px]
-                    transition-all duration-300 ease-in-out copilot-breathing-glow copilot-drawer ${
+        className={`fixed z-[100]
+                    backdrop-blur-md border shadow-2xl flex flex-col
+                    copilot-breathing-glow copilot-drawer
+                    transition-all duration-300 ease-in-out
+                    inset-0 w-full h-[100dvh] rounded-none bg-black
+                    md:inset-auto md:top-[85px] md:right-6 md:w-[450px] md:h-[calc(100vh-110px)] md:max-h-[750px] md:rounded-2xl md:bg-black/80
+                    ${
           isOpen ? "opacity-100 translate-y-0 scale-100 pointer-events-auto" : "opacity-0 translate-y-4 scale-95 pointer-events-none"
         }`}
         style={{
@@ -178,12 +181,12 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
         {/* Header */}
         <div
           className="flex items-center justify-between p-4 border-b shrink-0"
-          style={{ borderColor: 'var(--as-border-primary)' }}
+          style={{ borderColor: 'var(--as-border-primary)', paddingTop: 'max(1rem, env(safe-area-inset-top, 1rem))' }}
         >
-          <div className="flex items-center gap-2">
-            <Sparkles size={16} className="text-indigo-400" />
+          <div className="flex items-center gap-2 min-w-0 flex-wrap">
+            <Sparkles size={16} className="text-indigo-400 shrink-0" />
             <h2
-              className="text-sm font-semibold tracking-wide font-sans"
+              className="text-sm font-semibold tracking-wide font-sans break-words"
               style={{ color: 'var(--as-text-primary)' }}
             >
               Macroscope Quant Copilot
@@ -191,7 +194,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
             {/* Provider badge */}
             <span
               className="text-[8px] font-sans px-1.5 py-0.5 rounded-md
-                         tracking-widest uppercase"
+                         tracking-widest uppercase shrink-0"
               style={{
                 background: 'var(--as-bg-tertiary)',
                 color: config.color,
@@ -203,7 +206,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-md transition-all cursor-pointer"
+            className="p-1.5 rounded-md transition-all cursor-pointer shrink-0 ml-2"
             style={{ color: 'var(--as-text-secondary)' }}
             aria-label="Close drawer"
           >
@@ -212,7 +215,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
         </div>
 
         {/* Chat History Area */}
-        <div className="flex-1 overflow-y-auto p-4 pt-6 flex flex-col gap-4">
+        <div className="flex-1 overflow-y-auto px-4 md:px-4 pt-6 pb-2 flex flex-col gap-4">
 
           {/* Suggested questions — show when no user messages yet */}
           {messages.filter(m => m.role === 'user').length === 0 && !isLoading && (
@@ -384,11 +387,11 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
 
         {/* Input area fixed at bottom */}
         <div
-          className="p-4 border-t shrink-0 bg-transparent"
-          style={{ borderColor: 'var(--as-border-primary)' }}
+          className="p-4 border-t shrink-0 bg-black md:bg-transparent"
+          style={{ borderColor: 'var(--as-border-primary)', paddingBottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}
         >
           {/* Suggestion Chips (always visible) */}
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3 px-2 w-full">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3 px-0 md:px-2 w-full">
             {suggestedQuestions.map((chipText, idx) => (
               <button
                 key={idx}
