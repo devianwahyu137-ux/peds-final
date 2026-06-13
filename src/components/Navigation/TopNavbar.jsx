@@ -38,7 +38,7 @@ const NAV_ITEMS = [
   {
     id: "analysis",
     label: "ANALISIS",
-    sublabel: "Riset & Berita",
+    sublabel: "Riset & Catatan Makro",
     icon: <LineChart size={16} className="text-blue-400" />,
   },
 ];

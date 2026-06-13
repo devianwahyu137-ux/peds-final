@@ -379,7 +379,7 @@ export default function HomePage() {
 
                 const isLiveAvailableMetric = key === 'usdIdr';
                 const badgeLabel = isLiveAvailableMetric 
-                  ? (isLive ? 'LIVE (delay ~3 mnt)' : 'LOAD')
+                  ? (isLive ? 'LIVE (delay ~5 mnt)' : 'LOAD')
                   : 'ESTIMASI';
 
                 const badgeStyles = isLiveAvailableMetric

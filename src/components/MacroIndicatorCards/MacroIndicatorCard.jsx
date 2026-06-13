@@ -195,7 +195,7 @@ export default function MacroIndicatorCard({
           )}
           {(() => {
             if (id === "usdIdr" || id === "xauUsd") {
-              return isLive ? "LIVE (delay ~3 mnt)" : "MEMUAT...";
+              return isLive ? "LIVE (delay ~5 mnt)" : "MEMUAT...";
             }
             return "ESTIMASI - per Juni 2026";
           })()}

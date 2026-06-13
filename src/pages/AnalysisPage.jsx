@@ -48,10 +48,10 @@ export default function AnalysisPage() {
         <h2 className="text-xl font-bold text-white tracking-wide uppercase">
           ANALISIS
           <span className="text-gray-600 mx-3 font-light">//</span>
-          <span style={{ color: acc.neon }}>RISET &amp; BERITA</span>
+          <span style={{ color: acc.neon }}>RISET &amp; CATATAN MAKRO</span>
         </h2>
         <p className="text-[10px] font-sans text-slate-400 dark:text-neutral-500 mt-1 uppercase tracking-wider">
-          Yield curve sovereign, korelasi makro, dan sentimen pasar
+          Yield curve sovereign, korelasi makro, dan catatan edukasi pasar
         </p>
       </div>
 

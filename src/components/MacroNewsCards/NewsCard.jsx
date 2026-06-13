@@ -1,5 +1,5 @@
 import SentimentBar from "./SentimentBar";
-import { ExternalLink, TrendingUp, TrendingDown, ArrowRight } from "lucide-react";
+import { TrendingUp, TrendingDown, ArrowRight, Percent, Shield, Coins, DollarSign, Wallet } from "lucide-react";
 
 /**
  * Badge class map for sentiment badges.
@@ -11,54 +11,44 @@ const BADGE_CONFIG = {
 };
 
 /**
- * Format ISO timestamp as relative "time ago" string.
+ * Returns Lucide icon based on category name.
  */
-function formatTimeAgo(isoString) {
-  if (!isoString) return "";
-  const delta = Date.now() - new Date(isoString).getTime();
-  if (delta < 60000) return "just now";
-  if (delta < 3600000) return `${Math.floor(delta / 60000)}m ago`;
-  if (delta < 86400000) return `${Math.floor(delta / 3600000)}h ago`;
-  return `${Math.floor(delta / 86400000)}d ago`;
+function getCategoryIcon(kategori) {
+  const kat = (kategori || "").toUpperCase();
+  if (kat.includes("SUKU BUNGA")) return <Percent size={12} className="text-indigo-400" />;
+  if (kat.includes("OBLIGASI")) return <Shield size={12} className="text-emerald-400" />;
+  if (kat.includes("SAHAM")) return <TrendingUp size={12} className="text-blue-400" />;
+  if (kat.includes("EMAS")) return <Coins size={12} className="text-yellow-500" />;
+  if (kat.includes("MATA UANG")) return <DollarSign size={12} className="text-sky-400" />;
+  if (kat.includes("LIKUIDITAS")) return <Wallet size={12} className="text-slate-400" />;
+  return <ArrowRight size={12} className="text-neutral-500" />;
 }
 
 /**
- * NewsCard — Glassmorphic news card with sentiment bar, tags, and hover lift.
+ * NewsCard (now functioning as MacroNoteCard) — Glassmorphic research note card with sentiment bar, tags, and category icon.
  *
  * @param {{
  *   title: string,
- *   source: string,
- *   publishedAt: string,
+ *   kategori: string,
  *   sentiment: string,
  *   sentimentScore: number,
  *   summary: string,
  *   tags: string[],
- *   url: string,
  * }} props
  */
 export default function NewsCard({
   title,
-  source,
-  publishedAt,
+  kategori,
   sentiment,
   sentimentScore,
   summary,
   tags,
-  url,
 }) {
   const badge = BADGE_CONFIG[sentiment] || BADGE_CONFIG.NEUTRAL;
-  const isValidUrl = url && url !== '#' && url !== '';
-
-  const handleCardClick = (e) => {
-    if (isValidUrl) {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
-  };
 
   return (
     <div
-      onClick={handleCardClick}
-      className="card-hover rounded-xl overflow-hidden transition-all duration-200 cursor-pointer group relative"
+      className="card-hover rounded-xl overflow-hidden transition-all duration-200 cursor-default group relative"
       style={{
         background: "var(--as-bg-secondary)",
         border: "1px solid var(--as-border-primary)",
@@ -66,25 +56,18 @@ export default function NewsCard({
         WebkitBackdropFilter: "blur(8px)",
       }}
     >
-      {/* External link icon indicator */}
-      {isValidUrl && (
-        <span className="absolute top-3.5 right-3.5 text-neutral-500 group-hover:text-emerald-400 transition-colors z-20">
-          <ExternalLink size={12} />
-        </span>
-      )}
-
       {/* Sentiment Bar — full width at top */}
       <SentimentBar score={sentimentScore} sentiment={sentiment} />
 
       {/* Card Content */}
       <div className="p-5">
-        {/* Source + Time */}
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[9px] font-mono text-slate-400 dark:text-neutral-500 uppercase tracking-wider">
-            {source}
+        {/* Category Header */}
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className="flex-shrink-0 flex items-center">
+            {getCategoryIcon(kategori)}
           </span>
-          <span className="text-[9px] font-mono text-neutral-600 tabular-nums">
-            {formatTimeAgo(publishedAt)}
+          <span className="text-[9px] font-mono text-slate-400 dark:text-neutral-400 uppercase tracking-widest font-bold">
+            {kategori}
           </span>
         </div>
 
@@ -95,7 +78,7 @@ export default function NewsCard({
         </h4>
 
         {/* Summary */}
-        <p className="text-[10px] text-slate-400 dark:text-neutral-500 leading-relaxed font-mono line-clamp-2 mb-4">
+        <p className="text-[10px] text-slate-400 dark:text-neutral-500 leading-relaxed font-mono line-clamp-3 mb-4">
           {summary}
         </p>
 
@@ -123,3 +106,4 @@ export default function NewsCard({
     </div>
   );
 }
+
