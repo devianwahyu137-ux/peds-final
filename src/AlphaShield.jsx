@@ -381,7 +381,7 @@ export default function AlphaShield() {
           {/* GOVERNANCE COMPLIANCE FOOTER */}
           <footer className="border-t border-neutral-900 mt-12 py-6 text-center text-[9px] text-neutral-600 tracking-widest uppercase space-y-1">
             <div>EDUCATIONAL SIMULATION MODEL ONLY | NOT INVESTMENT ADVICE.</div>
-            <div>COMPLIANT WITH OJK SIMULATION FRAMEWORK STANDARDS.</div>
+            <div>INDEPENDENT EDUCATIONAL SIMULATION · NOT AN OJK-REGISTERED OR OJK-SUPERVISED PRODUCT.</div>
             <div className="text-neutral-800 mt-2">PEDS ALPHASHIELD ENGINE v3.0 | ALL DATA IS HYPOTHETICAL FOR SIMULATION DEMONSTRATION PURPOSES.</div>
           </footer>
         </div>

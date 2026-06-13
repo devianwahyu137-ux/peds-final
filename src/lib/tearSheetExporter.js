@@ -209,7 +209,7 @@ export async function exportTearSheetPDF({
     const sbnYield10YVal = macroInputs.sbn10y ?? FALLBACK.sbn10y;
     const gs10Val = macroInputs.us10y ?? macroInputs.gs10 ?? FALLBACK.gs10;
     const dxyVal = macroInputs.dxy ?? FALLBACK.dxy;
-    const goldVal = liveData.usdIdr?.v ? (liveData.gold?.v ?? FALLBACK.gold) : (macroInputs.gold ?? FALLBACK.gold);
+    const goldVal = state.macro.gold ?? liveData.xauUsd?.v ?? macroInputs.gold ?? FALLBACK.gold;
     const fedFundsVal = liveData.fedFunds?.v ?? FALLBACK.fedFunds;
 
     // Resolve MPT metrics
@@ -344,7 +344,7 @@ export async function exportTearSheetPDF({
       setTextColor(doc, [50, 50, 50]);
       const footerText =
         'EDUCATIONAL SIMULATION MODEL ONLY  ·  NOT INVESTMENT ADVICE  ·  ' +
-        'COMPLIANT WITH OJK SIMULATION FRAMEWORK STANDARDS  ·  ' +
+        'INDEPENDENT EDUCATIONAL SIMULATION  ·  NOT AN OJK-REGISTERED OR OJK-SUPERVISED PRODUCT  ·  ' +
         `PEDS ALPHASHIELD ENGINE ${APP_VERSION.toUpperCase()}  ·  ALL DATA IS HYPOTHETICAL FOR SIMULATION DEMONSTRATION PURPOSES  ·  ` +
         'DATA MAKRO ESTIMASI BERDASARKAN KONDISI PASAR JUNI 2026  ·  ' +
         'KONSULTASIKAN KEPUTUSAN INVESTASI DENGAN ADVISOR KEUANGAN TERDAFTAR OJK';
@@ -503,7 +503,7 @@ export async function exportTearSheetPDF({
         label: 'RISK-FREE REFERENCE RATE', 
         value: `${formatNumber(rfPct, 2)}%`, 
         color: C.textSecond,
-        text: `Tingkat pengembalian bebas risiko disesuaikan dengan SBN 10Y domestik aktif di level ${formatNumber(rfPct, 2)}%.` 
+        text: `Tingkat bebas risiko disesuaikan dari yield SBN 10Y domestik setelah dikurangi 150bps (term premium) ke level ${formatNumber(rfPct, 2)}%.` 
       },
     ];
 

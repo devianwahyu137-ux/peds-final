@@ -1,5 +1,5 @@
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Globe, Briefcase, Zap, Bell, Download, Loader2 } from "lucide-react";
-import { memo, useState, useEffect, useCallback, useRef } from "react";
+import { memo, useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useRootStore, APP_VERSION } from "@/stores/rootStore";
 import { exportTearSheetPDF } from "@/lib/tearSheetExporter";
 import { NavHealthIndicator } from "../NavHealthIndicator";
@@ -7,6 +7,8 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { AlertSettings } from "@/components/AlertSystem/AlertSettings";
 import { useTheme } from "@/hooks/useTheme";
 import { SCENARIO_CONFIG } from "@/lib/scenarioPulse";
+import { computeHealthScore } from "@/lib/healthScoreEngine";
+import { getScenarioMismatch } from "@/lib/scenarioDetector";
 
 const NAV_ITEMS = [
   {
@@ -51,6 +53,7 @@ export const TopNavbar = memo(function TopNavbar() {
   const weights     = useRootStore((s) => s.weights);
   const analytics   = useRootStore((s) => s.analytics);
   const macroInputs = useRootStore((s) => s.macroInputs);
+  const liveData    = useRootStore((s) => s.liveData);
 
   const [isExporting, setIsExporting] = useState(false);
   const [exportMsg,   setExportMsg]   = useState('');
@@ -79,6 +82,26 @@ export const TopNavbar = memo(function TopNavbar() {
     label: config.riskBadge,
     bg: config.colorDim
   };
+
+  // Build macro snapshot for mismatch detection
+  const macroData = useMemo(() => ({
+    biRate: liveData?.bi_macro?.biRate  ?? macroInputs?.biRate    ?? 5.50,
+    cpi:    liveData?.bi_macro?.cpi     ?? macroInputs?.inflation ?? 3.08,
+    usdIdr: liveData?.usdIdr?.v         ?? macroInputs?.usdIdr    ?? 17700,
+    dxy:    liveData?.dxy?.v            ?? 104.5,
+  }), [liveData, macroInputs]);
+
+  // Compute mismatch for DIM 5
+  const mismatch = useMemo(
+    () => getScenarioMismatch(scenarioId, macroData),
+    [scenarioId, macroData]
+  );
+
+  // Compute final health score & grade
+  const portfolioHealth = useMemo(
+    () => computeHealthScore({ analytics, mismatch }),
+    [analytics, mismatch]
+  );
 
   const handleExport = useCallback(() => {
     exportTearSheetPDF({
@@ -118,18 +141,18 @@ export const TopNavbar = memo(function TopNavbar() {
             <span className="relative flex h-2 w-2">
               <span
                 className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50"
-                style={{ backgroundColor: theme.color }}
+                style={{ backgroundColor: portfolioHealth.grade.color }}
               />
               <span
                 className="relative inline-flex rounded-full h-2 w-2"
-                style={{ backgroundColor: theme.color }}
+                style={{ backgroundColor: portfolioHealth.grade.color }}
               />
             </span>
             <span
               className="text-[10px] font-sans font-bold tracking-widest whitespace-nowrap"
-              style={{ color: theme.color }}
+              style={{ color: portfolioHealth.grade.color }}
             >
-              STATUS PORTOFOLIO: {theme.label}
+              STATUS PORTOFOLIO: {portfolioHealth.grade.label}
             </span>
           </div>
 
