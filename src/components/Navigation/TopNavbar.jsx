@@ -1,6 +1,6 @@
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Globe, Briefcase, Zap, Bell, Download, Loader2 } from "lucide-react";
 import { memo, useState, useEffect, useCallback, useRef, useMemo } from "react";
-import logo from "@/assets/logo_macroscope.png";
+import logo from "@/assets/logo_macroscope.webp";
 
 import { useRootStore, APP_VERSION } from "@/stores/rootStore";
 import { exportTearSheetPDF } from "@/lib/tearSheetExporter";

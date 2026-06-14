@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
-import logo from '@/assets/logo_macroscope.png';
+import logo from '@/assets/logo_macroscope.webp';
 import bgTexture from '@/assets/bg_texture.png';
 
 
