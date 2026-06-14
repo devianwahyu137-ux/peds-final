@@ -205,7 +205,7 @@ export default function App() {
         </PageErrorBoundary>
       </main>
 
-      {/* AlphaShield Copilot Trigger Capsule */}
+      {/* Macroscope Copilot Trigger Capsule */}
       <div className="print:hidden">
         <FloatingCopilotTrigger 
           isVisible={!isCopilotOpen}
@@ -217,7 +217,7 @@ export default function App() {
         />
       </div>
 
-      {/* AlphaShield Copilot Right Drawer */}
+      {/* Macroscope Copilot Right Drawer */}
       <div className="print:hidden">
         <CopilotDrawer 
           isOpen={isCopilotOpen} 

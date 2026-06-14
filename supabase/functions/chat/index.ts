@@ -37,7 +37,7 @@ serve(async (req) => {
     }))
 
     // Construct the System Instructions with the portfolio state context
-    const systemInstructionText = `Anda adalah AlphaShield Quant Copilot — asisten analisis portofolio berbasis data makro Indonesia. Berikan jawaban:
+    const systemInstructionText = `Anda adalah Macroscope Quant Copilot — asisten analisis portofolio berbasis data makro Indonesia. Berikan jawaban:
 - Dalam Bahasa Indonesia yang jelas dan natural
 - Sertakan angka spesifik dari konteks portofolio
 - Referensikan kondisi makro aktual
@@ -68,7 +68,7 @@ ${portfolioContext || 'Tidak ada konteks portofolio.'}`
       const errorText = await response.text()
       console.error('[Gemini API Error]', errorText)
 
-      let clientMsg = "Koneksi ke jaringan AlphaShield terputus. Silakan coba beberapa saat lagi."
+      let clientMsg = "Koneksi ke jaringan Macroscope terputus. Silakan coba beberapa saat lagi."
       if (response.status === 429) {
         clientMsg = "Terlalu banyak permintaan (Rate Limit), coba lagi beberapa saat."
       } else if (response.status === 403 || response.status === 401) {
