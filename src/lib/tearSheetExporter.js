@@ -666,8 +666,8 @@ export async function exportTearSheetPDF({
     doc.setFont('courier', 'bold');
     setTextColor(doc, C.textDim);
     doc.text('PERIODE / KRISIS', col2X, thY);
-    doc.text('SEVERITY', col2X + 48, thY);
-    doc.text('MARKET', col2X + 68, thY);
+    doc.text('SEVERITY', col2X + 40, thY);
+    doc.text('MARKET', col2X + 62, thY);
     doc.text('EST. RETURN', col2X + colW, thY, { align: 'right' });
     hRule(doc, thY + 2, col2X, col2X + colW, C.lightGray);
 
@@ -681,7 +681,7 @@ export async function exportTearSheetPDF({
       doc.setFontSize(7);
       doc.setFont('courier', 'bold');
       setTextColor(doc, C.textPrimary);
-      const nameLines = doc.splitTextToSize(crisis.name, 46);
+      const nameLines = doc.splitTextToSize(crisis.name, 38);
       nameLines.forEach((line, index) => {
         doc.text(line, col2X, trY + index * 3.5);
       });
@@ -692,18 +692,18 @@ export async function exportTearSheetPDF({
       const periodY = trY + nameLines.length * 3.5;
       doc.text(crisis.period, col2X, periodY);
 
-      // Severity Column (X = col2X + 48)
+      // Severity Column (X = col2X + 40)
       setTextColor(doc, crisis.severityColor === '#ef4444' ? C.red : C.amber);
       doc.setFont('courier', 'bold');
-      doc.text(crisis.severity, col2X + 48, trY);
+      doc.text(crisis.severity, col2X + 40, trY);
 
-      // Market Conditions Column (X = col2X + 68, Wrapped to 40mm)
+      // Market Conditions Column (X = col2X + 62, Wrapped to 50mm)
       doc.setFont('courier', 'normal');
       setTextColor(doc, C.textSecond);
       const declVal = crisis.macroConditions['IHSG Decline'] ?? crisis.macroConditions['MTD Decline'] ?? crisis.macroConditions['IHSG MTD Mei'] ?? 'N/A';
-      const marketLines = doc.splitTextToSize(declVal, 40);
+      const marketLines = doc.splitTextToSize(declVal, 50);
       marketLines.forEach((line, index) => {
-        doc.text(line, col2X + 68, trY + index * 3.5);
+        doc.text(line, col2X + 62, trY + index * 3.5);
       });
 
       // Expected Return Column (X = col2X + colW, Right-aligned)

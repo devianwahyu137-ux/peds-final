@@ -91,7 +91,7 @@ export default function PortfolioPage() {
     <div className="space-y-10 w-full page-enter">
       <ScenarioIntelligence />
       {/* Header */}
-      <div className="border-b border-[var(--as-border-secondary)] pb-6 flex items-start justify-between gap-4">
+      <div className="border-b border-[var(--as-border-secondary)] pb-6 flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-white tracking-wide uppercase">
             PORTOFOLIOMU
@@ -139,13 +139,13 @@ export default function PortfolioPage() {
               Analisis <GlossaryTerm termId="mpt">MPT</GlossaryTerm> — dengan Interpretasi
             </div>
             {isComputing ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 md:gap-6">
                 {[1, 2, 3, 4].map((i) => (
                   <div key={i} className="shimmer h-[98px] rounded-xl" />
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 [&>*]:stat-hover">
+              <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 md:gap-6 [&>*]:stat-hover">
                 <MetricWithContext
                   label="Sharpe Ratio"
                   value={formatNumber(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0, 2)}

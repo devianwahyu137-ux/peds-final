@@ -391,7 +391,7 @@ export default function CopilotDrawer({ isOpen, onClose, messages, setMessages }
           style={{ borderColor: 'var(--as-border-primary)', paddingBottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}
         >
           {/* Suggestion Chips (always visible) */}
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3 px-0 md:px-2 w-full">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3 px-4 md:px-2 -mx-4 md:mx-0 w-[calc(100%+2rem)] md:w-full">
             {suggestedQuestions.map((chipText, idx) => (
               <button
                 key={idx}

@@ -9,7 +9,7 @@ import {
   ASSET_LABELS,
   ASSET_COLORS,
 } from '@/lib/scenarioBriefingData';
-import { TrendingUp, Landmark, Coins, TrendingDown, DollarSign, Zap } from 'lucide-react';
+import { TrendingUp, Landmark, Coins, TrendingDown, DollarSign, Zap, X } from 'lucide-react';
 
 const ACTION_ICONS = {
   '📈': <TrendingUp size={16} className="text-blue-400" />,
@@ -55,8 +55,8 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center
-                 overflow-y-auto py-8"
+      className="fixed inset-0 z-[9999] flex items-end justify-center md:items-center
+                 overflow-y-auto py-0 md:py-8"
       style={{
         background:       'rgba(0,0,0,0.80)',
         backdropFilter:   'blur(8px)',
@@ -66,8 +66,8 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
       onClick={onDismiss}
     >
       <div
-        className="relative w-full max-w-2xl mx-4 rounded-3xl overflow-hidden
-                   shadow-2xl"
+        className="relative w-full max-w-2xl rounded-t-3xl rounded-b-none md:rounded-3xl overflow-hidden
+                   shadow-2xl flex flex-col max-h-[92dvh] md:max-h-none"
         style={{
           background: 'var(--as-bg-primary)',
           border:     `1px solid ${config.color}40`,
@@ -78,18 +78,18 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
       >
         {/* Color accent top bar */}
         <div
-          className="h-1 w-full"
+          className="h-1 w-full shrink-0"
           style={{ background: `linear-gradient(90deg, ${config.color}, transparent)` }}
         />
 
-        <div className="p-6 space-y-5">
-          {/* Headline row */}
+        {/* Header (sticky/locked on mobile, normal on desktop) */}
+        <div className="p-6 pb-0 md:pb-5 shrink-0">
           <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <span
                   className="text-[9px] font-mono font-bold px-2.5 py-1
-                             rounded-full tracking-widest"
+                             rounded-full tracking-widest shrink-0"
                   style={{
                     background: config.colorDim,
                     color:      config.color,
@@ -106,7 +106,7 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
                 </span>
               </div>
               <h2
-                className="text-xl font-black font-mono tracking-tight"
+                className="text-xl font-black font-mono tracking-tight break-words"
                 style={{ color: config.color }}
               >
                 {briefing.headline}
@@ -119,21 +119,41 @@ export function ScenarioBriefingOverlay({ scenarioId, isVisible, onDismiss }) {
               </p>
             </div>
 
-            <button
-              onClick={onDismiss}
-              className="text-[10px] font-mono font-bold px-3 py-1.5
-                         rounded-lg cursor-pointer transition-colors
-                         flex-shrink-0"
-              style={{
-                background: config.colorDim,
-                color:      config.color,
-                border:     `1px solid ${config.colorBorder}`,
-              }}
-            >
-              LANJUT →
-            </button>
-          </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Desktop-only LANJUT button */}
+              <button
+                onClick={onDismiss}
+                className="hidden md:block text-[10px] font-mono font-bold px-3 py-1.5
+                           rounded-lg cursor-pointer transition-colors
+                           flex-shrink-0"
+                style={{
+                  background: config.colorDim,
+                  color:      config.color,
+                  border:     `1px solid ${config.colorBorder}`,
+                }}
+              >
+                LANJUT →
+              </button>
 
+              {/* Mobile-only X close button */}
+              <button
+                onClick={onDismiss}
+                className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-neutral-800 transition-colors cursor-pointer shrink-0"
+                style={{
+                  background: config.colorDim,
+                  color:      config.color,
+                  border:     `1px solid ${config.colorBorder}`,
+                }}
+                aria-label="Tutup"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Scrollable content body (scrollable on mobile, normal on desktop) */}
+        <div className="flex-1 overflow-y-auto md:overflow-y-visible px-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-2 md:p-0 md:px-6 md:pb-6 space-y-5">
           {/* Summary */}
           <p
             className="text-[11px] font-mono leading-relaxed"

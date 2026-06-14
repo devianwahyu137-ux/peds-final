@@ -167,11 +167,11 @@ export default function MacroIndicatorCard({
       />
 
       {/* Header: Icon, Label, Status Dot, Tooltip */}
-      <div className="flex items-center justify-between mb-6 relative z-10">
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">{icon}</span>
-          <div className="flex items-center gap-2">
-            <div className="text-[9px] font-sans tracking-[0.2em] uppercase"
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-0 mb-3 md:mb-6 relative z-10">
+        <div className="flex items-center gap-1.5 md:gap-3">
+          <span className="text-lg md:text-2xl shrink-0">{icon}</span>
+          <div className="flex items-center gap-1 md:gap-2 min-w-0">
+            <div className="text-[8px] md:text-[9px] font-sans tracking-[0.1em] md:tracking-[0.2em] uppercase truncate"
                  style={{ color: 'var(--as-text-dim)' }}>
               {label}
             </div>
@@ -179,7 +179,7 @@ export default function MacroIndicatorCard({
           </div>
         </div>
         {/* Status badge - Dynamic for LIVE and ESTIMASI indicators */}
-        <span className="text-[8px] font-sans px-2 py-0.5 rounded-md flex items-center gap-1.5"
+        <span className="text-[7px] md:text-[8px] font-sans px-1.5 md:px-2 py-0.5 rounded-md flex items-center gap-1 md:gap-1.5 shrink-0 self-start md:self-auto"
               style={
                 (id === "usdIdr" || id === "xauUsd")
                    ? (isLive 
@@ -189,48 +189,74 @@ export default function MacroIndicatorCard({
               }>
           {((id === "usdIdr" || id === "xauUsd") && isLive) && (
             <div
-              className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"
+              className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-emerald-500 animate-pulse"
               style={{ boxShadow: `0 0 4px #10b981` }}
             />
           )}
           {(() => {
             if (id === "usdIdr" || id === "xauUsd") {
-              return isLive ? "LIVE (delay ~5 mnt)" : "MEMUAT...";
+              return isLive ? (
+                <>
+                  <span className="hidden md:inline">LIVE (delay ~5 mnt)</span>
+                  <span className="md:hidden">LIVE</span>
+                </>
+              ) : (
+                <>
+                  <span className="hidden md:inline">MEMUAT...</span>
+                  <span className="md:hidden">LOAD...</span>
+                </>
+              );
             }
-            return "ESTIMASI - per Juni 2026";
+            return (
+              <>
+                <span className="hidden md:inline">ESTIMASI - per Juni 2026</span>
+                <span className="md:hidden">ESTIMASI</span>
+              </>
+            );
           })()}
         </span>
       </div>
 
       {/* Main Value — Animated */}
       <div
-        className={`text-[32px] font-black font-mono tracking-tighter tabular-nums leading-none mb-1 relative z-10 ${isChanging ? "value-updated" : ""}`}
+        className={`text-[20px] md:text-[32px] font-black font-mono tracking-tighter tabular-nums leading-none mb-1 relative z-10 ${isChanging ? "value-updated" : ""}`}
         style={{ color: glow.color }}
       >
         {animatedValue}
       </div>
 
       {/* Unit label */}
-      <div className="text-[9px] font-sans mb-6 relative z-10" style={{ color: 'var(--as-text-dim)' }}>
+      <div className="text-[8px] md:text-[9px] font-sans mb-3 md:mb-6 relative z-10" style={{ color: 'var(--as-text-dim)' }}>
         {unit}
       </div>
 
       {/* Sparkline */}
       <div className="relative z-10 -mx-2">
-        <MicroSparkline
-          data={sparklineData}
-          color={glow.color}
-          width={undefined}
-          height={64}
-          showArea={true}
-        />
+        <div className="hidden md:block">
+          <MicroSparkline
+            data={sparklineData}
+            color={glow.color}
+            width={undefined}
+            height={64}
+            showArea={true}
+          />
+        </div>
+        <div className="md:hidden">
+          <MicroSparkline
+            data={sparklineData}
+            color={glow.color}
+            width={undefined}
+            height={32}
+            showArea={true}
+          />
+        </div>
       </div>
 
       {/* Footer: Delta Badge + Last Updated */}
-      <div className="flex items-center justify-between mt-4 pt-4 relative z-10"
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between mt-2 md:mt-4 pt-2 md:pt-4 relative z-10 gap-1.5 md:gap-0"
            style={{ borderTop: '1px solid var(--as-border-secondary)' }}>
         <span
-          className="text-[9px] font-mono font-bold tabular-nums"
+          className="text-[8px] md:text-[9px] font-mono font-bold tabular-nums shrink-0"
           style={{
             color: direction === 'up'   ? '#10b981'
                  : direction === 'down' ? '#ef4444'
@@ -240,7 +266,7 @@ export default function MacroIndicatorCard({
           {direction === 'up' ? '▲ ' : direction === 'down' ? '▼ ' : ''}
           {delta !== 0 ? `${delta > 0 ? '+' : ''}${formatPercent(delta, 2)}` : '—'}
         </span>
-        <div className="text-[8px] font-sans font-light text-[var(--as-text-tertiary)] flex flex-col items-end">
+        <div className="text-[7px] md:text-[8px] font-sans font-light text-[var(--as-text-tertiary)] flex flex-col items-start md:items-end w-full md:w-auto">
           <span>vs periode lalu</span>
           {(() => {
             const isLiveMetric = id === "usdIdr" || id === "xauUsd";
@@ -250,7 +276,7 @@ export default function MacroIndicatorCard({
               const isStale = !timestamp || (Date.now() - timestamp) > 10 * 60 * 1000;
               if (isStale || isFetching) {
                 return (
-                  <div className="flex items-center gap-1.5 mt-1 text-amber-500/90 font-medium">
+                  <div className="flex items-center gap-1 mt-1 text-amber-500/90 font-medium flex-wrap">
                     <span>Data dari cache — klik untuk refresh</span>
                     <button 
                       onClick={(e) => {
@@ -259,9 +285,9 @@ export default function MacroIndicatorCard({
                       }}
                       disabled={isFetching}
                       title={isFetching ? "Sedang menyegarkan..." : "Refresh data"}
-                      className="p-1 hover:bg-neutral-850 dark:hover:bg-neutral-800/80 rounded transition-colors duration-200 cursor-pointer flex items-center justify-center active:scale-90 disabled:opacity-50"
+                      className="p-0.5 hover:bg-neutral-850 dark:hover:bg-neutral-800/80 rounded transition-colors duration-200 cursor-pointer flex items-center justify-center active:scale-90 disabled:opacity-50"
                     >
-                      <RefreshCw size={10} className={isFetching ? "animate-spin text-amber-500" : "animate-pulse text-amber-500"} />
+                      <RefreshCw size={8} className={isFetching ? "animate-spin text-amber-500" : "animate-pulse text-amber-500"} />
                     </button>
                   </div>
                 );
@@ -275,20 +301,20 @@ export default function MacroIndicatorCard({
             } else {
               if (isFetching) {
                 return (
-                  <div className="flex items-center gap-1.5 mt-1 text-amber-500/90 font-medium">
+                  <div className="flex items-center gap-1 mt-1 text-amber-500/90 font-medium">
                     <span>Memperbarui estimasi...</span>
                   </div>
                 );
               }
               if (timestamp) {
                 return (
-                  <span className="mt-1 opacity-65 text-emerald-500/80 font-medium">
+                  <span className="mt-1 opacity-65 text-emerald-500/80 font-medium font-sans">
                     Diperbarui {formatTimeAgoIndonesian(timestamp)}
                   </span>
                 );
               }
               return (
-                <span className="mt-1 opacity-50 text-[var(--as-text-tertiary)] font-medium">
+                <span className="mt-1 opacity-50 text-[var(--as-text-tertiary)] font-medium font-sans">
                   Estimasi Statis
                 </span>
               );

@@ -41,7 +41,7 @@ export default function MacroIndicatorCards() {
           * Data estimasi per Juni 2026, bukan data live real-time
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
         {MACRO_INDICATORS.map((indicator) => {
           const value = getMarketValueFormatted(indicator.id);
           const sparklineData = presets[indicator.id] || [];

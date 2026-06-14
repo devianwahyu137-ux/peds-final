@@ -168,8 +168,8 @@ export default function HomePage() {
             boxShadow: `0 0 0 1px rgba(255,255,255,0.02), 0 8px 48px rgba(0,0,0,0.50), 0 0 60px ${accent}08`,
           }}>
             {/* Left: text content */}
-            <div className="flex items-start justify-between gap-8 flex-wrap">
-              <div className="flex-1 min-w-0">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 md:gap-8">
+              <div className="w-full md:flex-1 min-w-0">
                 {/* Badge */}
                 <div className="flex items-center gap-3 mb-6">
                   <span className="text-[9px] font-bold tracking-[0.25em]
@@ -197,7 +197,7 @@ export default function HomePage() {
               </div>
 
               {/* Sharpe Ratio — make this the HERO NUMBER */}
-              <div className="flex-shrink-0 text-center p-7 rounded-2xl min-w-[180px]
+              <div className="w-full md:w-auto flex-shrink-0 text-center p-7 rounded-2xl md:min-w-[180px]
                               relative overflow-hidden"
                    style={{
                      background: `radial-gradient(circle at center, ${accent}18 0%, ${accent}05 60%, transparent 100%)`,
@@ -485,7 +485,7 @@ export default function HomePage() {
 
       {/* ── ZONA 6: GLOBAL PULSE TICKER ── */}
       <div 
-        className="w-full bg-[var(--as-bg-card)] border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 overflow-hidden py-3 px-6 rounded-xl flex items-center transition-colors duration-300 relative"
+        className="w-full bg-[var(--as-bg-card)] border border-[var(--as-border-primary)] shadow-lg shadow-slate-200/50 dark:shadow-black/40 overflow-hidden py-3 px-6 rounded-xl hidden md:flex items-center transition-colors duration-300 relative"
       >
         <div className="flex items-center gap-3 pr-6 mr-6 border-r border-[var(--as-border-secondary)] bg-[var(--as-bg-card)] z-10">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse drop-shadow-md flex-shrink-0"></span>

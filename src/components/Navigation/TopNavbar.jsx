@@ -123,29 +123,108 @@ export const TopNavbar = memo(function TopNavbar() {
       style={{ backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", background: "var(--as-navbar-bg)" }}
     >
       {/* Top Branding & Controls Bar */}
-      <div className="flex items-center justify-between w-full px-6 py-3 border-b" style={{ background: 'var(--as-bg-page)', borderColor: 'var(--as-border-primary)' }}>
+      <div className="flex flex-col w-full border-b" style={{ background: 'var(--as-bg-page)', borderColor: 'var(--as-border-primary)' }}>
 
-        {/* Left Section (Branding Lockup) */}
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 flex items-center justify-center">
-            <img src={logo} alt="Macroscope Logo" className="w-full h-full object-contain" />
+        {/* ── Primary Row: Logo + Controls ── */}
+        <div className="flex items-center justify-between w-full px-4 md:px-6 py-3">
+
+          {/* Left Section (Branding Lockup) */}
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 flex items-center justify-center shrink-0">
+              <img src={logo} alt="Macroscope Logo" className="w-full h-full object-contain" />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="font-extrabold tracking-widest text-sm uppercase font-sans leading-none" style={{ color: 'var(--as-text-primary)', fontFamily: "'Sora', 'Inter', sans-serif" }}>
+                MACROSCOPE
+              </span>
+              <span className="text-[8px] font-semibold tracking-wider text-neutral-500 uppercase font-sans mt-0.5 hidden md:block">
+                Macro Scenario Simulator
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className="font-extrabold tracking-widest text-sm uppercase font-sans leading-none" style={{ color: 'var(--as-text-primary)', fontFamily: "'Sora', 'Inter', sans-serif" }}>
-              MACROSCOPE
-            </span>
-            <span className="text-[8px] font-semibold tracking-wider text-neutral-500 uppercase font-sans mt-0.5 hidden sm:block">
-              Macro Scenario Simulator
-            </span>
+
+          {/* Right Section (Controls & Status Action Lockup) */}
+          <div className="flex items-center gap-2 md:gap-5 flex-shrink-0">
+            
+            {/* 1. Status Portofolio — DESKTOP ONLY */}
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neutral-900/40 border border-neutral-800/80">
+              <span className="relative flex h-1.5 w-1.5">
+                <span
+                  className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50"
+                  style={{ backgroundColor: portfolioHealth.grade.color }}
+                />
+                <span
+                  className="relative inline-flex rounded-full h-1.5 w-1.5"
+                  style={{ backgroundColor: portfolioHealth.grade.color }}
+                />
+              </span>
+              <span
+                className="text-[9px] font-sans font-extrabold tracking-widest whitespace-nowrap uppercase"
+                style={{ color: portfolioHealth.grade.color }}
+              >
+                STATUS: {portfolioHealth.grade.label}
+              </span>
+            </div>
+
+            {/* 2. Download Tear Sheet — DESKTOP ONLY */}
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                onClick={handleExport}
+                disabled={isExporting}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[9px] font-sans font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer flex-shrink-0 active:scale-[0.98]"
+                style={{
+                  background:  isExporting ? 'var(--as-bg-tertiary)' : 'rgba(16,185,129,0.06)',
+                  borderColor: isExporting ? 'var(--as-border-primary)' : 'rgba(16,185,129,0.30)',
+                  color:       isExporting ? 'var(--as-text-tertiary)' : '#10b981',
+                }}
+              >
+                <span className="flex items-center justify-center">{isExporting ? <Loader2 className="animate-spin" size={10} /> : <Download size={10} />}</span>
+                <span>{isExporting ? 'GENERATING...' : 'DOWNLOAD TEAR SHEET'}</span>
+              </button>
+              {exportMsg && (
+                <span className="text-[9px] font-sans" style={{ color: exportMsg.startsWith('✓') ? '#10b981' : '#ef4444' }}>
+                  {exportMsg}
+                </span>
+              )}
+            </div>
+
+            {/* Vertical Divider — DESKTOP ONLY */}
+            <div className="h-4 w-px bg-neutral-800 hidden md:block" />
+
+            {/* 3. Notification Settings (Bell) — always visible */}
+            <div className="relative" ref={alertRef}>
+              <button
+                onClick={() => setAlertSettingsOpen(p => !p)}
+                className="p-2 rounded-lg cursor-pointer transition-all duration-200 hover:text-white hover:bg-neutral-900/60 flex items-center justify-center min-w-[36px] min-h-[36px] border border-transparent hover:border-neutral-855 active:scale-[0.95]"
+                style={{ color: 'var(--as-text-dim)' }}
+                title="Pengaturan Alert"
+              >
+                <Bell size={16} />
+              </button>
+              <AlertSettings
+                isOpen={alertSettingsOpen}
+                onClose={() => setAlertSettingsOpen(false)}
+              />
+            </div>
+
+            {/* Vertical Divider — DESKTOP ONLY */}
+            <div className="h-4 w-px bg-neutral-800 hidden md:block" />
+
+            {/* 4. Data-Health Indicator Gauge — DESKTOP ONLY */}
+            <div className="hidden md:block">
+              <NavHealthIndicator />
+            </div>
           </div>
         </div>
 
-        {/* Right Section (Controls & Status Action Lockup) */}
-        <div className="flex items-center gap-5 flex-shrink-0">
-          
-          {/* 1. Status Portofolio */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neutral-900/40 border border-neutral-800/80">
-            <span className="relative flex h-1.5 w-1.5">
+        {/* ── Mobile Secondary Row: Condensed Status + Actions ── */}
+        <div
+          className="flex md:hidden items-center justify-between gap-2 px-4 py-2 border-t overflow-x-hidden"
+          style={{ borderColor: 'var(--as-border-secondary)' }}
+        >
+          {/* Condensed Status Pill */}
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="relative flex h-1.5 w-1.5 shrink-0">
               <span
                 className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50"
                 style={{ backgroundColor: portfolioHealth.grade.color }}
@@ -156,59 +235,30 @@ export const TopNavbar = memo(function TopNavbar() {
               />
             </span>
             <span
-              className="text-[9px] font-sans font-extrabold tracking-widest whitespace-nowrap uppercase"
+              className="text-[9px] font-sans font-extrabold tracking-widest uppercase truncate"
               style={{ color: portfolioHealth.grade.color }}
             >
-              STATUS: {portfolioHealth.grade.label}
+              {portfolioHealth.grade.label}
+            </span>
+            <span className="text-[9px] font-mono text-neutral-500 shrink-0">
+              {portfolioHealth.score}/100
             </span>
           </div>
 
-          {/* 2. Download Tear Sheet */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleExport}
-              disabled={isExporting}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[9px] font-sans font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer flex-shrink-0 active:scale-[0.98]"
-              style={{
-                background:  isExporting ? 'var(--as-bg-tertiary)' : 'rgba(16,185,129,0.06)',
-                borderColor: isExporting ? 'var(--as-border-primary)' : 'rgba(16,185,129,0.30)',
-                color:       isExporting ? 'var(--as-text-tertiary)' : '#10b981',
-              }}
-            >
-              <span className="flex items-center justify-center">{isExporting ? <Loader2 className="animate-spin" size={10} /> : <Download size={10} />}</span>
-              <span>{isExporting ? 'GENERATING...' : 'DOWNLOAD TEAR SHEET'}</span>
-            </button>
-            {exportMsg && (
-              <span className="text-[9px] font-sans hidden md:block" style={{ color: exportMsg.startsWith('✓') ? '#10b981' : '#ef4444' }}>
-                {exportMsg}
-              </span>
-            )}
-          </div>
-
-          {/* Vertical Divider */}
-          <div className="h-4 w-px bg-neutral-800 hidden md:block" />
-
-          {/* 3. Notification Settings (Bell) */}
-          <div className="relative" ref={alertRef}>
-            <button
-              onClick={() => setAlertSettingsOpen(p => !p)}
-              className="p-2 rounded-lg cursor-pointer transition-all duration-200 hover:text-white hover:bg-neutral-900/60 flex items-center justify-center min-w-[36px] min-h-[36px] border border-transparent hover:border-neutral-855 active:scale-[0.95]"
-              style={{ color: 'var(--as-text-dim)' }}
-              title="Pengaturan Alert"
-            >
-              <Bell size={16} />
-            </button>
-            <AlertSettings
-              isOpen={alertSettingsOpen}
-              onClose={() => setAlertSettingsOpen(false)}
-            />
-          </div>
-
-          {/* Vertical Divider */}
-          <div className="h-4 w-px bg-neutral-800" />
-
-          {/* 4. Data-Health Indicator Gauge */}
-          <NavHealthIndicator />
+          {/* Mobile Download Button (compact) */}
+          <button
+            onClick={handleExport}
+            disabled={isExporting}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[9px] font-sans font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer shrink-0 active:scale-[0.98]"
+            style={{
+              background:  isExporting ? 'var(--as-bg-tertiary)' : 'rgba(16,185,129,0.06)',
+              borderColor: isExporting ? 'var(--as-border-primary)' : 'rgba(16,185,129,0.30)',
+              color:       isExporting ? 'var(--as-text-tertiary)' : '#10b981',
+            }}
+          >
+            <span className="flex items-center justify-center">{isExporting ? <Loader2 className="animate-spin" size={10} /> : <Download size={10} />}</span>
+            <span>{isExporting ? 'GENERATING...' : 'TEAR SHEET'}</span>
+          </button>
         </div>
       </div>
 

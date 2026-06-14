@@ -37,8 +37,8 @@ export function SectorCard({ sector }) {
 
           {/* Text — must have min-w-0 to allow truncation */}
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="font-bold text-slate-800 dark:text-neutral-200 truncate">
+            <div className="flex flex-wrap md:flex-nowrap items-center gap-2 min-w-0">
+              <span className="font-bold text-slate-800 dark:text-neutral-200 md:truncate break-words">
                 {sector.sector}
               </span>
               <span
@@ -49,8 +49,8 @@ export function SectorCard({ sector }) {
               </span>
             </div>
             
-            <div className="flex items-center gap-3 mt-1 text-[10px] text-slate-500 dark:text-neutral-500 uppercase tracking-widest font-sans min-w-0">
-              <span className="truncate">Target Alokasi: <span className="font-bold font-mono text-slate-700 dark:text-neutral-300">{sector.targetPct}%</span></span>
+            <div className="flex flex-wrap md:flex-nowrap items-center gap-x-3 gap-y-1 mt-1 text-[10px] text-slate-500 dark:text-neutral-500 uppercase tracking-widest font-sans min-w-0">
+              <span className="md:truncate break-words">Target Alokasi: <span className="font-bold font-mono text-slate-700 dark:text-neutral-300">{sector.targetPct}%</span></span>
               <span className="shrink-0">•</span>
               <span className="shrink-0" style={{ color: riskConf.color }}>{riskConf.label}</span>
             </div>
@@ -133,8 +133,8 @@ export function SectorCard({ sector }) {
 
                   {/* Ticker info */}
                   <div className="flex-1 space-y-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="font-bold text-sm text-slate-800 dark:text-neutral-200 truncate">
+                    <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-2">
+                      <div className="font-bold text-sm text-slate-800 dark:text-neutral-200 md:truncate break-words">
                         {ticker.name}
                       </div>
                       <div className="text-[9px] font-sans font-bold px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20 whitespace-nowrap">

@@ -187,7 +187,7 @@ export default function App() {
       </div>
 
       <main
-        className="flex-1 overflow-y-auto pb-32 md:pb-24 pt-12 w-full max-w-[1600px] mx-auto
+        className="flex-1 overflow-y-auto pb-56 md:pb-24 pt-12 w-full max-w-[1600px] mx-auto
                    overflow-x-hidden px-4 md:px-6 lg:px-8
                    print:overflow-visible print:pt-0 print:px-0 print:pb-0 print:w-full print:block"
       >

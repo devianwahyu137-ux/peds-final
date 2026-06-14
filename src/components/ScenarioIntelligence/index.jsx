@@ -40,7 +40,7 @@ export function ScenarioIntelligence() {
   if (mismatch.isAligned) {
     return (
       <div
-        className="flex items-center gap-2 px-3 h-8 rounded-lg mb-4 text-[9px] font-sans"
+        className="flex flex-wrap items-center gap-2 px-3 py-2 md:py-0 md:h-8 rounded-lg mb-4 text-[9px] font-sans"
         style={{
           background: 'rgba(16,185,129,0.02)',
           border:     '1px solid rgba(16,185,129,0.06)',
@@ -54,7 +54,7 @@ export function ScenarioIntelligence() {
                            bg-emerald-500" />
         </span>
 
-        <span className="truncate opacity-60 hover:opacity-100 transition-opacity duration-200"
+        <span className="md:truncate opacity-60 hover:opacity-100 transition-opacity duration-200 break-words"
               style={{ color: 'var(--as-text-tertiary)' }}>
           <span className="font-bold text-emerald-500">SELARAS</span>
           {' — '}<span className="font-mono">{formatNumber(macroData.biRate, 2)}%</span> BI Rate · IDR{' '}
@@ -64,7 +64,7 @@ export function ScenarioIntelligence() {
           </span>
         </span>
 
-        <span className="ml-auto flex-shrink-0 text-[8px] opacity-50 text-emerald-500 font-mono">
+        <span className="ml-auto flex-shrink-0 text-[8px] opacity-50 text-emerald-500 font-mono hidden md:inline">
           {mismatch.confidence}% confidence
         </span>
       </div>

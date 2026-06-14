@@ -2,14 +2,12 @@
 // SVG scatter plot of 300 random portfolios + current portfolio position
 // Shows the efficient frontier boundary approximation
 
-import { useMemo, useState, useRef } from 'react';
+import { useMemo, useState, useRef, useEffect } from 'react';
 import { useRootStore } from "@/stores/rootStore";
 import { SCENARIO_CONFIG } from '../../lib/scenarioPulse';
 import { formatNumber } from '@/utils/format';
 
 const CHART_PAD = { top: 32, right: 24, bottom: 52, left: 56 };
-const CHART_W   = 660;
-const CHART_H   = 300;
 
 export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
   const scenarioId          = useRootStore((s) => s.scenarioId);
@@ -20,6 +18,17 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
   const config              = SCENARIO_CONFIG[effectiveScenario] || SCENARIO_CONFIG.EQUILIBRIUM;
   const [hovered, setHovered] = useState(null);
   const svgRef              = useRef(null);
+
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const CHART_W = isMobile ? 450 : 660;
+  const CHART_H = 300;
 
   const { riskMin, riskMax, retMin, retMax, plotW, plotH } = useMemo(() => {
     if (!frontierPoints?.length) return {};
@@ -35,7 +44,7 @@ export function EfficientFrontierChart({ frontierPoints, currentPortfolio }) {
       plotW: CHART_W - CHART_PAD.left - CHART_PAD.right,
       plotH: CHART_H - CHART_PAD.top  - CHART_PAD.bottom,
     };
-  }, [frontierPoints]);
+  }, [frontierPoints, CHART_W, CHART_H]);
 
   if (!frontierPoints?.length || !riskMax) {
     return (

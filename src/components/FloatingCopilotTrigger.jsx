@@ -12,7 +12,7 @@ export default function FloatingCopilotTrigger({ onOpen, onSuggestionClick, inpu
 
   return (
     <div 
-      className={`fixed bottom-12 left-1/2 -translate-x-1/2 w-[90%] max-w-xl z-[100] bg-black rounded-full border px-5 py-2.5 flex flex-row items-center gap-3 transition-all duration-500 animate-pulse ${
+      className={`fixed bottom-[calc(56px+env(safe-area-inset-bottom,0px)+12px)] md:bottom-12 left-1/2 -translate-x-1/2 w-[88%] md:w-[90%] max-w-xl z-[45] bg-black rounded-full border px-4 md:px-5 py-2 md:py-2.5 flex flex-row items-center gap-2 md:gap-3 transition-all duration-500 animate-pulse ${
         isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       }`}
       style={{ boxShadow: `0 0 30px -5px ${acc.neon || '#f59e0b'}`, borderColor: `${acc.neon || '#f59e0b'}80` }}

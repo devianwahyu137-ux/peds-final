@@ -290,7 +290,7 @@ export function MonteCarloPanel() {
             ].map((stat) => (
               <div
                 key={stat.label}
-                className="rounded-xl p-6 flex flex-col gap-2"
+                className="rounded-xl p-4 md:p-6 flex flex-col gap-2"
                 style={{ background: 'var(--as-bg-secondary)', border: '1px solid var(--as-border-primary)' }}
               >
                 <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-sans font-bold">

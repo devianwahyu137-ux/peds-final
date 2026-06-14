@@ -33,7 +33,7 @@ export function SessionResumeBanner({
 
   return (
     <div
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-lg mx-4"
+      className="hidden md:block fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-lg mx-4"
       style={{ animation: 'card-rise 300ms ease-out forwards' }}
     >
       <div

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Landmark, LineChart, Coins, Wallet, AlertTriangle, TrendingDown, TrendingUp, Shield, Activity, Settings2, Dices, ArrowRight, ActivitySquare, Globe } from "lucide-react";
 import { useRootStore } from "@/stores/rootStore";
 import { formatNumber } from "@/utils/format";
@@ -80,7 +80,15 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
   );
 
   // SVG Chart Setup
-  const W = 760, H = 340, pL = 56, pR = 24, pT = 24, pB = 48;
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const W = isMobile ? 480 : 760, H = 340, pL = 56, pR = 24, pT = 24, pB = 48;
   const cW = W - pL - pR, cH = H - pT - pB;
   const allYields = [...ustYields, ...sbnYields];
   
@@ -123,8 +131,8 @@ const SovereignYieldCurve = React.memo(function SovereignYieldCurve() {
           </div>
         </div>
 
-        <div className="w-full bg-[#121212] rounded-xl border border-white/5 p-6 overflow-hidden" style={{ minHeight: '360px' }}>
-          <svg width="100%" height={340} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" className="block overflow-visible">
+        <div className="w-full bg-[#121212] rounded-xl border border-white/5 p-6 overflow-hidden animate-fadeIn" style={{ minHeight: isMobile ? '280px' : '360px' }}>
+          <svg width="100%" height={isMobile ? 260 : 340} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" className="block overflow-visible">
             {/* Grid Lines */}
             {[mn, mn + (mx - mn) * 0.25, mn + (mx - mn) * 0.5, mn + (mx - mn) * 0.75, mx].map((v, i) => (
               <g key={i}>

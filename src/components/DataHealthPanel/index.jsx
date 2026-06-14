@@ -97,22 +97,22 @@ export function DataHealthPanel() {
   const statusText = `${activeCount}/${total} endpoint terhubung (Data Estimasi per Juni 2026)`;
 
   return (
-    <div className="flex items-center justify-between px-6 py-3 rounded-xl mb-8"
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between px-4 md:px-6 py-3 rounded-xl mb-8 gap-2 md:gap-0"
          style={{ background: 'var(--as-bg-tertiary)' }}>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap min-w-0">
         {/* status dot */}
-        <span className="relative flex h-2 w-2">
+        <span className="relative flex h-2 w-2 shrink-0">
           <span className="animate-ping absolute inline-flex h-full w-full
                            rounded-full opacity-40"
                 style={{ backgroundColor: '#f59e0b' }} />
           <span className="relative inline-flex rounded-full h-2 w-2"
                 style={{ backgroundColor: '#f59e0b' }} />
         </span>
-        <span className="text-[10px] font-sans font-bold tracking-widest"
+        <span className="text-[10px] font-sans font-bold tracking-widest shrink-0"
               style={{ color: 'var(--as-text-secondary)' }}>
           STATUS SUMBER DATA
         </span>
-        <span className="text-[10px] font-sans"
+        <span className="text-[10px] font-sans break-words"
               style={{ color: 'var(--as-text-dim)' }}>
           {statusText}
         </span>
