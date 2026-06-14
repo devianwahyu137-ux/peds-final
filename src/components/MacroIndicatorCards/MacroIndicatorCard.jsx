@@ -124,7 +124,9 @@ export default function MacroIndicatorCard({
     color: config.color,
     shadow: config.colorGlow,
   };
-  const isActive = isLive;
+  const liveData = useRootStore((s) => s.liveData);
+  const isTrulyLive = isLive && liveData[id]?.src === 'supabase_live';
+  const isActive = isTrulyLive;
   const [isChanging, setIsChanging] = useState(false);
   const prevValueRef = useRef(value);
 
@@ -182,12 +184,12 @@ export default function MacroIndicatorCard({
         <span className="text-[7px] md:text-[8px] font-sans px-1.5 md:px-2 py-0.5 rounded-md flex items-center gap-1 md:gap-1.5 shrink-0 self-start md:self-auto"
               style={
                 (id === "usdIdr" || id === "xauUsd")
-                   ? (isLive 
+                   ? (isTrulyLive 
                       ? { background: 'rgba(16,185,129,0.08)', color: '#10b981' } 
                       : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' })
                   : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' }
               }>
-          {((id === "usdIdr" || id === "xauUsd") && isLive) && (
+          {((id === "usdIdr" || id === "xauUsd") && isTrulyLive) && (
             <div
               className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-emerald-500 animate-pulse"
               style={{ boxShadow: `0 0 4px #10b981` }}
@@ -195,15 +197,15 @@ export default function MacroIndicatorCard({
           )}
           {(() => {
             if (id === "usdIdr" || id === "xauUsd") {
-              return isLive ? (
+              return isTrulyLive ? (
                 <>
                   <span className="hidden md:inline">LIVE (delay ~5 mnt)</span>
                   <span className="md:hidden">LIVE</span>
                 </>
               ) : (
                 <>
-                  <span className="hidden md:inline">MEMUAT...</span>
-                  <span className="md:hidden">LOAD...</span>
+                  <span className="hidden md:inline">ESTIMASI - per Juni 2026</span>
+                  <span className="md:hidden">ESTIMASI</span>
                 </>
               );
             }

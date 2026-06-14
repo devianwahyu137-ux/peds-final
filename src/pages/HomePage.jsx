@@ -377,15 +377,13 @@ export default function HomePage() {
                   ? (key === 'usdIdr' ? formatIDR(rawVal) : key === 'dxy' ? formatPoints(rawVal) : formatNumber(rawVal, 2)) + unit
                   : '—';
 
-                const isLiveAvailableMetric = key === 'usdIdr';
+                const isLiveAvailableMetric = key === 'usdIdr' && liveData[key]?.src === 'supabase_live';
                 const badgeLabel = isLiveAvailableMetric 
-                  ? (isLive ? 'LIVE (delay ~5 mnt)' : 'LOAD')
+                  ? 'LIVE (delay ~5 mnt)'
                   : 'ESTIMASI';
 
                 const badgeStyles = isLiveAvailableMetric
-                  ? (isLive 
-                      ? { background: 'rgba(16,185,129,0.08)', color: '#10b981' } 
-                      : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' })
+                  ? { background: 'rgba(16,185,129,0.08)', color: '#10b981' } 
                   : { background: 'var(--as-bg-tertiary)', color: 'var(--as-text-dim)' };
 
                 return (
@@ -527,10 +525,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── DISCLAIMER ── */}
-      <div className="text-[9px] font-sans font-light text-[var(--as-text-dim)] text-center leading-relaxed pb-8 pt-4">
-        Platform ini adalah simulasi edukasi berbasis MPT. Bukan rekomendasi investasi resmi.
-        Selalu konsultasikan keputusan investasi dengan advisor keuangan terdaftar OJK.
+      {/* ── FOOTER / DISCLAIMER ── */}
+      <div className="text-[8px] md:text-[9px] font-sans font-light text-[var(--as-text-dim)] text-center leading-relaxed pb-12 pt-4 space-y-1 md:space-y-1.5">
+        <p>
+          Platform ini adalah simulasi edukasi berbasis MPT. Bukan rekomendasi investasi resmi.
+          Selalu konsultasikan keputusan investasi dengan advisor keuangan terdaftar OJK.
+        </p>
+        <p className="text-[7.5px] md:text-[8px] tracking-wide opacity-80">
+          Dikembangkan oleh Devian Wahyu Nugroho &middot; &copy; 2026
+        </p>
       </div>
     </div>
   );

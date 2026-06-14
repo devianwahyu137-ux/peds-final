@@ -743,9 +743,15 @@ export async function exportTearSheetPDF({
 
       doc.setFont('courier', 'normal');
       setTextColor(doc, C.textSecond);
-      doc.text(`: ${def}`, col2X + 24, glossY);
+      doc.text(':', col2X + 24, glossY);
 
-      glossY += 4.5;
+      // Wrap definition to 102mm width
+      const defLines = doc.splitTextToSize(def, 102);
+      defLines.forEach((line, index) => {
+        doc.text(line, col2X + 26, glossY + index * 3.5);
+      });
+
+      glossY += defLines.length * 3.5 + 1.5;
     });
 
     drawFooter(2);
