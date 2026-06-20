@@ -155,6 +155,50 @@ export default function HomePage() {
     <div className="w-full page-enter" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-xl)' }}>
       <ScenarioIntelligence />
 
+      {/* Intro Context Banner */}
+      <div className="pb-6 border-b border-[var(--as-border-primary)] transition-all duration-300">
+        <div className="flex flex-col md:flex-row md:items-center gap-1.5 md:gap-3">
+          <span className="text-sm font-extrabold tracking-wider text-[var(--as-text-primary)] font-sans uppercase">
+            Macroscope
+          </span>
+          <span className="hidden md:inline text-[var(--as-text-dim)] opacity-40">|</span>
+          <span className="text-[10px] md:text-xs text-[var(--as-text-dim)] font-medium tracking-wide">
+            Simulator Portofolio Berbasis Skenario Makro
+          </span>
+        </div>
+        <p className="text-xs leading-relaxed text-[var(--as-text-secondary)] mt-3">
+          Ringkasan di bawah mencerminkan kondisi pada skenario{" "}
+          <button
+            onClick={() => setTab?.("market")}
+            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-extrabold tracking-wider uppercase cursor-pointer transition-all align-middle"
+            style={{
+              backgroundColor: `${accent}15`,
+              color: accent,
+              border: `1px solid ${accent}30`,
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = `${accent}25`;
+              e.currentTarget.style.borderColor = `${accent}50`;
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = `${accent}15`;
+              e.currentTarget.style.borderColor = `${accent}30`;
+            }}
+          >
+            {scenarioConfig.label}
+          </button>
+          . Anda dapat mengubah skenario aktif di tab{" "}
+          <button
+            onClick={() => setTab?.("market")}
+            className="underline underline-offset-4 cursor-pointer transition-colors font-semibold hover:text-[var(--as-text-primary)]"
+            style={{ color: accent }}
+          >
+            Kondisi Pasar
+          </button>{" "}
+          untuk menganalisis dampaknya pada kinerja portofolio.
+        </p>
+      </div>
+
       {/* Main asymmetric layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
@@ -180,6 +224,9 @@ export default function HomePage() {
                   </span>
                   <span className="text-[9px] text-neutral-600 uppercase">
                     {scenarioId.replace('_', ' ')}
+                  </span>
+                  <span className="text-[8px] text-neutral-500 italic">
+                    *Berdasarkan Skenario Makro
                   </span>
                 </div>
 
@@ -227,7 +274,7 @@ export default function HomePage() {
                   </div>
                   <div className="text-[9px] mt-3"
                        style={{ color: accent, opacity: 0.5 }}>
-                    skor efisiensi portofolio
+                    skor efisiensi portofolio (RFR: SBN 10Y - 1.5%)
                   </div>
                 </div>
               </div>

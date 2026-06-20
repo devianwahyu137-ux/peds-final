@@ -69,7 +69,7 @@ export function exportPortfolioCSV({ scenarioId, weights, analytics, macroInputs
     ['Portfolio Beta',  formatNumber(analytics?.beta ?? 0, 3),                                   'Sensitivitas vs IHSG'],
     ['Max Drawdown',    `-${formatNumber(Math.abs(analytics?.estimatedMaxDrawdown ?? 0) * (analytics?.estimatedMaxDrawdown < 1 ? 100 : 1), 2)}%`, 'Penurunan maksimal estimasi'],
     ['Volatilitas',     `${formatNumber(stdDev, 2)}%`,                                           'Standar deviasi return'],
-    ['Expected Return', `${formatNumber(portRet, 2)}%`,                                          'Estimasi return tahunan'],
+    ['Expected Return', `${formatNumber(portRet, 2)}%`,                                          'Estimasi return tahunan (belum termasuk biaya transaksi & pajak / gross)'],
     ['Risk-Free Rate',  `${formatNumber(rf, 2)}%`,                    'SBN acuan'],
     ['', '', ''],
 

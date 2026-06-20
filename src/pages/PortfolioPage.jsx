@@ -150,7 +150,7 @@ export default function PortfolioPage() {
                   label="Sharpe Ratio"
                   value={formatNumber(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0, 2)}
                   unit=" σ"
-                  interpretation={getSharpeInterpretation(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0)}
+                  interpretation={`${getSharpeInterpretation(targetAnalytics?.sharpeRatio ?? targetAnalytics?.sharpe ?? 0)} (RFR: SBN 10Y - 1.5%)`}
                   color={acc.neon}
                 />
                 <MetricWithContext

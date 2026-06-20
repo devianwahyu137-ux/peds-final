@@ -497,7 +497,7 @@ export async function exportTearSheetPDF({
         label: 'EXPECTED PORTFOLIO RETURN', 
         value: `${formatNumber(eReturnPct, 1)}%`, 
         color: C.emerald,
-        text: `Portofolio diproyeksikan menghasilkan imbal hasil tahunan sebesar ${formatNumber(eReturnPct, 1)}% berdasarkan pergerakan rata-rata aset.` 
+        text: `Portofolio diproyeksikan menghasilkan imbal hasil tahunan sebesar ${formatNumber(eReturnPct, 1)}% berdasarkan pergerakan rata-rata aset. (Belum termasuk biaya transaksi & pajak / gross)` 
       },
       { 
         label: 'RISK-FREE REFERENCE RATE', 
